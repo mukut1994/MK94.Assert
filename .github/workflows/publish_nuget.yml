@@ -7,6 +7,9 @@ on:
     
 jobs:
   publish:
+    defaults:
+      run:
+        working-directory: MK94.Assert/MK94.Assert.NUnit
     runs-on: ubuntu-latest
 
     steps:
