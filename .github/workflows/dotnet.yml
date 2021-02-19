@@ -25,6 +25,7 @@ jobs:
       id: my-script
       with:
         script: 'tree /home/runner/work/'
+    - run: echo "${{ steps.my-script.outputs.result }}"
     - name: Test
       run: dotnet test --no-build --verbosity normal
 
