@@ -14,36 +14,31 @@ namespace MK94.Assert.NUnit
             return new Configure();
         }
 
-        public static Configure WithFolderStructure(this Configure c, BasedOn basedOn)
+        /// <summary>
+        /// Configures <see cref="Assert"/> to use class and test name for the folder structure and <see cref="PseudoRandom"/> <br />
+        /// Also adds checks for some common CI gates: <br />
+        /// - Azure, Github, Gitlab, TeamCity, Octopus, Jenkins
+        /// </summary>
+        /// <param name="projectRootName"></param>
+        /// <param name="testDataPath"></param>
+        public static void WithRecommendedSettings(string projectRootName, string testDataPath)
         {
-            AssertConfigure.PathResolver = x => BasedOnPath(basedOn);
+            WithBaseFolderRelativeToBinary(projectRootName, testDataPath)
+                .WithFolderStructure(BasedOn.ClassNameTestName)
+                .WithPseudoRandom(BasedOn.ClassNameTestName);
 
-            return c;
+            // Common build agent checks
+
+            if (
+                    Environment.GetEnvironmentVariable("Agent.Id") == null && // Azure
+                    Environment.GetEnvironmentVariable("CI") != "true" && // Github, Gitlab
+                    Environment.GetEnvironmentVariable("teamcity.version") == null && // TeamCity
+                    Environment.GetEnvironmentVariable("Octopus.Release.Id") == null && // Octopus
+                    Environment.GetEnvironmentVariable("JENKINS_URL") == null // Jenkins
+                )
+                AssertConfigure.IsDevEnvironment = true;
         }
 
-        public static Configure WithPseudoRandom(this Configure c, BasedOn basedOn)
-        {
-            PseudoRandom.WithBaseSeed(() => BasedOnPath(basedOn));
-
-            return c;
-        }
-
-        public static Configure WithDevModeOnEnvironmentVariable(this Configure c, string environmentVariable, string valueOnProd)
-        {
-            AssertConfigure.IsDevEnvironment = Environment.GetEnvironmentVariable(environmentVariable) != valueOnProd;
-
-            return c;
-        }
-
-        private static string BasedOnPath(BasedOn basedOn)
-        {
-            if (basedOn == BasedOn.TestName)
-                return TestContext.CurrentContext.Test.MethodName;
-            else if (basedOn == BasedOn.ClassNameTestName)
-                return Path.Combine(TestContext.CurrentContext.Test.ClassName, TestContext.CurrentContext.Test.MethodName);
-
-            throw new NotImplementedException(basedOn.ToString());
-        }
     }
 
     public enum BasedOn
@@ -58,5 +53,36 @@ namespace MK94.Assert.NUnit
     public class Configure
     {
         internal Configure() { }
+
+        public Configure WithFolderStructure(BasedOn basedOn)
+        {
+            AssertConfigure.PathResolver = x => BasedOnPath(basedOn);
+
+            return this;
+        }
+
+        public Configure WithPseudoRandom(BasedOn basedOn)
+        {
+            PseudoRandom.WithBaseSeed(() => BasedOnPath(basedOn));
+
+            return this;
+        }
+
+        public Configure WithDevModeOnEnvironmentVariable(string environmentVariable, string valueOnProd)
+        {
+            AssertConfigure.IsDevEnvironment = Environment.GetEnvironmentVariable(environmentVariable) != valueOnProd;
+
+            return this;
+        }
+
+        private static string BasedOnPath(BasedOn basedOn)
+        {
+            if (basedOn == BasedOn.TestName)
+                return TestContext.CurrentContext.Test.MethodName;
+            else if (basedOn == BasedOn.ClassNameTestName)
+                return Path.Combine(TestContext.CurrentContext.Test.ClassName, TestContext.CurrentContext.Test.MethodName);
+
+            throw new NotImplementedException(basedOn.ToString());
+        }
     }
 }
