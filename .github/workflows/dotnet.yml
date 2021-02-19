@@ -21,9 +21,6 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
-    - name: Perform a Pester test from the command-line
-      shell: pwsh
-      run: tree /home/runner/work/MK94.Assert/
     - name: Test
       run: dotnet test --no-build --verbosity normal
 
