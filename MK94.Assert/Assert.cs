@@ -38,7 +38,7 @@ namespace MK94.Assert
             else
             {
                 if (!File.Exists(outputFile))
-                    throw new FileNotFoundException($"Could not find file {outputFile}. Is this a new test? Enable {nameof(AssertConfigure.WriteMode)} in {nameof(AssertConfigure)}");
+                    throw new FileNotFoundException($"Could not find file '{outputFile}'. Is this a new test? Enable {nameof(AssertConfigure.WriteMode)} in {nameof(AssertConfigure)} to fix");
 
                 if (!File.ReadAllText(outputFile).Equals(rawData))
                     throw new InvalidProgramException($"Difference in step {step}"); // TODO better error, with where and what

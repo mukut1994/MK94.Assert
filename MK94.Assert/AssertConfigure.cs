@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -46,13 +46,13 @@ namespace MK94.Assert
         {
             var dirs = Directory.GetCurrentDirectory().Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
-            for (int i = 0; i < dirs.Length; i++)
+            for (int i = dirs.Length - 1; i > 0; i--)
             {
-                if(dirs[i] == parentFolder)
-                    return dirs
-                        .Take(i + 1)
+                if (dirs[i] == parentFolder)
+                    return Path.GetFullPath(Path.Combine("/", dirs
+                        .Take(dirs.Length - i + 1)
                         .Concat(new[] { parentRelative })
-                        .Aggregate(Path.Combine);
+                        .Aggregate(Path.Combine)));
             }
 
             throw new InvalidProgramException($"Parent directory '{parentFolder}' does not exist under {Directory.GetCurrentDirectory()}");
