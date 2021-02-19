@@ -49,10 +49,10 @@ namespace MK94.Assert
             for (int i = 0; i < dirs.Length; i++)
             {
                 if(dirs[i] == parentFolder)
-                    return dirs
+                    return Path.GetFullPath(Path.Combine("/", dirs
                         .Take(i + 1)
                         .Concat(new[] { parentRelative })
-                        .Aggregate(Path.Combine);
+                        .Aggregate(Path.Combine)));
             }
 
             throw new InvalidProgramException($"Parent directory '{parentFolder}' does not exist under {Directory.GetCurrentDirectory()}");
