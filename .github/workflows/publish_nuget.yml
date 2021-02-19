@@ -35,4 +35,4 @@ jobs:
       run: | 
         version="`cat nuget.version`" 
         cd bin/Release
-        dotnet nuget push MK94.Assert.$version.nupkg -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json
+        dotnet nuget push MK94.Assert.NUnit.$version.nupkg -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json
