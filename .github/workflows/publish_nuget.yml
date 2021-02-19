@@ -3,7 +3,7 @@ name: Publish Nuget
 on:
   push:
     branches: [ master ]
-    #paths: MK94.Assert.NUnit/nuget.version
+    paths: MK94.Assert.NUnit/nuget.version
     
 jobs:
   publish:
