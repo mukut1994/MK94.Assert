@@ -1,0 +1,35 @@
+name: Publish Nuget
+
+on:
+  push:
+    branches: [ master ]
+    paths: MK94.Assert/MK94.Assert.NUnit/nuget.version
+    
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+
+    - name: Install dependencies
+      run: dotnet restore
+      
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    
+    - name: Pack
+      run: | 
+        version="`cat nuget.version`"
+        dotnet pack --configuration Release --no-restore /p:Version=$version
+        
+    - name: Publish
+      run: | 
+        version="`cat nuget.version`" 
+        cd bin/Release
+        dotnet nuget push MK94.Assert.$version.nupkg -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json
