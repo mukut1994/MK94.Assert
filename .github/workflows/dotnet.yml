@@ -21,6 +21,10 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
+    - uses: Amadevus/pwsh-script@v2
+      id: my-script
+      with:
+        script: 'tree /home/runner/work/'
     - name: Test
       run: dotnet test --no-build --verbosity normal
 
