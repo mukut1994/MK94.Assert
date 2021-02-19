@@ -24,11 +24,13 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     
     - name: Pack
+      working-directory: MK94.Assert.NUnit
       run: | 
         version="`cat nuget.version`"
         dotnet pack --configuration Release --no-restore /p:Version=$version
         
     - name: Publish
+      working-directory: MK94.Assert.NUnit
       run: | 
         version="`cat nuget.version`" 
         cd bin/Release
