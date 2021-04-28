@@ -80,6 +80,14 @@ namespace MK94.Assert
 
     }
 
+    /// <summary>
+    /// Helper class to change <see cref="AssertConfigure"/> into a builder pattern
+    /// </summary>
+    public class Configuration
+    {
+        internal Configuration() { }
+    }
+
     public struct AssertContext
     {
         public string StepName { get; }
