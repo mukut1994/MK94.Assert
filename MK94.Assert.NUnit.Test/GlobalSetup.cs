@@ -16,6 +16,7 @@ namespace MK94.Assert.NUnit.Test
                 .WithBaseFolderRelativeToBinary("MK94.Assert", "TestData")
                 .WithFolderStructure(BasedOn.TestName)
                 .WithPseudoRandom(BasedOn.TestName)
+                .WithChecksumStructure(BasedOn.TestName)
                 .WithDevModeOnEnvironmentVariable("CI", "true");
 
             // AssertConfigure.EnableWriteMode();

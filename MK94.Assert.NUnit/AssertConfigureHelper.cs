@@ -24,6 +24,7 @@ namespace MK94.Assert.NUnit
         public static void WithRecommendedSettings(string projectRootName, string testDataPath)
         {
             WithBaseFolderRelativeToBinary(projectRootName, testDataPath)
+                .WithChecksumStructure(BasedOn.ClassNameTestName)
                 .WithFolderStructure(BasedOn.ClassNameTestName)
                 .WithPseudoRandom(BasedOn.ClassNameTestName);
 
@@ -56,7 +57,14 @@ namespace MK94.Assert.NUnit
 
         public Configure WithFolderStructure(BasedOn basedOn)
         {
-            AssertConfigure.PathResolver = x => BasedOnPath(basedOn);
+            AssertConfigure.AddPathResolver(x => BasedOnPath(basedOn));
+
+            return this;
+        }
+
+        public Configure WithChecksumStructure(BasedOn basedOn)
+        {
+            AssertConfigure.AddChecksumFileResolver(x => Path.Combine(BasedOnPath(basedOn), "checksum"));
 
             return this;
         }
