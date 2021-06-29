@@ -12,6 +12,9 @@ namespace MK94.Assert.NUnit.Test
         [Test]
         public void RandomizerTest()
         {
+            // Test needs to run in parallel to RandomizerTest2
+            // Checks that Parallel test runs don't share randomizer seeds
+
             for (int i = 0; i < 10; i++)
             {
                 var randomizedObject = new
@@ -30,6 +33,9 @@ namespace MK94.Assert.NUnit.Test
         [Test]
         public void RandomizerTest2()
         {
+            // Test needs to run in parallel to RandomizerTest
+            // Checks that Parallel test runs don't share randomizer seeds
+
             for (int i = 0; i < 10; i++)
             {
                 var randomizedObject = new

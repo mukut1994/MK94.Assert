@@ -12,7 +12,10 @@ namespace MK94.Assert
         internal static string DefaultGlobalPath => PathRelativeToParentFolder(Assembly.GetExecutingAssembly().GetName().Name, "Testdata");
         internal static bool WriteMode { get; set; }
 
-        public static Func<AssertContext, string> PathResolver { get; set; }
+        internal static Func<AssertContext, string> PathResolver { get; set; }
+
+        internal static Func<AssertContext, string> ChecksumFileResolver { get; set; }
+
         public static string GlobalPath { get; set; }
 
         /// <summary>
@@ -22,7 +25,7 @@ namespace MK94.Assert
         public static bool IsDevEnvironment { get; set; } = false;
 
 
-        private static List<Func<string, string>> postProcessors = new List<Func<string, string>>();
+        internal static List<Func<string, string>> postProcessors = new List<Func<string, string>>();
 
         /// <summary>
         /// Changes calls to <see cref="Assert"/> to write to disk rather than verify <br />
@@ -72,12 +75,26 @@ namespace MK94.Assert
             AddPostProcess(x => Regex.Replace(x, "[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}", Guid.Empty.ToString()));
         }
 
+        public static void AddPathResolver(Func<AssertContext, string> resolver)
+        {
+            PathResolver = resolver;
+        }
+
+        /// <summary>
+        /// Defines a file resolver for checksum files. 
+        /// The checksum file is used to avoid excessive disk reads.
+        /// </summary>
+        /// <param name="resolver"></param>
+        public static void AddChecksumFileResolver(Func<AssertContext, string> resolver)
+        {
+            ChecksumFileResolver = resolver;
+        }
+
         internal static void EnsureDevMode()
         {
             if (!IsDevEnvironment)
                 throw new InvalidOperationException($"Trying to write during assert but not in a dev environment!!! Make sure EnableWriteMode is not called.");
         }
-
     }
 
     /// <summary>
