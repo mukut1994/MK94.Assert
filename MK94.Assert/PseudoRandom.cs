@@ -57,7 +57,7 @@ namespace MK94.Assert
         {
             Contract.Requires(!string.IsNullOrEmpty(seed), $"{nameof(seed)} cannot be null or empty");
 
-            var intSeed = BitConverter.ToInt32(SHA256.Create().ComputeHash(Encoding.ASCII.GetBytes(seed)).Take(4).ToArray());
+            var intSeed = BitConverter.ToInt32(SHA256.Create().ComputeHash(Encoding.ASCII.GetBytes(seed)).Take(4).ToArray(), 0);
 
             instance.Value.randomizer = new Random(intSeed);
 
@@ -80,7 +80,7 @@ namespace MK94.Assert
             var buffer = new byte[4];
             instance.Value.randomizer.NextBytes(buffer);
 
-            return new Random(BitConverter.ToInt32(buffer));
+            return new Random(BitConverter.ToInt32(buffer, 0));
         }
 
         public static string String(int length = 10, bool noSpecialCharacters = true)

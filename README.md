@@ -10,7 +10,7 @@ public class GlobalSetup
   [OneTimeSetUp]
   public void Setup()
   {
-    AssertConfigureHelper.WithRecommendedSettings("projectName", "TestData")
+    AssertConfigureHelper.WithRecommendedSettings("projectName", "TestData");
     
     // Remove the comment to update/fix tests
     // AssertConfigure.EnableWriteMode();
