@@ -15,7 +15,7 @@ namespace MK94.Assert.NUnit
         }
 
         /// <summary>
-        /// Configures <see cref="Assert"/> to use class and test name for the folder structure and <see cref="PseudoRandom"/> <br />
+        /// Configures <see cref="DiskAssert"/> to use class and test name for the folder structure and <see cref="PseudoRandom"/> <br />
         /// Also adds checks for some common CI gates: <br />
         /// - Azure, Github, Gitlab, TeamCity, Octopus, Jenkins
         /// </summary>

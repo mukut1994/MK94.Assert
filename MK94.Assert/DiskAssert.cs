@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MK94.Assert
 {
-    public static class Assert
+    public static class DiskAssert
     {
         static ConcurrentDictionary<string, ConcurrentDictionary<string, string>> checksums = new ConcurrentDictionary<string, ConcurrentDictionary<string, string>>();
         static SHA512 sha = SHA512.Create();
