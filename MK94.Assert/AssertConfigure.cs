@@ -25,7 +25,7 @@ namespace MK94.Assert
         private static List<Func<string, string>> postProcessors = new List<Func<string, string>>();
 
         /// <summary>
-        /// Changes calls to <see cref="Assert"/> to write to disk rather than verify <br />
+        /// Changes calls to <see cref="DiskAssert"/> to write to disk rather than verify <br />
         /// Use this to update breaking tests or add new ones
         /// </summary>
         public static void EnableWriteMode()

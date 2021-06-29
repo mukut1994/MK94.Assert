@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MK94.Assert
 {
-    public static class Assert
+    public static class DiskAssert
     {
         static JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = true };
 
