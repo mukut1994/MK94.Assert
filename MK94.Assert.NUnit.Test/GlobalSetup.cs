@@ -22,5 +22,10 @@ namespace MK94.Assert.NUnit.Test
             // AssertConfigure.EnableWriteMode();
         }
 
+        [OneTimeTearDown]
+        public void Cleardown()
+        {
+            DiskAssert.Cleardown();
+        }
     }
 }

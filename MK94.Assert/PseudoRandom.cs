@@ -22,11 +22,11 @@ namespace MK94.Assert
             public Random dateRandomizer;
         }
 
-        private static Func<string> seedGenerator;
+        private static Func<AssertContext, string> seedGenerator;
 
         private static AsyncLocal<Instance> instance = new AsyncLocal<Instance>();
 
-        public static void WithBaseSeed(Func<string> seedGenerator)
+        public static void WithBaseSeed(Func<AssertContext, string> seedGenerator)
         {
             Contract.Requires(seedGenerator != null, $"{nameof(seedGenerator)} cannot be null or empty");
 
@@ -41,7 +41,7 @@ namespace MK94.Assert
             if (seedGenerator == null)
                 return;
 
-            var newSeed = seedGenerator();
+            var newSeed = seedGenerator(AssertConfigure.GetContext());
             if (newSeed == instance.Value.oldSeed)
                 return;
 

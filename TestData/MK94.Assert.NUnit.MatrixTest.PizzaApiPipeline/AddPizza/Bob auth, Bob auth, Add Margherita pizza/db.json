@@ -1,0 +1,16 @@
+{
+  "MK94.Assert.NUnit.MatrixTest.User": [
+    {
+      "Name": "Bob",
+      "Password": "BobP"
+    }
+  ],
+  "MK94.Assert.NUnit.MatrixTest.Cart": [
+    {
+      "User": "Bob",
+      "Pizzas": [
+        0
+      ]
+    }
+  ]
+}

@@ -15,6 +15,8 @@ namespace MK94.Assert
         internal static Func<AssertContext, string> PathResolver { get; set; }
 
         internal static Func<AssertContext, string> ChecksumFileResolver { get; set; }
+        internal static Func<string> TestNameGetter { get; set; }
+        internal static Func<string> ClassNameGetter { get; set; }
 
         public static string GlobalPath { get; set; }
 
@@ -95,6 +97,39 @@ namespace MK94.Assert
             if (!IsDevEnvironment)
                 throw new InvalidOperationException($"Trying to write during assert but not in a dev environment!!! Make sure EnableWriteMode is not called.");
         }
+
+        public static void SetCurrentTestNameGetter(Func<string> testNameGetter)
+        {
+            TestNameGetter = testNameGetter;
+        }
+
+        public static void SetCurrentClassNameGetter(Func<string> classNameGetter)
+        {
+            ClassNameGetter = classNameGetter;
+        }
+        internal static string GetOutputPath(string step, string fileType, AssertContext context)
+        {
+            var basePath = AssertConfigure.GlobalPath ?? AssertConfigure.DefaultGlobalPath;
+            string outputFile = null;
+
+            if (PathResolver != null)
+            {
+                outputFile = Path.GetFullPath(Path.Combine(basePath, PathResolver(context), step + "." + fileType));
+                Directory.CreateDirectory(Path.GetDirectoryName(outputFile));
+            }
+            else
+            {
+                Directory.CreateDirectory(basePath);
+                outputFile = Path.Combine(step + "." + fileType);
+            }
+
+            return outputFile;
+        }
+
+        internal static AssertContext GetContext(string step = null)
+        {
+            return new AssertContext(ClassNameGetter(), TestNameGetter(), step);
+        }
     }
 
     /// <summary>
@@ -107,10 +142,14 @@ namespace MK94.Assert
 
     public struct AssertContext
     {
+        public string ClassName { get; }
+        public string TestName { get; }
         public string StepName { get; }
 
-        public AssertContext(string stepName)
+        public AssertContext(string className, string testName, string stepName)
         {
+            ClassName = className;
+            TestName = testName;
             StepName = stepName;
         }
     }

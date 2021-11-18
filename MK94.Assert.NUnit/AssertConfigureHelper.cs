@@ -6,6 +6,12 @@ namespace MK94.Assert.NUnit
 {
     public static class AssertConfigureHelper
     {
+        static AssertConfigureHelper()
+        {
+            AssertConfigure.SetCurrentClassNameGetter(() => TestContext.CurrentContext.Test.ClassName);
+            AssertConfigure.SetCurrentTestNameGetter(() => TestContext.CurrentContext.Test.MethodName);
+        }
+
         /// <inheritdoc cref="AssertConfigure.PathRelativeToParentFolder"/>
         public static Configure WithBaseFolderRelativeToBinary(string relativeParentFolder, string parentRelativeChild)
         {
@@ -55,23 +61,30 @@ namespace MK94.Assert.NUnit
     {
         internal Configure() { }
 
+        public Configure WithFolderStructure(Func<AssertContext, string> pathResolver)
+        {
+            AssertConfigure.AddPathResolver(pathResolver);
+
+            return this;
+        }
+
         public Configure WithFolderStructure(BasedOn basedOn)
         {
-            AssertConfigure.AddPathResolver(x => BasedOnPath(basedOn));
+            AssertConfigure.AddPathResolver(x => BasedOnPath(x, basedOn));
 
             return this;
         }
 
         public Configure WithChecksumStructure(BasedOn basedOn)
         {
-            AssertConfigure.AddChecksumFileResolver(x => Path.Combine(BasedOnPath(basedOn), "checksum"));
+            AssertConfigure.AddChecksumFileResolver(x => Path.Combine(BasedOnPath(x, basedOn), "checksum"));
 
             return this;
         }
 
         public Configure WithPseudoRandom(BasedOn basedOn)
         {
-            PseudoRandom.WithBaseSeed(() => BasedOnPath(basedOn));
+            PseudoRandom.WithBaseSeed(x => BasedOnPath(x, basedOn));
 
             return this;
         }
@@ -83,12 +96,12 @@ namespace MK94.Assert.NUnit
             return this;
         }
 
-        private static string BasedOnPath(BasedOn basedOn)
+        private static string BasedOnPath(AssertContext context, BasedOn basedOn)
         {
             if (basedOn == BasedOn.TestName)
-                return TestContext.CurrentContext.Test.MethodName;
+                return context.TestName;
             else if (basedOn == BasedOn.ClassNameTestName)
-                return Path.Combine(TestContext.CurrentContext.Test.ClassName, TestContext.CurrentContext.Test.MethodName);
+                return Path.Combine(context.ClassName, context.TestName);
 
             throw new NotImplementedException(basedOn.ToString());
         }
