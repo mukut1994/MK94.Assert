@@ -10,7 +10,7 @@ namespace MK94.Assert
     public static class AssertConfigure
     {
         internal static string DefaultGlobalPath => PathRelativeToParentFolder(Assembly.GetExecutingAssembly().GetName().Name, "Testdata");
-        internal static bool WriteMode { get; set; }
+        public static bool WriteMode { get; set; }
 
         internal static Func<AssertContext, string> PathResolver { get; set; }
 
@@ -95,14 +95,6 @@ namespace MK94.Assert
             if (!IsDevEnvironment)
                 throw new InvalidOperationException($"Trying to write during assert but not in a dev environment!!! Make sure EnableWriteMode is not called.");
         }
-    }
-
-    /// <summary>
-    /// Helper class to change <see cref="AssertConfigure"/> into a builder pattern
-    /// </summary>
-    public class Configuration
-    {
-        internal Configuration() { }
     }
 
     public struct AssertContext
