@@ -106,7 +106,7 @@ namespace MK94.Assert
     {
         public static string String(this Random r, int length = 10, bool noSpecialCharacters = true)
         {
-            Contract.Requires(length > 0, $"String {nameof(length)} must be atleast 1");
+            Contract.Requires(length > 0, $"String {nameof(length)} must be at least 1");
 
             var buffer = new byte[length];
 

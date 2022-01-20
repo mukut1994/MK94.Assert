@@ -39,7 +39,6 @@ namespace MK94.Assert.NUnit
                 )
                 AssertConfigure.IsDevEnvironment = true;
         }
-
     }
 
     public enum BasedOn
@@ -85,12 +84,12 @@ namespace MK94.Assert.NUnit
 
         private static string BasedOnPath(BasedOn basedOn)
         {
-            if (basedOn == BasedOn.TestName)
-                return TestContext.CurrentContext.Test.MethodName;
-            else if (basedOn == BasedOn.ClassNameTestName)
-                return Path.Combine(TestContext.CurrentContext.Test.ClassName, TestContext.CurrentContext.Test.MethodName);
-
-            throw new NotImplementedException(basedOn.ToString());
+            return basedOn switch
+            {
+                BasedOn.TestName => TestContext.CurrentContext.Test.MethodName,
+                BasedOn.ClassNameTestName => Path.Combine(TestContext.CurrentContext.Test.ClassName, TestContext.CurrentContext.Test.MethodName),
+                _ => throw new NotImplementedException(basedOn.ToString())
+            };
         }
     }
 }

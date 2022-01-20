@@ -9,7 +9,7 @@ namespace MK94.Assert
 {
     public static class AssertConfigure
     {
-        internal static string DefaultGlobalPath => PathRelativeToParentFolder(Assembly.GetExecutingAssembly().GetName().Name, "Testdata");
+        internal static string DefaultGlobalPath => PathRelativeToParentFolder(Assembly.GetExecutingAssembly().GetName().Name, "TestData");
         public static bool WriteMode { get; set; }
 
         internal static Func<AssertContext, string> PathResolver { get; set; }
@@ -44,7 +44,7 @@ namespace MK94.Assert
         /// The global path is set to "/user/code/testData"
         /// </summary>
         /// <param name="parentFolder">The parent folder relative to the dll/exe</param>
-        /// <param name="parentRelative">The folder </param>
+        /// <param name="parentRelative">The folder</param>
         public static string PathRelativeToParentFolder(string parentFolder, string parentRelative)
         {
             var dirs = Directory.GetCurrentDirectory().Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);

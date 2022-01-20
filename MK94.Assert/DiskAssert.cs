@@ -20,7 +20,7 @@ namespace MK94.Assert
         {
             var context = new AssertContext(step);
             var basePath = AssertConfigure.GlobalPath ?? AssertConfigure.DefaultGlobalPath;
-            string outputFile = null;
+            string outputFile;
 
             if (AssertConfigure.PathResolver != null)
             {
@@ -32,8 +32,7 @@ namespace MK94.Assert
                 Directory.CreateDirectory(basePath);
                 outputFile = Path.Combine(step + "." + fileType);
             }
-
-
+            
             if (AssertConfigure.WriteMode)
             {
                 AssertConfigure.EnsureDevMode();
@@ -81,13 +80,13 @@ namespace MK94.Assert
             return true;
         }
 
-        public static string GetChecksumFilePath(AssertContext context)
+        private static string GetChecksumFilePath(AssertContext context)
         {
             var basePath = AssertConfigure.GlobalPath ?? AssertConfigure.DefaultGlobalPath;
             return Path.Combine(basePath, AssertConfigure.ChecksumFileResolver(context));
         }
 
-        public static void WriteChecksumFile(string raw, string outputFile, AssertContext context)
+        private static void WriteChecksumFile(string raw, string outputFile, AssertContext context)
         {
             var checksumFilePath = GetChecksumFilePath(context);
 
@@ -106,7 +105,7 @@ namespace MK94.Assert
             File.WriteAllText(checksumFilePath, serialized);
         }
 
-        public static ConcurrentDictionary<string, string> ReadChecksumFile(string path)
+        private static ConcurrentDictionary<string, string> ReadChecksumFile(string path)
         {
             if (!File.Exists(path))
                 return new ConcurrentDictionary<string, string>();
