@@ -1,8 +1,4 @@
-﻿
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using NUnit.Framework;
 
 namespace MK94.Assert.NUnit.Test
 {
