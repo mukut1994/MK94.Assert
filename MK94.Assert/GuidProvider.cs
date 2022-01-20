@@ -17,7 +17,7 @@ namespace MK94.Assert
     /// </summary>
     public class PseudoRandomGuidProvider : IGuidProvider
     {
-        private Random random;
+        private readonly Random random;
 
         public PseudoRandomGuidProvider() { random = PseudoRandom.GetRandomizer(); }
         public PseudoRandomGuidProvider(Random random) { this.random = random; }

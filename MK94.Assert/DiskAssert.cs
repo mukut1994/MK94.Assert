@@ -11,9 +11,9 @@ namespace MK94.Assert
 {
     public static class DiskAssert
     {
-        static ConcurrentDictionary<string, ConcurrentDictionary<string, string>> checksums = new ConcurrentDictionary<string, ConcurrentDictionary<string, string>>();
-        static SHA512 sha = SHA512.Create();
-        static JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = true };
+        static readonly ConcurrentDictionary<string, ConcurrentDictionary<string, string>> checksums = new ConcurrentDictionary<string, ConcurrentDictionary<string, string>>();
+        static readonly SHA512 sha = SHA512.Create();
+        static readonly JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = true };
 
         public static string MatchesRaw(string rawData, string step, string fileType = "raw")
         {

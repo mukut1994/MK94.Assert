@@ -12,9 +12,9 @@ namespace MK94.Assert
 	{
 		private struct FileInfo
 		{
-			public string name;
-			public SHA256Managed hashAlgo;
-			public MemoryStream stream;
+			public readonly string name;
+			public readonly SHA256Managed hashAlgo;
+			public readonly MemoryStream stream;
 
             public FileInfo(string name, SHA256Managed hashAlgo, MemoryStream stream)
             {
@@ -24,7 +24,7 @@ namespace MK94.Assert
             }
         }
 
-        private Dictionary<string, FileInfo> files = new Dictionary<string, FileInfo>();
+        private readonly Dictionary<string, FileInfo> files = new Dictionary<string, FileInfo>();
 
 		public Stream Open(string path)
 		{
@@ -90,14 +90,14 @@ namespace MK94.Assert
 
 		protected abstract Dictionary<string, string> LoadRootFile();
 		protected abstract void WriteRootFile(Dictionary<string, string> root);
-		protected abstract void WriteFile(string file, string hash, string? oldHash, Stream sourceStream);
+		protected abstract void WriteFile(string file, string hash, string oldHash, Stream sourceStream);
 		protected abstract void Delete(string file, string hash);
 	}
 
     public class MemoryFileOutput : HashedFileOutput
     {
 		private Dictionary<string, string> rootFile = new Dictionary<string, string>();
-		private ConcurrentDictionary<string, string> files = new ConcurrentDictionary<string, string>();
+		private readonly ConcurrentDictionary<string, string> files = new ConcurrentDictionary<string, string>();
 
         protected override void Delete(string file, string hash)
         {
