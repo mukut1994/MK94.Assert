@@ -23,7 +23,7 @@ namespace MK94.Assert.NUnit.Test.RecommendedSettings
 
                 DiskAssert.Matches(randomizedObject, $"RandomizedObj_{i}");
 
-                Thread.Sleep(1000);
+                Thread.Sleep(500);
             }
         }
 
@@ -44,7 +44,7 @@ namespace MK94.Assert.NUnit.Test.RecommendedSettings
 
                 DiskAssert.Matches(randomizedObject, $"RandomizedObj_{i}");
 
-                Thread.Sleep(1000);
+                Thread.Sleep(500);
             }
         }
 
