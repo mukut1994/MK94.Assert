@@ -9,7 +9,7 @@ namespace MK94.Assert
 {
     public static class AssertConfigure
     {
-        internal static string DefaultGlobalPath => PathRelativeToParentFolder(Assembly.GetExecutingAssembly().GetName().Name, "Testdata");
+        internal static string DefaultGlobalPath => PathRelativeToParentFolder(Assembly.GetExecutingAssembly().GetName().Name, "TestData");
         public static bool WriteMode { get; set; }
 
         internal static Func<AssertContext, string> PathResolver { get; set; }
@@ -44,21 +44,19 @@ namespace MK94.Assert
         /// The global path is set to "/user/code/testData"
         /// </summary>
         /// <param name="parentFolder">The parent folder relative to the dll/exe</param>
-        /// <param name="parentRelative">The folder </param>
+        /// <param name="parentRelative">The folder</param>
         public static string PathRelativeToParentFolder(string parentFolder, string parentRelative)
         {
             var dirs = Directory.GetCurrentDirectory().Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
-            for (int i = dirs.Length - 1; i > 0; i--)
-            {
-                if (dirs[i] == parentFolder)
-                    return Path.GetFullPath(Path.Combine("/", dirs
-                        .Take(dirs.Length - i + 1)
-                        .Concat(new[] { parentRelative })
-                        .Aggregate(Path.Combine)));
-            }
-
-            throw new InvalidProgramException($"Parent directory '{parentFolder}' does not exist under {Directory.GetCurrentDirectory()}");
+            if (dirs.All(d => d != parentFolder))
+                throw new InvalidProgramException($"Parent directory '{parentFolder}' does not exist under {Directory.GetCurrentDirectory()}");
+            
+            return Path.Combine("/", dirs
+                .Reverse()
+                .SkipWhile(x => x != parentFolder)
+                .Reverse().Concat(new[] { parentRelative })
+                .Aggregate(Path.Combine));
         }
 
         public static void AddPostProcess(Func<string, string> jsonPostProcessor) => postProcessors.Add(jsonPostProcessor);

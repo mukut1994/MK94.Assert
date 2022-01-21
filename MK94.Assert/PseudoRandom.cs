@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Security.Cryptography;
@@ -55,6 +54,8 @@ namespace MK94.Assert
         /// <param name="seed">The seed value. Currently executing test name is recommended</param>
         public static void WithBaseSeed(string seed)
         {
+            seed = seed.Replace(System.IO.Path.DirectorySeparatorChar, ' ').Replace(System.IO.Path.DirectorySeparatorChar, ' ');
+            
             Contract.Requires(!string.IsNullOrEmpty(seed), $"{nameof(seed)} cannot be null or empty");
 
             var intSeed = BitConverter.ToInt32(SHA256.Create().ComputeHash(Encoding.ASCII.GetBytes(seed)).Take(4).ToArray(), 0);
@@ -106,7 +107,7 @@ namespace MK94.Assert
     {
         public static string String(this Random r, int length = 10, bool noSpecialCharacters = true)
         {
-            Contract.Requires(length > 0, $"String {nameof(length)} must be atleast 1");
+            Contract.Requires(length > 0, $"String {nameof(length)} must be at least 1");
 
             var buffer = new byte[length];
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -12,28 +11,26 @@ namespace MK94.Assert
 {
     public static class DiskAssert
     {
-        static ConcurrentDictionary<string, ConcurrentDictionary<string, string>> checksums = new ConcurrentDictionary<string, ConcurrentDictionary<string, string>>();
-        static SHA512 sha = SHA512.Create();
-        static JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = true };
-
+        static readonly ConcurrentDictionary<string, ConcurrentDictionary<string, string>> checksums = new ConcurrentDictionary<string, ConcurrentDictionary<string, string>>();
+        static readonly SHA512 sha = SHA512.Create();
+        
         public static string MatchesRaw(string rawData, string step, string fileType = "raw")
         {
             var context = new AssertContext(step);
             var basePath = AssertConfigure.GlobalPath ?? AssertConfigure.DefaultGlobalPath;
-            string outputFile = null;
+            string outputFile;
 
             if (AssertConfigure.PathResolver != null)
             {
-                outputFile = Path.GetFullPath(Path.Combine(basePath, AssertConfigure.PathResolver(context), step + "." + fileType));
+                outputFile = Path.GetFullPath(Path.Combine(basePath, AssertConfigure.PathResolver(context), $"{step}.{fileType}"));
                 Directory.CreateDirectory(Path.GetDirectoryName(outputFile));
             }
             else
             {
                 Directory.CreateDirectory(basePath);
-                outputFile = Path.Combine(step + "." + fileType);
+                outputFile = Path.Combine(basePath, $"{step}.{fileType}");
             }
-
-
+            
             if (AssertConfigure.WriteMode)
             {
                 AssertConfigure.EnsureDevMode();
@@ -43,18 +40,18 @@ namespace MK94.Assert
 
                 WriteChecksumFile(rawData, outputFile, context);
                 File.WriteAllText(outputFile, rawData);
-            }
-            else
-            {
-                if (!File.Exists(outputFile))
-                    throw new FileNotFoundException($"Could not find file '{outputFile}'. Is this a new test? Enable {nameof(AssertConfigure.WriteMode)} in {nameof(AssertConfigure)} to fix");
 
-                if (ChecksumMatches(rawData, outputFile, context))
-                    return rawData;
-
-                if (!File.ReadAllText(outputFile).Equals(rawData))
-                    throw new InvalidProgramException($"Difference in step {step}"); // TODO better error, with where and what
+                return rawData;
             }
+
+            if (!File.Exists(outputFile))
+                throw new FileNotFoundException($"Could not find file '{outputFile}'. Is this a new test? Enable {nameof(AssertConfigure.WriteMode)} in {nameof(AssertConfigure)} to fix");
+
+            if (ChecksumMatches(rawData, outputFile, context))
+                return rawData;
+
+            if (!File.ReadAllText(outputFile).Equals(rawData))
+                throw new InvalidProgramException($"Difference in step {step}, {File.ReadAllText(outputFile)}, AND {rawData}"); // TODO better error, with where and what
 
             return rawData;
         }
@@ -81,13 +78,13 @@ namespace MK94.Assert
             return true;
         }
 
-        public static string GetChecksumFilePath(AssertContext context)
+        private static string GetChecksumFilePath(AssertContext context)
         {
             var basePath = AssertConfigure.GlobalPath ?? AssertConfigure.DefaultGlobalPath;
             return Path.Combine(basePath, AssertConfigure.ChecksumFileResolver(context));
         }
 
-        public static void WriteChecksumFile(string raw, string outputFile, AssertContext context)
+        private static void WriteChecksumFile(string raw, string outputFile, AssertContext context)
         {
             var checksumFilePath = GetChecksumFilePath(context);
 
@@ -101,12 +98,12 @@ namespace MK94.Assert
 
             checksumDict[checksumKey] = Convert.ToBase64String(hash);
 
-            var serialized = JsonSerializer.Serialize(checksumDict, options);
+            var serialized = JsonSerializer.Serialize(checksumDict);
 
             File.WriteAllText(checksumFilePath, serialized);
         }
 
-        public static ConcurrentDictionary<string, string> ReadChecksumFile(string path)
+        private static ConcurrentDictionary<string, string> ReadChecksumFile(string path)
         {
             if (!File.Exists(path))
                 return new ConcurrentDictionary<string, string>();
@@ -116,7 +113,7 @@ namespace MK94.Assert
 
         public static T Matches<T>(T instance, string step)
         {
-            var serialized = JsonSerializer.Serialize(instance, options);
+            var serialized = JsonSerializer.Serialize(instance);
 
             foreach (var post in AssertConfigure.postProcessors)
                 serialized = post(serialized);
