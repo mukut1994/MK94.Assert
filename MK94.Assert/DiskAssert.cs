@@ -13,8 +13,7 @@ namespace MK94.Assert
     {
         static readonly ConcurrentDictionary<string, ConcurrentDictionary<string, string>> checksums = new ConcurrentDictionary<string, ConcurrentDictionary<string, string>>();
         static readonly SHA512 sha = SHA512.Create();
-        static readonly JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = true };
-
+        
         public static string MatchesRaw(string rawData, string step, string fileType = "raw")
         {
             var context = new AssertContext(step);
@@ -23,13 +22,13 @@ namespace MK94.Assert
 
             if (AssertConfigure.PathResolver != null)
             {
-                outputFile = Path.GetFullPath(Path.Combine(basePath, AssertConfigure.PathResolver(context), step + "." + fileType));
+                outputFile = Path.GetFullPath(Path.Combine(basePath, AssertConfigure.PathResolver(context), $"{step}.{fileType}"));
                 Directory.CreateDirectory(Path.GetDirectoryName(outputFile));
             }
             else
             {
                 Directory.CreateDirectory(basePath);
-                outputFile = Path.Combine(step + "." + fileType);
+                outputFile = Path.Combine(basePath, $"{step}.{fileType}");
             }
             
             if (AssertConfigure.WriteMode)
@@ -41,18 +40,18 @@ namespace MK94.Assert
 
                 WriteChecksumFile(rawData, outputFile, context);
                 File.WriteAllText(outputFile, rawData);
-            }
-            else
-            {
-                if (!File.Exists(outputFile))
-                    throw new FileNotFoundException($"Could not find file '{outputFile}'. Is this a new test? Enable {nameof(AssertConfigure.WriteMode)} in {nameof(AssertConfigure)} to fix");
 
-                if (ChecksumMatches(rawData, outputFile, context))
-                    return rawData;
-
-                if (!File.ReadAllText(outputFile).Equals(rawData))
-                    throw new InvalidProgramException($"Difference in step {step}"); // TODO better error, with where and what
+                return rawData;
             }
+
+            if (!File.Exists(outputFile))
+                throw new FileNotFoundException($"Could not find file '{outputFile}'. Is this a new test? Enable {nameof(AssertConfigure.WriteMode)} in {nameof(AssertConfigure)} to fix");
+
+            if (ChecksumMatches(rawData, outputFile, context))
+                return rawData;
+
+            if (!File.ReadAllText(outputFile).Equals(rawData))
+                throw new InvalidProgramException($"Difference in step {step}"); // TODO better error, with where and what
 
             return rawData;
         }
@@ -99,7 +98,7 @@ namespace MK94.Assert
 
             checksumDict[checksumKey] = Convert.ToBase64String(hash);
 
-            var serialized = JsonSerializer.Serialize(checksumDict, options);
+            var serialized = JsonSerializer.Serialize(checksumDict);
 
             File.WriteAllText(checksumFilePath, serialized);
         }
@@ -114,7 +113,7 @@ namespace MK94.Assert
 
         public static T Matches<T>(T instance, string step)
         {
-            var serialized = JsonSerializer.Serialize(instance, options);
+            var serialized = JsonSerializer.Serialize(instance);
 
             foreach (var post in AssertConfigure.postProcessors)
                 serialized = post(serialized);

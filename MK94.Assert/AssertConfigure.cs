@@ -49,16 +49,14 @@ namespace MK94.Assert
         {
             var dirs = Directory.GetCurrentDirectory().Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
-            for (int i = dirs.Length - 1; i > 0; i--)
-            {
-                if (dirs[i] == parentFolder)
-                    return Path.GetFullPath(Path.Combine("/", dirs
-                        .Take(dirs.Length - i + 1)
-                        .Concat(new[] { parentRelative })
-                        .Aggregate(Path.Combine)));
-            }
-
-            throw new InvalidProgramException($"Parent directory '{parentFolder}' does not exist under {Directory.GetCurrentDirectory()}");
+            if (dirs.All(d => d != parentFolder))
+                throw new InvalidProgramException($"Parent directory '{parentFolder}' does not exist under {Directory.GetCurrentDirectory()}");
+            
+            return Path.Combine("/", dirs
+                .Reverse()
+                .SkipWhile(x => x != parentFolder)
+                .Reverse().Concat(new[] { parentRelative })
+                .Aggregate(Path.Combine));
         }
 
         public static void AddPostProcess(Func<string, string> jsonPostProcessor) => postProcessors.Add(jsonPostProcessor);
