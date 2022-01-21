@@ -8,8 +8,7 @@ namespace MK94.Assert.NUnit.Test.RecommendedSettings
         [OneTimeSetUp]
         public void Setup()
         {
-            SetupAssertConfiguration
-                .WithRecommendedSettings<Configuration>("MK94.Assert", "TestData.RecommendedSettings");
+            SetupAssertConfiguration.WithRecommendedSettings<Configuration>();
 
             // AssertConfigure.EnableWriteMode();
         }

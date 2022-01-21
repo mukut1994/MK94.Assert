@@ -19,9 +19,9 @@ namespace MK94.Assert
         /// </summary>
         /// <param name="projectRootName"></param>
         /// <param name="testDataPath"></param>
-        public static void WithRecommendedSettings<T>(string projectRootName, string testDataPath) where T: IConfiguration, new()
+        public static void WithRecommendedSettings<T>() where T: IConfiguration, new()
         {
-            WithBaseFolderRelativeToBinary<T>(projectRootName, testDataPath)
+            new T()
                 .WithFolderStructure(BasedOn.ClassNameTestName)
                 .WithPseudoRandom(BasedOn.ClassNameTestName)
                 .WithChecksumStructure(BasedOn.ClassNameTestName);
