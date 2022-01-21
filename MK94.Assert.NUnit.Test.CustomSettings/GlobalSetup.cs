@@ -15,7 +15,7 @@ namespace MK94.Assert.NUnit.Test.CustomSettings
                 .WithChecksumStructure(BasedOn.TestName)
                 .WithDevModeOnEnvironmentVariable("CI", "true");
 
-            // AssertConfigure.EnableWriteMode();
+            AssertConfigure.EnableWriteMode();
         }
     }
 }
