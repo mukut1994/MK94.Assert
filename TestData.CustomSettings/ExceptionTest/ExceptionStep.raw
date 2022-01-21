@@ -1,7 +1,7 @@
 error
    MK94.Assert.NUnit.Test.CustomSettings.Tests.<>c.<ExceptionTest>b__2_0()
    at System.Threading.Tasks.Task`1.InnerInvoke()
-   at System.Threading.Tasks.Task.<>c.<.cctor>b__272_0(Object obj)
+   at System.Threading.Tasks.Task.<>c.<.cctor>b__277_0(Object obj)
    at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
 --- End of stack trace from previous location ---
    at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)

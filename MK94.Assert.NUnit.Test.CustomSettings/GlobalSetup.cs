@@ -17,6 +17,5 @@ namespace MK94.Assert.NUnit.Test.CustomSettings
 
             // AssertConfigure.EnableWriteMode();
         }
-
     }
 }

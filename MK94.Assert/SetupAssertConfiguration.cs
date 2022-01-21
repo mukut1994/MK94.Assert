@@ -22,9 +22,9 @@ namespace MK94.Assert
         public static void WithRecommendedSettings<T>(string projectRootName, string testDataPath) where T: IConfiguration, new()
         {
             WithBaseFolderRelativeToBinary<T>(projectRootName, testDataPath)
-                .WithChecksumStructure(BasedOn.ClassNameTestName)
                 .WithFolderStructure(BasedOn.ClassNameTestName)
-                .WithPseudoRandom(BasedOn.ClassNameTestName);
+                .WithPseudoRandom(BasedOn.ClassNameTestName)
+                .WithChecksumStructure(BasedOn.ClassNameTestName);
 
             // Common build agent checks
 
