@@ -51,7 +51,7 @@ namespace MK94.Assert
                 return rawData;
 
             if (!File.ReadAllText(outputFile).Equals(rawData))
-                throw new InvalidProgramException($"Difference in step {step}"); // TODO better error, with where and what
+                throw new InvalidProgramException($"Difference in step {step}, {File.ReadAllText(outputFile)}, AND {rawData}"); // TODO better error, with where and what
 
             return rawData;
         }
