@@ -41,8 +41,8 @@ namespace MK94.Assert.NUnit
         {
             return basedOn switch
             {
-                BasedOn.TestName => TestContext.CurrentContext.Test.MethodName,
-                BasedOn.ClassNameTestName => Path.Combine(TestContext.CurrentContext.Test.ClassName, TestContext.CurrentContext.Test.MethodName),
+                BasedOn.TestName => TestContext.CurrentContext.Test.FullName,
+                BasedOn.ClassNameTestName => Path.Combine(TestContext.CurrentContext.Test.ClassName, TestContext.CurrentContext.Test.FullName),
                 _ => throw new NotImplementedException(basedOn.ToString())
             };
         }

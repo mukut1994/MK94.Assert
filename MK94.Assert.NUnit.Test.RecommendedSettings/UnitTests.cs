@@ -26,14 +26,16 @@ namespace MK94.Assert.NUnit.Test.RecommendedSettings
         }
 
         [Test]
-        public void StateMachineTest()
+        [TestCase(1, 2)]
+        [TestCase(2, 3)]
+        public void StateMachineTest(int a, int b)
         {
             var stateMachine = new StateMachine();
 
-            stateMachine.SetStateA(1);
+            stateMachine.SetStateA(a);
             DiskAssert.Matches(stateMachine, "Setup A");
 
-            stateMachine.SetStateB(2);
+            stateMachine.SetStateB(b);
             DiskAssert.Matches(stateMachine, "Setup B");
 
             var result = stateMachine.Sum();
