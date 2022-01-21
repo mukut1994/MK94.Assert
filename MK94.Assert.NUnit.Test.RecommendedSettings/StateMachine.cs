@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MK94.Assert.NUnit.Test
+namespace MK94.Assert.NUnit.Test.RecommendedSettings
 {
     public class StateMachine
     {

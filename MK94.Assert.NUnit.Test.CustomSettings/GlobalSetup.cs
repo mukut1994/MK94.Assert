@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace MK94.Assert.NUnit.Test
+namespace MK94.Assert.NUnit.Test.CustomSettings
 {
     [SetUpFixture]
     public class GlobalSetup
@@ -9,7 +9,7 @@ namespace MK94.Assert.NUnit.Test
         public void Setup()
         {
             SetupAssertConfiguration
-                .WithBaseFolderRelativeToBinary<Configuration>("MK94.Assert", "TestData")
+                .WithBaseFolderRelativeToBinary<Configuration>("MK94.Assert", "TestData.CustomSettings")
                 .WithFolderStructure(BasedOn.TestName)
                 .WithPseudoRandom(BasedOn.TestName)
                 .WithChecksumStructure(BasedOn.TestName)

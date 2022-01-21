@@ -2,7 +2,7 @@ using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
 
-namespace MK94.Assert.NUnit.Test
+namespace MK94.Assert.NUnit.Test.RecommendedSettings
 {
     public class Tests
     {

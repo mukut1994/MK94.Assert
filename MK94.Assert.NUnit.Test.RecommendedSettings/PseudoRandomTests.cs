@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using System.Threading;
 
-namespace MK94.Assert.NUnit.Test
+namespace MK94.Assert.NUnit.Test.RecommendedSettings
 {
     [Parallelizable(ParallelScope.All)]
     public class PseudoRandomTests
