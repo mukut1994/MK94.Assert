@@ -38,7 +38,7 @@ namespace MK94.Assert
                 instance.Value = new Instance();
 
             if (seedGenerator == null)
-                return;
+                throw new InvalidProgramException("Setup WithPseudoRandom");
 
             var newSeed = seedGenerator();
             if (newSeed == instance.Value.oldSeed)
@@ -93,7 +93,7 @@ namespace MK94.Assert
         public static int Int(int min = int.MinValue, int max = int.MaxValue)
         {
             CheckDynamicSeedChanged();
-            return instance.Value.numberRandomizer.Next(min, max);
+            return instance.Value.numberRandomizer.Int(min, max);
         }
 
         public static DateTime DateTime(bool includeTime = true, DateTimeKind kind = DateTimeKind.Utc, DateTime? min = null, DateTime? max = null)

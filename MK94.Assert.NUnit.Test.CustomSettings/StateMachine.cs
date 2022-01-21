@@ -9,9 +9,6 @@ namespace MK94.Assert.NUnit.Test.CustomSettings
 
         public void SetStateA(int a)
         {
-            if (a < 0)
-                throw new ArgumentException("a < 0");
-
             A = a;
         }
 
