@@ -54,6 +54,8 @@ namespace MK94.Assert
         /// <param name="seed">The seed value. Currently executing test name is recommended</param>
         public static void WithBaseSeed(string seed)
         {
+            seed = seed.Replace(System.IO.Path.DirectorySeparatorChar, ' ').Replace(System.IO.Path.DirectorySeparatorChar, ' ');
+            
             Contract.Requires(!string.IsNullOrEmpty(seed), $"{nameof(seed)} cannot be null or empty");
 
             var intSeed = BitConverter.ToInt32(SHA256.Create().ComputeHash(Encoding.ASCII.GetBytes(seed)).Take(4).ToArray(), 0);
