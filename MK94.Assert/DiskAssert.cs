@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -98,7 +97,7 @@ namespace MK94.Assert
 
             checksumDict[checksumKey] = Convert.ToBase64String(hash);
 
-            var serialized = JsonSerializer.Serialize(checksumDict);
+            var serialized = JsonSerializerHelper.Serialize(checksumDict);
 
             File.WriteAllText(checksumFilePath, serialized);
         }
@@ -108,12 +107,12 @@ namespace MK94.Assert
             if (!File.Exists(path))
                 return new ConcurrentDictionary<string, string>();
 
-            return JsonSerializer.Deserialize<ConcurrentDictionary<string, string>>(File.ReadAllText(path));
+            return JsonSerializerHelper.Deserialize<ConcurrentDictionary<string, string>>(File.ReadAllText(path));
         }
 
         public static T Matches<T>(T instance, string step)
         {
-            var serialized = JsonSerializer.Serialize(instance);
+            var serialized = JsonSerializerHelper.Serialize(instance);
 
             foreach (var post in AssertConfigure.postProcessors)
                 serialized = post(serialized);

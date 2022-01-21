@@ -37,6 +37,13 @@ namespace MK94.Assert.NUnit
             return this;
         }
 
+        public IConfiguration WithJsonSerializer(ImplementedJsonSerializer option)
+        {
+            JsonSerializerHelper.ImplementedJsonSerializer = option;
+
+            return this;
+        }
+
         private static string BasedOnPath(BasedOn basedOn)
         {
             return basedOn switch

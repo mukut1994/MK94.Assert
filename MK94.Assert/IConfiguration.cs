@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace MK94.Assert
 {
     public interface IConfiguration
@@ -9,5 +11,7 @@ namespace MK94.Assert
         IConfiguration WithPseudoRandom(BasedOn basedOn);
         
         IConfiguration WithDevModeOnEnvironmentVariable(string environmentVariable, string valueOnProd);
+
+        IConfiguration WithJsonSerializer(ImplementedJsonSerializer option);
     }
 }

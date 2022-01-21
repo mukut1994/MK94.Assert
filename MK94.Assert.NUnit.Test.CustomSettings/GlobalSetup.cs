@@ -13,7 +13,8 @@ namespace MK94.Assert.NUnit.Test.CustomSettings
                 .WithFolderStructure(BasedOn.TestName)
                 .WithPseudoRandom(BasedOn.TestName)
                 .WithChecksumStructure(BasedOn.TestName)
-                .WithDevModeOnEnvironmentVariable("CI", "true");
+                .WithDevModeOnEnvironmentVariable("CI", "true")
+                .WithJsonSerializer(ImplementedJsonSerializer.SystemTextJson);
 
             // AssertConfigure.EnableWriteMode();
         }
