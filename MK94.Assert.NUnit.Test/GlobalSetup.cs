@@ -8,8 +8,8 @@ namespace MK94.Assert.NUnit.Test
         [OneTimeSetUp]
         public void Setup()
         {
-            AssertConfigureHelper
-                .WithBaseFolderRelativeToBinary("MK94.Assert", "TestData")
+            SetupAssertConfiguration
+                .WithBaseFolderRelativeToBinary<Configuration>("MK94.Assert", "TestData")
                 .WithFolderStructure(BasedOn.TestName)
                 .WithPseudoRandom(BasedOn.TestName)
                 .WithChecksumStructure(BasedOn.TestName)
