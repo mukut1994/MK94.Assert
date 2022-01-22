@@ -15,7 +15,7 @@ namespace MK94.Assert.NUnit.Test.CustomSettings
         [Test]
         public async Task AsyncTest()
         {
-            await DiskAssert.Matches(Task.Run(() => new { PropA = 1 }), "Step1");
+            await Task.Run(() => new { PropA = 1 }).Matches("Step1");
         }
 
         [Test]
