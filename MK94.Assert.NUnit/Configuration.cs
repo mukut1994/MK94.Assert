@@ -11,14 +11,14 @@ namespace MK94.Assert.NUnit
     {
         public IConfiguration WithFolderStructure(BasedOn basedOn)
         {
-            AssertConfigure.AddPathResolver(x => BasedOnPath(basedOn));
+            //AssertConfigure.AddPathResolver(x => BasedOnPath(basedOn));
 
             return this;
         }
 
         public IConfiguration WithChecksumStructure(BasedOn basedOn)
         {
-            AssertConfigure.AddChecksumFileResolver(x => Path.Combine(BasedOnPath(basedOn), "checksum"));
+            //AssertConfigure.AddChecksumFileResolver(x => Path.Combine(BasedOnPath(basedOn), "checksum"));
 
             return this;
         }

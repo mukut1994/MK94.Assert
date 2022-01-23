@@ -9,12 +9,12 @@ namespace MK94.Assert
 {
     public static class AssertConfigure
     {
-        internal static string DefaultGlobalPath => PathRelativeToParentFolder(Assembly.GetExecutingAssembly().GetName().Name, "TestData");
+        internal static string DefaultGlobalPath => PathRelativeToParentFolder(Assembly.GetExecutingAssembly().GetName().Name, "");
         public static bool WriteMode { get; set; }
 
-        internal static Func<AssertContext, string> PathResolver { get; set; }
+        internal static Func<string> PathResolver { get; set; } = () => "";
 
-        internal static Func<AssertContext, string> ChecksumFileResolver { get; set; }
+        internal static Func<string> ChecksumFileResolver { get; set; }
 
         public static string GlobalPath { get; set; }
 
@@ -73,7 +73,7 @@ namespace MK94.Assert
             AddPostProcess(x => Regex.Replace(x, "[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}", Guid.Empty.ToString()));
         }
 
-        public static void AddPathResolver(Func<AssertContext, string> resolver)
+        public static void AddPathResolver(Func<string> resolver)
         {
             PathResolver = resolver;
         }
@@ -83,7 +83,7 @@ namespace MK94.Assert
         /// The checksum file is used to avoid excessive disk reads.
         /// </summary>
         /// <param name="resolver"></param>
-        public static void AddChecksumFileResolver(Func<AssertContext, string> resolver)
+        public static void AddChecksumFileResolver(Func<string> resolver)
         {
             ChecksumFileResolver = resolver;
         }
@@ -92,16 +92,6 @@ namespace MK94.Assert
         {
             if (!IsDevEnvironment)
                 throw new InvalidOperationException($"Trying to write during assert but not in a dev environment!!! Make sure EnableWriteMode is not called.");
-        }
-    }
-
-    public struct AssertContext
-    {
-        public string StepName { get; }
-
-        public AssertContext(string stepName)
-        {
-            StepName = stepName;
         }
     }
 }

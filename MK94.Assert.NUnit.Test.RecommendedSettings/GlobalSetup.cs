@@ -10,7 +10,7 @@ namespace MK94.Assert.NUnit.Test.RecommendedSettings
         {
             SetupAssertConfiguration.WithRecommendedSettings<Configuration>();
 
-            // AssertConfigure.EnableWriteMode();
+             AssertConfigure.EnableWriteMode();
         }
     }
 }
