@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -38,11 +39,11 @@ namespace MK94.Assert
         /// <param name="rawData">The raw data to be compared</param>
         /// <returns>The unmodified <paramref name="rawData"/></returns>
         /// <exception cref="Exception">Thrown when some differences have been detected</exception>
-        public string MatchesRaw(string step, string rawData)
+        public string MatchesRaw(string step, string rawData, string fileType = null, IDifferenceFormatter<string> formatter = null)
         {
             EnsureSetupWasCalled();
 
-            var outputFile = Path.Combine(pathResolver.GetStepPath(), step);
+            var outputFile = Path.Combine(pathResolver.GetStepPath(), fileType != null ? $"{step}.{fileType}" : step);
 
             if (WriteMode)
             {
@@ -55,6 +56,12 @@ namespace MK94.Assert
             if (output.IsHashMatch(outputFile, rawData))
                 return rawData;
 
+            ThrowDifferences(step, rawData, formatter, outputFile);
+            return null;
+        }
+
+        private void ThrowDifferences(string step, string rawData, IDifferenceFormatter<string> formatter, string outputFile)
+        {
             using var file = output.OpenRead(outputFile, false);
 
             if (file == null)
@@ -62,7 +69,19 @@ namespace MK94.Assert
 
             using var reader = new StreamReader(file);
 
-            throw new Exception($"Difference in step; Expected {reader?.ReadToEnd() ?? "null"}; Actual: {rawData}");
+            if (formatter == null)
+                throw new Exception($"Difference in step {step}; Expected {reader?.ReadToEnd() ?? "null"}; Actual: {rawData}");
+
+            var differences = formatter.FindDifferences(this, reader.ReadToEnd(), rawData).ToList();
+            var errorBuilder = new StringBuilder();
+            errorBuilder.AppendLine($"Difference in step {step}");
+
+            foreach (var diff in differences)
+            {
+                errorBuilder.AppendLine($"At {diff.Location}: Expected '{diff.Expected}'; Actual: '{diff.Actual}'");
+            }
+
+            throw new DifferenceException(errorBuilder.ToString(), differences);
         }
 
         /// <summary>
@@ -79,7 +98,7 @@ namespace MK94.Assert
             foreach (var post in postProcessors)
                 serialized = post(serialized);
 
-            MatchesRaw($"{step}.json", serialized);
+            MatchesRaw($"{step}", serialized, "json", JsonDifferenceFormatter.Instance);
 
             return instance;
         }
