@@ -21,7 +21,7 @@ namespace MK94.Assert.NUnit.Test.RecommendedSettings
                     DateTime = PseudoRandom.DateTime()
                 };
 
-                DiskAssert.Matches(randomizedObject, $"RandomizedObj_{i}");
+                DiskAsserter.Matches(randomizedObject, $"RandomizedObj_{i}");
 
                 Thread.Sleep(500);
             }
@@ -42,7 +42,7 @@ namespace MK94.Assert.NUnit.Test.RecommendedSettings
                     DateTime = PseudoRandom.DateTime()
                 };
 
-                DiskAssert.Matches(randomizedObject, $"RandomizedObj_{i}");
+                DiskAsserter.Matches(randomizedObject, $"RandomizedObj_{i}");
 
                 Thread.Sleep(500);
             }
@@ -51,9 +51,9 @@ namespace MK94.Assert.NUnit.Test.RecommendedSettings
         [Test]
         public void GuidTest()
         {
-            DiskAssert.Matches(new PseudoRandomGuidProvider().NewGuid(), "Guid1");
-            DiskAssert.Matches(new PseudoRandomGuidProvider().NewGuid(), "Guid2");
-            DiskAssert.Matches(new PseudoRandomGuidProvider().NewGuid(), "Guid3");
+            DiskAsserter.Matches(new PseudoRandomGuidProvider().NewGuid(), "Guid1");
+            DiskAsserter.Matches(new PseudoRandomGuidProvider().NewGuid(), "Guid2");
+            DiskAsserter.Matches(new PseudoRandomGuidProvider().NewGuid(), "Guid3");
         }
     }
 }

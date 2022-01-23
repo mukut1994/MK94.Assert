@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace MK94.Assert
 {
-    public class DiskAssert
+    public class DiskAsserter
     {
         /// <summary>
-        /// The default <see cref="DiskAssert"/> instance. <br />
-        /// Used by <see cref="DiskAssertExtensions"/>.
+        /// The default <see cref="DiskAsserter"/> instance. <br />
+        /// Used by <see cref="DiskAssertExtensions"/> and static match methods in <see cref="DiskAssertStatic"/>.
         /// </summary>
-        public static DiskAssert Default { get; set; } = new DiskAssert();
+        public static DiskAsserter Default { get; set; } = new DiskAsserter();
 
         private PathResolver pathResolver;
         private ITestOutput fileOutput;
@@ -83,7 +83,6 @@ namespace MK94.Assert
             return Matches(step, instance);
         }
 
-
         /// <summary>
         /// Checks if a task throws an expected exception
         /// </summary>
@@ -120,12 +119,30 @@ namespace MK94.Assert
         }
     }
 
-    public static class DiskAssertExtensions
+    /// <summary>
+    /// Helper class to call <see cref="DiskAssert"/> methods via its default instance
+    /// </summary>
+    public static class DiskAssert
     {
-        public static Task<T> Matches<T>(this Task<T> asyncInstance, string step) 
-            => DiskAssert.Default.Matches(step, asyncInstance);
+        /// <inheritdoc cref="DiskAsserter.MatchesRaw(string, string)"/>
+        public static string MatchesRaw(string step, string rawData) => DiskAsserter.Default.MatchesRaw(step, rawData);
 
+        /// <inheritdoc cref="DiskAsserter.Matches{T}(string, T)"/>
+        public static T Matches<T>(string step, T instance) => DiskAsserter.Default.Matches<T>(step, instance);
+
+        /// <inheritdoc cref="DiskAsserter.Matches{T}(string, Task{T})"/>
+        public static Task<T> Matches<T>(string step, Task<T> asyncInstance) => DiskAsserter.Default.Matches<T>(step, asyncInstance);
+
+        /// <inheritdoc cref="DiskAsserter.MatchesException{T}(string, Task)"/>
+        public static Task MatchesException<T>(string step, Task asyncInstance) where T : Exception
+            => DiskAsserter.Default.MatchesException<T>(step, asyncInstance);
+
+        /// <inheritdoc cref="DiskAsserter.Matches{T}(string, Task{T})"/>
+        public static Task<T> Matches<T>(this Task<T> asyncInstance, string step)
+            => DiskAsserter.Default.Matches(step, asyncInstance);
+
+        /// <inheritdoc cref="DiskAsserter.MatchesException{T}(string, Task)"/>
         public static Task MatchesException<T>(this Task asyncInstance, string step) where T : Exception
-            => DiskAssert.Default.MatchesException<T>(step, asyncInstance);
+            => DiskAsserter.Default.MatchesException<T>(step, asyncInstance);
     }
 }
