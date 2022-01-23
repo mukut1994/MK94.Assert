@@ -17,10 +17,10 @@ namespace MK94.Assert
         /// The default <see cref="DiskAsserter"/> instance. <br />
         /// Used by <see cref="DiskAssertExtensions"/> and static match methods in <see cref="DiskAssertStatic"/>.
         /// </summary>
-        public static DiskAsserter Default { get; set; } = new DiskAsserter();
+        public static DiskAsserter Default { get; set; }
 
-        private PathResolver pathResolver;
-        private ITestOutput fileOutput;
+        public IPathResolver pathResolver;
+        public ITestOutput output;
 
         private List<Func<string, string>> postProcessors = new List<Func<string, string>>();
         private bool WriteMode = false;
@@ -40,17 +40,19 @@ namespace MK94.Assert
         /// <exception cref="Exception">Thrown when some differences have been detected</exception>
         public string MatchesRaw(string step, string rawData)
         {
+            EnsureSetupWasCalled();
+
             var outputFile = Path.Combine(pathResolver.GetStepPath(), step);
 
             if (WriteMode)
             {
                 EnsureDevMode();
-                fileOutput.Write(outputFile, rawData);
+                output.Write(outputFile, rawData);
 
                 return rawData;
             }
 
-            if (fileOutput.IsHashMatch(step, rawData))
+            if (output.IsHashMatch(outputFile, rawData))
                 return rawData;
 
             throw new Exception($"Difference in step");
@@ -117,6 +119,21 @@ namespace MK94.Assert
             if (!IsDevEnvironment)
                 throw new InvalidOperationException($"Trying to write during assert but not in a dev environment!!! Make sure EnableWriteMode is not called.");
         }
+
+        /// <summary>
+        /// Changes any calls to <see cref="DiskAsserter.Matches{T}(string, T)"/> and related methods to write to disk instead of comparing
+        /// </summary>
+        public void EnableWriteMode()
+        {
+            EnsureDevMode();
+            WriteMode = true;
+        }
+
+        private void EnsureSetupWasCalled()
+        {
+            if (pathResolver == null || output == null)
+                throw new InvalidOperationException($"DiskAsserter is not fully setup. Call DiskAsserter.WithRecommendedDefaults() first");
+        }
     }
 
     /// <summary>
@@ -144,5 +161,8 @@ namespace MK94.Assert
         /// <inheritdoc cref="DiskAsserter.MatchesException{T}(string, Task)"/>
         public static Task MatchesException<T>(this Task asyncInstance, string step) where T : Exception
             => DiskAsserter.Default.MatchesException<T>(step, asyncInstance);
+
+        /// <inheritdoc cref="DiskAsserter.EnableWriteMode"/>
+        public static void EnableWriteMode() => DiskAsserter.Default.EnableWriteMode();
     }
 }

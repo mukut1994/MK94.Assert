@@ -17,10 +17,12 @@ namespace MK94.Assert.Output
 
         public Stream OpenRead(string path)
         {
-			if (!File.Exists(path))
+			var fullPath = Path.Combine(rootDirectory, path);
+
+			if (!File.Exists(fullPath))
 				return null;
 
-			return File.OpenRead(path);
+			return File.OpenRead(fullPath);
         }
 
         public void Delete(string file)

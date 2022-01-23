@@ -79,6 +79,7 @@ namespace MK94.Assert.Output
 			using var writer = new StreamWriter(o);
 			writer.Write(rawData);
 			writer.Flush();
+			writer.Close();
 
 			return root != null && root.TryGetValue(path, out var existinghash) && existinghash.Equals(HashToString(hash.Hash));
 		}
