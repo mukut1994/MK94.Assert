@@ -39,11 +39,11 @@ namespace MK94.Assert
         /// <param name="rawData">The raw data to be compared</param>
         /// <returns>The unmodified <paramref name="rawData"/></returns>
         /// <exception cref="Exception">Thrown when some differences have been detected</exception>
-        public string MatchesRaw(string step, string rawData, string fileType = "", IDifferenceFormatter<string> formatter = null)
+        public string MatchesRaw(string step, string rawData, string fileType = null, IDifferenceFormatter<string> formatter = null)
         {
             EnsureSetupWasCalled();
 
-            var outputFile = Path.Combine(pathResolver.GetStepPath(), $"{step}.{fileType}");
+            var outputFile = Path.Combine(pathResolver.GetStepPath(), fileType != null ? $"{step}.{fileType}" : step);
 
             if (WriteMode)
             {
