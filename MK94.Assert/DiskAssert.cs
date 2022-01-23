@@ -1,6 +1,7 @@
 ﻿using MK94.Assert.Output;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -15,6 +16,15 @@ namespace MK94.Assert
         static PathResolver pathResolver;
         static ITestOutput fileOutput;
 
+        static List<Func<string, string>> postProcessors = new List<Func<string, string>>();
+        static bool WriteMode;
+
+        /// <summary>
+        /// Safety flag to avoid checking in <see cref="EnableWriteMode"/> by accident <br />
+        /// False by default; Set to true on Dev environments (recommended way is via environment variable)
+        /// </summary>
+        public static bool IsDevEnvironment { get; set; } = false;
+
         public static string MatchesRaw(string file, string rawData)
         {
             pathResolver = new PathResolver();
@@ -22,8 +32,9 @@ namespace MK94.Assert
 
             var outputFile = Path.Combine(pathResolver.GetStepPath(), file);
 
-            if(AssertConfigure.WriteMode)
+            if(WriteMode)
             {
+                EnsureDevMode();
                 fileOutput.Write(outputFile, rawData);
 
                 return rawData;
@@ -39,7 +50,7 @@ namespace MK94.Assert
         {
             var serialized = JsonSerializer.Serialize(instance);
 
-            foreach (var post in AssertConfigure.postProcessors)
+            foreach (var post in postProcessors)
                 serialized = post(serialized);
 
             MatchesRaw($"{step}.json", serialized);
@@ -70,6 +81,12 @@ namespace MK94.Assert
 
                 MatchesRaw(e.Message + Environment.NewLine + cleanedStackTrace, step);
             }
+        }
+
+        public static void EnsureDevMode()
+        {
+            if (!IsDevEnvironment)
+                throw new InvalidOperationException($"Trying to write during assert but not in a dev environment!!! Make sure EnableWriteMode is not called.");
         }
     }
 }
