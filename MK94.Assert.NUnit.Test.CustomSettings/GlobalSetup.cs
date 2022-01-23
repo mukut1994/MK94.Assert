@@ -8,14 +8,17 @@ namespace MK94.Assert.NUnit.Test.CustomSettings
         [OneTimeSetUp]
         public void Setup()
         {
-            SetupAssertConfiguration
+            SetupDiskAssert
+                .WithRecommendedSettings("MK94.Assert", "TestData.CustomSettings");
+            /*
                 .WithBaseFolderRelativeToBinary<Configuration>("MK94.Assert", "TestData.CustomSettings")
                 .WithFolderStructure(BasedOn.TestName)
                 .WithPseudoRandom(BasedOn.TestName)
                 .WithChecksumStructure(BasedOn.TestName)
                 .WithDevModeOnEnvironmentVariable("CI", "true");
+            */
 
-            // AssertConfigure.EnableWriteMode();
+            // DiskAssert.EnableWriteMode();
         }
     }
 }

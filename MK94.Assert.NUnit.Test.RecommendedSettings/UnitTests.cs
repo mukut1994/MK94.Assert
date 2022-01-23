@@ -9,13 +9,13 @@ namespace MK94.Assert.NUnit.Test.RecommendedSettings
         [Test]
         public void SimpleTest()
         {
-            DiskAssert.Matches(new { PropA = 1 }, "Step1");
+            DiskAssert.Matches("Step1", new { PropA = 1 });
         }
 
         [Test]
         public async Task AsyncTest()
         {
-            await DiskAssert.Matches(Task.Run(() => new { PropA = 1 }), "Step1");
+            await Task.Run(() => new { PropA = 1 }).Matches("Step1");
         }
 
         [Test]
@@ -33,13 +33,13 @@ namespace MK94.Assert.NUnit.Test.RecommendedSettings
             var stateMachine = new StateMachine();
 
             stateMachine.SetStateA(a);
-            DiskAssert.Matches(stateMachine, "Setup A");
+            DiskAssert.Matches("Setup A", stateMachine);
 
             stateMachine.SetStateB(b);
-            DiskAssert.Matches(stateMachine, "Setup B");
+            DiskAssert.Matches("Setup B", stateMachine);
 
             var result = stateMachine.Sum();
-            DiskAssert.Matches(result, "Result");
+            DiskAssert.Matches("Result", result);
         }
     }
 }
