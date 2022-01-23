@@ -111,7 +111,7 @@ namespace MK94.Assert
                 // remove "in {file}:line{num}" from stack trace
                 // a) they change very often because of code refactors
                 // b) they contain machine specific folder paths
-                var cleanedStackTrace = Regex.Replace(e.StackTrace, "at (.+)( in (.+))", "$1");
+                var cleanedStackTrace = Regex.Replace(e.StackTrace, "at (.+)( in (.+))", "$1").Replace("\r\n", "\n");
 
                 MatchesRaw(step, e.Message + Environment.NewLine + cleanedStackTrace);
             }

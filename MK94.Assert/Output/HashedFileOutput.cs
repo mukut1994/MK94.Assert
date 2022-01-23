@@ -96,9 +96,6 @@ namespace MK94.Assert.Output
 
 			var actualPath = rootFile.GetValueOrDefault(path);
 
-			if (actualPath == null)
-				throw new InvalidOperationException($"File not found {path}");
-
 			var ret = baseOutput.OpenRead(actualPath);
 
 			if (!cache)
