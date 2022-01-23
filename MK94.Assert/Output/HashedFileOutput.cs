@@ -71,6 +71,8 @@ namespace MK94.Assert.Output
 
 		public bool IsHashMatch(string path, string rawData)
 		{
+			path = path.Replace('\\', '/');
+
 			var root = LoadRootFile();
 			var hash = new SHA256Managed();
 
@@ -94,7 +96,10 @@ namespace MK94.Assert.Output
 			if (readCache.TryGetValue(path, out var buffer))
 				return new MemoryStream(buffer, false);
 
-			var actualPath = rootFile.GetValueOrDefault(path);
+			var actualPath = rootFile.GetValueOrDefault(path.Replace('\\', '/'));
+
+			if (actualPath == null)
+				return null;
 
 			var ret = baseOutput.OpenRead(actualPath);
 
@@ -124,8 +129,8 @@ namespace MK94.Assert.Output
 			{
 				var root = LoadRootFile() ?? new Dictionary<string, string>();
 
-				// TODO containsValue is slow
-				if (root.ContainsValue(path))
+				// TODO containsValue is slow; but maybe this is fine? this shouldn't be called very often
+				if (root.ContainsValue(HashToString(hash.Hash)))
 					return;
 
 				ms.Position = 0;

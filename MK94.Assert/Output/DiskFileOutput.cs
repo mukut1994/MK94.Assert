@@ -32,7 +32,7 @@ namespace MK94.Assert.Output
 
         public void Write(string path, Stream sourceStream)
 		{
-			using var targetStream = File.OpenWrite(Path.Combine(rootDirectory, path));
+			using var targetStream = File.Open(Path.Combine(rootDirectory, path), FileMode.Create);
 			using var writer = new StreamWriter(targetStream);
 			sourceStream.CopyTo(targetStream);
 			targetStream.Flush();

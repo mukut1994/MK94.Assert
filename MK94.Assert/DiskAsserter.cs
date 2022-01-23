@@ -113,7 +113,7 @@ namespace MK94.Assert
                 // b) they contain machine specific folder paths
                 var cleanedStackTrace = Regex.Replace(e.StackTrace, "at (.+)( in (.+))", "$1").Replace("\r\n", "\n");
 
-                MatchesRaw(step, e.Message + Environment.NewLine + cleanedStackTrace);
+                MatchesRaw(step, e.Message + "\n" + cleanedStackTrace);
             }
         }
 
