@@ -55,7 +55,9 @@ namespace MK94.Assert
             if (output.IsHashMatch(outputFile, rawData))
                 return rawData;
 
-            throw new Exception($"Difference in step");
+            using var reader = new StreamReader(output.OpenRead(outputFile, false));
+
+            throw new Exception($"Difference in step; Expected {reader.ReadToEnd()}; Actual: {rawData}");
         }
 
         /// <summary>
