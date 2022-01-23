@@ -55,9 +55,14 @@ namespace MK94.Assert
             if (output.IsHashMatch(outputFile, rawData))
                 return rawData;
 
-            using var reader = new StreamReader(output.OpenRead(outputFile, false));
+            using var file = output.OpenRead(outputFile, false);
 
-            throw new Exception($"Difference in step; Expected {reader.ReadToEnd()}; Actual: {rawData}");
+            if (file == null)
+                throw new Exception($"Missing file {outputFile}; Is this a new test?");
+
+            using var reader = new StreamReader(file);
+
+            throw new Exception($"Difference in step; Expected {reader?.ReadToEnd() ?? "null"}; Actual: {rawData}");
         }
 
         /// <summary>
@@ -108,7 +113,7 @@ namespace MK94.Assert
                 // b) they contain machine specific folder paths
                 var cleanedStackTrace = Regex.Replace(e.StackTrace, "at (.+)( in (.+))", "$1");
 
-                MatchesRaw(e.Message + Environment.NewLine + cleanedStackTrace, step);
+                MatchesRaw(step, e.Message + Environment.NewLine + cleanedStackTrace);
             }
         }
 

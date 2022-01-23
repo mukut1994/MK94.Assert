@@ -59,7 +59,7 @@ namespace MK94.Assert.Output
 			if (rootFile != null)
 				return rootFile;
 
-			var reader = baseOutput.OpenRead("root.json");
+			using var reader = baseOutput.OpenRead("root.json");
 
 			if (reader == null)
 				rootFile = new Dictionary<string, string>();
@@ -94,7 +94,12 @@ namespace MK94.Assert.Output
 			if (readCache.TryGetValue(path, out var buffer))
 				return new MemoryStream(buffer, false);
 
-			var ret = baseOutput.OpenRead(path);
+			var actualPath = rootFile.GetValueOrDefault(path);
+
+			if (actualPath == null)
+				throw new InvalidOperationException($"File not found {path}");
+
+			var ret = baseOutput.OpenRead(actualPath);
 
 			if (!cache)
 				return ret;
@@ -132,7 +137,8 @@ namespace MK94.Assert.Output
 
 				baseOutput.Write(hashAsString, ms);
 
-				root[path] = hashAsString;
+				// Replace windows path / with \
+				root[path.Replace('\\', '/')] = hashAsString;
 				WriteRootFile(root);
 			}
 		}
