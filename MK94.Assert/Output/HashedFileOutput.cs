@@ -44,9 +44,10 @@ namespace MK94.Assert.Output
 		}
 
 		private static object writeLock = new object();
-		private static Dictionary<string, string> rootFile;
 		private static ConcurrentDictionary<string, byte[]> readCache = new ConcurrentDictionary<string, byte[]>();
 		private static JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true };
+
+		private Dictionary<string, string> rootFile;
 
 		private readonly IFileOutput baseOutput;
 
@@ -97,7 +98,9 @@ namespace MK94.Assert.Output
 			if (readCache.TryGetValue(path, out var buffer))
 				return new MemoryStream(buffer, false);
 
-			var actualPath = rootFile.GetValueOrDefault(path.Replace('\\', '/'));
+			var root = LoadRootFile();
+
+			var actualPath = root.GetValueOrDefault(path.Replace('\\', '/'));
 
 			if (actualPath == null)
 				return null;

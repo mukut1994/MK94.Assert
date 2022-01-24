@@ -67,7 +67,7 @@ namespace MK94.Assert
             using var file = output.OpenRead(outputFile, false);
 
             if (file == null)
-                throw new Exception($"Missing file {outputFile}; Is this a new test?");
+                 throw new Exception($"Missing file {outputFile}; Is this a new test?");
 
             using var reader = new StreamReader(file);
 
