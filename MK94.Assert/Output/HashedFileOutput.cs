@@ -46,6 +46,7 @@ namespace MK94.Assert.Output
 		private static object writeLock = new object();
 		private static Dictionary<string, string> rootFile;
 		private static ConcurrentDictionary<string, byte[]> readCache = new ConcurrentDictionary<string, byte[]>();
+		private static JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true };
 
 		private readonly IFileOutput baseOutput;
 
@@ -147,7 +148,7 @@ namespace MK94.Assert.Output
 
 		private void WriteRootFile(Dictionary<string, string> root)
 		{
-			baseOutput.Write("root.json", new MemoryStream(JsonSerializer.SerializeToUtf8Bytes(root)));
+			baseOutput.Write("root.json", new MemoryStream(JsonSerializer.SerializeToUtf8Bytes(root, jsonSerializerOptions)));
 		}
 	}
 }

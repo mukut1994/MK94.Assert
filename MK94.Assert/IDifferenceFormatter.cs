@@ -40,14 +40,14 @@ namespace MK94.Assert
 
         private IEnumerable<Difference> FindDifferences(string jsonPath, JsonElement expected, JsonElement actual)
         {
-            if (expected.ValueKind != actual.ValueKind)
-                return new[] { new Difference(jsonPath, expected.ValueKind.ToString(), actual.ValueKind.ToString()) };
-
             if(expected.ValueKind == JsonValueKind.Object)
                 return FindDifferencesInObject(jsonPath, expected, actual);
 
             if (expected.ValueKind == JsonValueKind.Array)
                 return FindDifferencesInArray(jsonPath, expected, actual);
+
+            if (expected.ValueKind != actual.ValueKind)
+                return new[] { new Difference(jsonPath, expected.ValueKind.ToString(), actual.ValueKind.ToString()) };
 
             if (!expected.GetRawText().Equals(actual.GetRawText()))
                 return new[] { new Difference(jsonPath, expected.GetRawText(), actual.GetRawText()) };
@@ -81,11 +81,14 @@ namespace MK94.Assert
             foreach(var expectedProperty in expected.EnumerateObject())
             {
                 var path = $"{jsonPath}.{expectedProperty.Name}";
+
                 if (!actual.TryGetProperty(expectedProperty.Name, out var actualProperty))
                     yield return new Difference(path, expectedProperty.Value.ToString(), "undefined");
-
-                foreach (var diff in FindDifferences(path, expectedProperty.Value, actualProperty))
-                    yield return diff;
+                else
+                {
+                    foreach (var diff in FindDifferences(path, expectedProperty.Value, actualProperty))
+                        yield return diff;
+                }
             }
 
             foreach (var actualProperty in actual.EnumerateObject())

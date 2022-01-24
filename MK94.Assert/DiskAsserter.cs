@@ -19,6 +19,8 @@ namespace MK94.Assert
         /// Used by <see cref="DiskAssertExtensions"/> and static match methods in <see cref="DiskAssertStatic"/>.
         /// </summary>
         public static DiskAsserter Default { get; set; }
+        
+        private static JsonSerializerOptions serializerOptions = new JsonSerializerOptions { WriteIndented = true };
 
         public IPathResolver pathResolver;
         public ITestOutput output;
@@ -93,7 +95,7 @@ namespace MK94.Assert
         /// <exception cref="Exception">Thrown when some differences have been detected</exception>
         public T Matches<T>(string step, T instance)
         {
-            var serialized = JsonSerializer.Serialize(instance);
+            var serialized = JsonSerializer.Serialize(instance, serializerOptions);
 
             foreach (var post in postProcessors)
                 serialized = post(serialized);
@@ -149,10 +151,22 @@ namespace MK94.Assert
         /// <summary>
         /// Changes any calls to <see cref="DiskAsserter.Matches{T}(string, T)"/> and related methods to write to disk instead of comparing
         /// </summary>
-        public void EnableWriteMode()
+        public DiskAsserter EnableWriteMode()
         {
             EnsureDevMode();
             WriteMode = true;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Changes any calls to <see cref="DiskAsserter.Matches{T}(string, T)"/> and related methods to compare instead of writing to disk
+        /// </summary>
+        public DiskAsserter DisableWriteMode()
+        {
+            WriteMode = false;
+
+            return this;
         }
 
         private void EnsureSetupWasCalled()
