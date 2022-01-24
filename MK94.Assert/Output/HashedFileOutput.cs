@@ -44,8 +44,10 @@ namespace MK94.Assert.Output
 		}
 
 		private static object writeLock = new object();
-		private static Dictionary<string, string> rootFile;
 		private static ConcurrentDictionary<string, byte[]> readCache = new ConcurrentDictionary<string, byte[]>();
+		private static JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true };
+
+		private Dictionary<string, string> rootFile;
 
 		private readonly IFileOutput baseOutput;
 
@@ -96,7 +98,10 @@ namespace MK94.Assert.Output
 			if (readCache.TryGetValue(path, out var buffer))
 				return new MemoryStream(buffer, false);
 
-			var actualPath = rootFile.GetValueOrDefault(path.Replace('\\', '/'));
+			var root = LoadRootFile();
+
+			// Replace windows path / with \
+			var actualPath = root.GetValueOrDefault(path.Replace('\\', '/'));
 
 			if (actualPath == null)
 				return null;
@@ -129,25 +134,27 @@ namespace MK94.Assert.Output
 			{
 				var root = LoadRootFile() ?? new Dictionary<string, string>();
 
-				// TODO containsValue is slow; but maybe this is fine? this shouldn't be called very often
-				if (root.ContainsValue(HashToString(hash.Hash)))
-					return;
-
-				ms.Position = 0;
-
 				var hashAsString = HashToString(hash.Hash);
 
-				baseOutput.Write(hashAsString, ms);
+				var duplicateFileExists = root.ContainsValue(HashToString(hash.Hash));
 
 				// Replace windows path / with \
 				root[path.Replace('\\', '/')] = hashAsString;
+
 				WriteRootFile(root);
+
+				// TODO containsValue is slow; but maybe this is fine? this shouldn't be called very often
+				if (duplicateFileExists)
+					return;
+
+				ms.Position = 0;
+				baseOutput.Write(hashAsString, ms);
 			}
 		}
 
 		private void WriteRootFile(Dictionary<string, string> root)
 		{
-			baseOutput.Write("root.json", new MemoryStream(JsonSerializer.SerializeToUtf8Bytes(root)));
+			baseOutput.Write("root.json", new MemoryStream(JsonSerializer.SerializeToUtf8Bytes(root, jsonSerializerOptions)));
 		}
 	}
 }

@@ -6,22 +6,27 @@ namespace MK94.Assert.Output
 {
     public class MemoryFileOutput : IFileOutput
     {
-		private Dictionary<string, string> rootFile = new Dictionary<string, string>();
-		private ConcurrentDictionary<string, string> files = new ConcurrentDictionary<string, string>();
+		public ConcurrentDictionary<string, string> files { get; } = new ConcurrentDictionary<string, string>();
 
         public Stream OpenRead(string path)
         {
-            throw new System.NotImplementedException();
+            if (!files.ContainsKey(path))
+                return null;
+
+            var ret = new MemoryStream();
+
+            using var writer = new StreamWriter(ret, System.Text.Encoding.UTF8, 1024, true);
+
+            writer.Write(files[path]);
+            writer.Flush();
+            ret.Position = 0;
+
+            return ret;
         }
 
         public void Delete(string file)
         {
 			files.TryRemove(file, out _);
-        }
-
-        public Dictionary<string, string> LoadRootFile()
-        {
-			return rootFile;
         }
 
         public void Write(string file, Stream sourceStream)

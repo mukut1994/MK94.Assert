@@ -8,6 +8,7 @@ namespace MK94.Assert
     {
         public DifferenceException(string message, List<Difference> differences) : base(message)
         {
+            Differences = differences;
         }
 
         public List<Difference> Differences { get; set; }

@@ -34,8 +34,7 @@ namespace MK94.Assert
 
         private static void CheckDynamicSeedChanged()
         {
-            if (instance.Value == null)
-                instance.Value = new Instance();
+            instance.Value ??= new Instance();
 
             if (seedGenerator == null)
                 return;
@@ -49,7 +48,7 @@ namespace MK94.Assert
         }
 
         /// <summary>
-        /// Sets the seed for randomizer. Has to be called before anything else and ideally at test initialze
+        /// Sets the seed for randomizer. Has to be called before anything else and ideally at test initialize
         /// </summary>
         /// <param name="seed">The seed value. Currently executing test name is recommended</param>
         public static void WithBaseSeed(string seed)

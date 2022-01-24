@@ -1,10 +1,8 @@
 ﻿using MK94.Assert.Output;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -19,18 +17,20 @@ namespace MK94.Assert
         /// Used by <see cref="DiskAssertExtensions"/> and static match methods in <see cref="DiskAssertStatic"/>.
         /// </summary>
         public static DiskAsserter Default { get; set; }
+        
+        private static JsonSerializerOptions serializerOptions = new JsonSerializerOptions { WriteIndented = true };
 
         public IPathResolver pathResolver;
         public ITestOutput output;
 
-        private List<Func<string, string>> postProcessors = new List<Func<string, string>>();
-        private bool WriteMode = false;
+        private readonly List<Func<string, string>> postProcessors = new List<Func<string, string>>();
+        private bool writeMode = false;
 
         /// <summary>
         /// Safety flag to avoid checking in <see cref="EnableWriteMode"/> by accident <br />
         /// False by default; Set to true on Dev environments (recommended way is via environment variable)
         /// </summary>
-        public bool IsDevEnvironment { get; set; } = false;
+        public bool IsDevEnvironment { get; set; }
 
         /// <summary>
         /// Checks if a text file matches raw text without any serialization or post processing
@@ -45,7 +45,7 @@ namespace MK94.Assert
 
             var outputFile = Path.Combine(pathResolver.GetStepPath(), fileType != null ? $"{step}.{fileType}" : step);
 
-            if (WriteMode)
+            if (writeMode)
             {
                 EnsureDevMode();
                 output.Write(outputFile, rawData);
@@ -65,14 +65,14 @@ namespace MK94.Assert
             using var file = output.OpenRead(outputFile, false);
 
             if (file == null)
-                throw new Exception($"Missing file {outputFile}; Is this a new test?");
+                 throw new Exception($"Missing file {outputFile}; Is this a new test?");
 
             using var reader = new StreamReader(file);
 
             if (formatter == null)
-                throw new Exception($"Difference in step {step}; Expected {reader?.ReadToEnd() ?? "null"}; Actual: {rawData}");
+                throw new Exception($"Difference in step {step}; Expected {reader.ReadToEnd()}; Actual: {rawData}");
 
-            var differences = formatter.FindDifferences(this, reader.ReadToEnd(), rawData).ToList();
+            var differences = formatter.FindDifferences(reader.ReadToEnd(), rawData).ToList();
             var errorBuilder = new StringBuilder();
             errorBuilder.AppendLine($"Difference in step {step}");
 
@@ -93,7 +93,11 @@ namespace MK94.Assert
         /// <exception cref="Exception">Thrown when some differences have been detected</exception>
         public T Matches<T>(string step, T instance)
         {
-            var serialized = JsonSerializer.Serialize(instance);
+            // TODO replace is a hacky fix; 
+            // On windows this generates \r\n but on unix it's \n
+            // This causes a hash mismatch
+            // We should probably just ignore \r in the hash algo
+            var serialized = JsonSerializer.Serialize(instance, serializerOptions).Replace("\r", string.Empty);
 
             foreach (var post in postProcessors)
                 serialized = post(serialized);
@@ -140,7 +144,7 @@ namespace MK94.Assert
         /// Safety method to avoid running code in CI/CD environments
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown when environment is not a Dev machine</exception>
-        public void EnsureDevMode()
+        private void EnsureDevMode()
         {
             if (!IsDevEnvironment)
                 throw new InvalidOperationException($"Trying to write during assert but not in a dev environment!!! Make sure EnableWriteMode is not called.");
@@ -149,10 +153,22 @@ namespace MK94.Assert
         /// <summary>
         /// Changes any calls to <see cref="DiskAsserter.Matches{T}(string, T)"/> and related methods to write to disk instead of comparing
         /// </summary>
-        public void EnableWriteMode()
+        public DiskAsserter EnableWriteMode()
         {
             EnsureDevMode();
-            WriteMode = true;
+            writeMode = true;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Changes any calls to <see cref="DiskAsserter.Matches{T}(string, T)"/> and related methods to compare instead of writing to disk
+        /// </summary>
+        public DiskAsserter DisableWriteMode()
+        {
+            writeMode = false;
+
+            return this;
         }
 
         private void EnsureSetupWasCalled()

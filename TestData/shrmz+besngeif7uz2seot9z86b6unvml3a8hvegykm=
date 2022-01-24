@@ -1,0 +1,12 @@
+[
+  {
+    "Location": "$.PropA",
+    "Expected": "1",
+    "Actual": "3"
+  },
+  {
+    "Location": "$.PropB",
+    "Expected": "2",
+    "Actual": "undefined"
+  }
+]
