@@ -1,10 +1,8 @@
 ﻿using MK94.Assert.Output;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -25,14 +23,14 @@ namespace MK94.Assert
         public IPathResolver pathResolver;
         public ITestOutput output;
 
-        private List<Func<string, string>> postProcessors = new List<Func<string, string>>();
-        private bool WriteMode = false;
+        private readonly List<Func<string, string>> postProcessors = new List<Func<string, string>>();
+        private bool writeMode = false;
 
         /// <summary>
         /// Safety flag to avoid checking in <see cref="EnableWriteMode"/> by accident <br />
         /// False by default; Set to true on Dev environments (recommended way is via environment variable)
         /// </summary>
-        public bool IsDevEnvironment { get; set; } = false;
+        public bool IsDevEnvironment { get; set; }
 
         /// <summary>
         /// Checks if a text file matches raw text without any serialization or post processing
@@ -47,7 +45,7 @@ namespace MK94.Assert
 
             var outputFile = Path.Combine(pathResolver.GetStepPath(), fileType != null ? $"{step}.{fileType}" : step);
 
-            if (WriteMode)
+            if (writeMode)
             {
                 EnsureDevMode();
                 output.Write(outputFile, rawData);
@@ -72,9 +70,9 @@ namespace MK94.Assert
             using var reader = new StreamReader(file);
 
             if (formatter == null)
-                throw new Exception($"Difference in step {step}; Expected {reader?.ReadToEnd() ?? "null"}; Actual: {rawData}");
+                throw new Exception($"Difference in step {step}; Expected {reader.ReadToEnd()}; Actual: {rawData}");
 
-            var differences = formatter.FindDifferences(this, reader.ReadToEnd(), rawData).ToList();
+            var differences = formatter.FindDifferences(reader.ReadToEnd(), rawData).ToList();
             var errorBuilder = new StringBuilder();
             errorBuilder.AppendLine($"Difference in step {step}");
 
@@ -142,7 +140,7 @@ namespace MK94.Assert
         /// Safety method to avoid running code in CI/CD environments
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown when environment is not a Dev machine</exception>
-        public void EnsureDevMode()
+        private void EnsureDevMode()
         {
             if (!IsDevEnvironment)
                 throw new InvalidOperationException($"Trying to write during assert but not in a dev environment!!! Make sure EnableWriteMode is not called.");
@@ -154,7 +152,7 @@ namespace MK94.Assert
         public DiskAsserter EnableWriteMode()
         {
             EnsureDevMode();
-            WriteMode = true;
+            writeMode = true;
 
             return this;
         }
@@ -164,7 +162,7 @@ namespace MK94.Assert
         /// </summary>
         public DiskAsserter DisableWriteMode()
         {
-            WriteMode = false;
+            writeMode = false;
 
             return this;
         }

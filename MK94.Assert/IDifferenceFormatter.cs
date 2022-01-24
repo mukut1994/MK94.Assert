@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 
 namespace MK94.Assert
@@ -23,14 +22,14 @@ namespace MK94.Assert
 
     public interface IDifferenceFormatter<T>
     {
-        IEnumerable<Difference> FindDifferences(DiskAsserter diskAsserter, T expected, T actual);
+        IEnumerable<Difference> FindDifferences(T expected, T actual);
     }
 
     public class JsonDifferenceFormatter : IDifferenceFormatter<string>
     {
         public static JsonDifferenceFormatter Instance { get; } = new JsonDifferenceFormatter();
 
-        public IEnumerable<Difference> FindDifferences(DiskAsserter diskAsserter, string expected, string actual)
+        public IEnumerable<Difference> FindDifferences(string expected, string actual)
         {
             var expectedJson = JsonDocument.Parse(expected);
             var actualJson = JsonDocument.Parse(actual);
@@ -52,7 +51,7 @@ namespace MK94.Assert
             if (!expected.GetRawText().Equals(actual.GetRawText()))
                 return new[] { new Difference(jsonPath, expected.GetRawText(), actual.GetRawText()) };
 
-            return new Difference[0];
+            return Array.Empty<Difference>();
         }
 
         private IEnumerable<Difference> FindDifferencesInArray(string jsonPath, JsonElement expected, JsonElement actual)

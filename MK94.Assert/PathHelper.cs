@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace MK94.Assert
 {
@@ -11,7 +9,7 @@ namespace MK94.Assert
         /// <summary>
         /// Helper method to set the global path relative to dll/exe path. <br />
         /// Goes relative up until it finds parent folder then appends the relative path <br />
-        /// E.g. if the dll is in "/user/code/projectName/src/bin/netcorapp/", parentFolder = "code", parentRelative = "testData" <br />
+        /// E.g. if the dll is in "/user/code/projectName/src/bin/netcoreapp/", parentFolder = "code", parentRelative = "testData" <br />
         /// The global path is set to "/user/code/testData"
         /// </summary>
         /// <param name="parentFolder">The parent folder relative to the dll/exe</param>
