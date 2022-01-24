@@ -59,7 +59,10 @@ namespace MK94.Assert.NUnit.Test
 
         private void MatchDifferences(object initialObject, object updatedObject)
         {
-            var asserter = SetupDiskAssert.InstanceWithBasicSettings().WithDeduplicationInMemory(out _).EnableWriteMode();
+            var asserter = SetupDiskAssert.InstanceWithBasicSettings()
+                .WithDevModeOnEnvironmentVariable("NONE", "NONE")
+                .WithDeduplicationInMemory(out _)
+                .EnableWriteMode();
 
             asserter.Matches("Step 1", initialObject);
             asserter.DisableWriteMode();
