@@ -10,7 +10,7 @@ namespace MK94.Assert.NUnit.Test
         {
             SetupDiskAssert.WithRecommendedSettings("MK94.Assert");
 
-             DiskAssert.EnableWriteMode();
+            // DiskAssert.EnableWriteMode();
         }
     }
 }
