@@ -19,7 +19,12 @@ namespace MK94.Assert.NUnit.Test
             asserter.Matches("Basic Dedup in memory 1", fileContent);
             asserter.Matches("Basic Dedup in memory 2", fileContent);
 
-            DiskAssert.Matches("Deduplication in memory", output.files);
+            // On windows this causes root to contain \r\n 
+            // On unix this is \n
+            // Hacky fix make them both consistent
+            output.files["root.json"] = output.files["root.json"].Replace("\r", string.Empty);
+
+            DiskAssert.Matches("Deduplication in memory", output.files.OrderBy(x => x.Key));
         }
 
         [Test]

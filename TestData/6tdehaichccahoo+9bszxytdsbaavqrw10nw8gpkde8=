@@ -1,0 +1,10 @@
+[
+  {
+    "Key": "a4ayc-80-ogda4bo-1o-v0etpoqilx1jwb5s3behw0s=",
+    "Value": "1"
+  },
+  {
+    "Key": "root.json",
+    "Value": "{\n  \u0022MK94.Assert.NUnit.Test.JsonDifferenceTests/DeduplicationMergesTwoFilesIntoOneTest/Basic Dedup in memory 1.json\u0022: \u0022a4ayc-80-ogda4bo-1o-v0etpoqilx1jwb5s3behw0s=\u0022,\n  \u0022MK94.Assert.NUnit.Test.JsonDifferenceTests/DeduplicationMergesTwoFilesIntoOneTest/Basic Dedup in memory 2.json\u0022: \u0022a4ayc-80-ogda4bo-1o-v0etpoqilx1jwb5s3behw0s=\u0022\n}"
+  }
+]

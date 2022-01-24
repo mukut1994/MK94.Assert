@@ -100,6 +100,7 @@ namespace MK94.Assert.Output
 
 			var root = LoadRootFile();
 
+			// Replace windows path / with \
 			var actualPath = root.GetValueOrDefault(path.Replace('\\', '/'));
 
 			if (actualPath == null)
@@ -133,19 +134,21 @@ namespace MK94.Assert.Output
 			{
 				var root = LoadRootFile() ?? new Dictionary<string, string>();
 
-				// TODO containsValue is slow; but maybe this is fine? this shouldn't be called very often
-				if (root.ContainsValue(HashToString(hash.Hash)))
-					return;
-
-				ms.Position = 0;
-
 				var hashAsString = HashToString(hash.Hash);
 
-				baseOutput.Write(hashAsString, ms);
+				var duplicateFileExists = root.ContainsValue(HashToString(hash.Hash));
 
 				// Replace windows path / with \
 				root[path.Replace('\\', '/')] = hashAsString;
+
 				WriteRootFile(root);
+
+				// TODO containsValue is slow; but maybe this is fine? this shouldn't be called very often
+				if (duplicateFileExists)
+					return;
+
+				ms.Position = 0;
+				baseOutput.Write(hashAsString, ms);
 			}
 		}
 

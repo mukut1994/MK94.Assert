@@ -95,7 +95,11 @@ namespace MK94.Assert
         /// <exception cref="Exception">Thrown when some differences have been detected</exception>
         public T Matches<T>(string step, T instance)
         {
-            var serialized = JsonSerializer.Serialize(instance, serializerOptions);
+            // TODO replace is a hacky fix; 
+            // On windows this generates \r\n but on unix it's \n
+            // This causes a hash mismatch
+            // We should probably just ignore \r in the hash algo
+            var serialized = JsonSerializer.Serialize(instance, serializerOptions).Replace("\r", string.Empty);
 
             foreach (var post in postProcessors)
                 serialized = post(serialized);
