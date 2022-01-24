@@ -8,7 +8,10 @@ namespace MK94.Assert.NUnit.Test
         [Test]
         public void DeduplicationMergesTwoFilesIntoOneTest()
         {
-            var asserter = SetupDiskAssert.InstanceWithBasicSettings().WithDeduplicationInMemory(out var output).EnableWriteMode();
+            var asserter = SetupDiskAssert.InstanceWithBasicSettings()
+                .WithDevModeOnEnvironmentVariable("NONE", "NONE")
+                .WithDeduplicationInMemory(out var output)
+                .EnableWriteMode();
 
             var fileContent = 1;
 
