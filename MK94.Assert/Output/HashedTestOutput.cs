@@ -10,7 +10,7 @@ using System.Text.Json;
 namespace MK94.Assert.Output
 {
 	public interface ITestOutput
-    {
+	{
 		Stream OpenRead(string path, bool cache);
 
 		bool IsHashMatch(string path, string rawData);
@@ -19,15 +19,39 @@ namespace MK94.Assert.Output
 	}
 
 	public interface IFileOutput
-    {
+	{
 		Stream OpenRead(string path);
 
 		void Write(string path, Stream sourceStream);
 
 		void Delete(string path);
-    }
+	}
 
-	public class HashedFileOutput : ITestOutput
+	internal static class TestOutputHelper
+	{
+		public static JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true };
+
+		public static string HashToString(byte[] hash)
+		{
+			return Convert.ToBase64String(hash!).Replace('/', '-').ToLower();
+		}
+		public static Dictionary<string, string> LoadRootFile(Dictionary<string, string> rootFile, IFileOutput baseOutput)
+		{
+			if (rootFile != null)
+				return rootFile;
+
+			using var reader = baseOutput.OpenRead("root.json");
+
+			if (reader == null)
+				rootFile = new Dictionary<string, string>();
+			else
+				rootFile = JsonSerializer.DeserializeAsync<Dictionary<string, string>>(reader).Result;
+
+			return rootFile;
+		}
+	}
+
+	public class HashedTestOutput : ITestOutput
 	{
 		private struct FileInfo
 		{
@@ -45,30 +69,19 @@ namespace MK94.Assert.Output
 
 		private static object writeLock = new object();
 		private static ConcurrentDictionary<string, byte[]> readCache = new ConcurrentDictionary<string, byte[]>();
-		private static JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true };
 
 		private Dictionary<string, string> rootFile;
 
 		private readonly IFileOutput baseOutput;
 
-		public HashedFileOutput(IFileOutput baseOutput)
+		public HashedTestOutput(IFileOutput baseOutput)
         {
 			this.baseOutput = baseOutput;
         }
 
 		private Dictionary<string, string> LoadRootFile()
         {
-			if (rootFile != null)
-				return rootFile;
-
-			using var reader = baseOutput.OpenRead("root.json");
-
-			if (reader == null)
-				rootFile = new Dictionary<string, string>();
-			else
-				rootFile = JsonSerializer.DeserializeAsync<Dictionary<string, string>>(reader).Result;
-
-			return rootFile;
+			return TestOutputHelper.LoadRootFile(rootFile, baseOutput);
         }
 
 		public bool IsHashMatch(string path, string rawData)
@@ -85,12 +98,7 @@ namespace MK94.Assert.Output
 			writer.Flush();
 			writer.Close();
 
-			return root != null && root.TryGetValue(path, out var existinghash) && existinghash.Equals(HashToString(hash.Hash));
-		}
-
-		private string HashToString(byte[] hash)
-		{
-			return Convert.ToBase64String(hash!).Replace('/', '-').ToLower();
+			return root != null && root.TryGetValue(path, out var existinghash) && existinghash.Equals(TestOutputHelper.HashToString(hash.Hash));
 		}
 
 		public Stream OpenRead(string path, bool cache)
@@ -134,9 +142,9 @@ namespace MK94.Assert.Output
 			{
 				var root = LoadRootFile() ?? new Dictionary<string, string>();
 
-				var hashAsString = HashToString(hash.Hash);
+				var hashAsString = TestOutputHelper.HashToString(hash.Hash);
 
-				var duplicateFileExists = root.ContainsValue(HashToString(hash.Hash));
+				var duplicateFileExists = root.ContainsValue(TestOutputHelper.HashToString(hash.Hash));
 
 				// Replace windows path / with \
 				root[path.Replace('\\', '/')] = hashAsString;
@@ -154,7 +162,7 @@ namespace MK94.Assert.Output
 
 		private void WriteRootFile(Dictionary<string, string> root)
 		{
-			baseOutput.Write("root.json", new MemoryStream(JsonSerializer.SerializeToUtf8Bytes(root, jsonSerializerOptions)));
+			baseOutput.Write("root.json", new MemoryStream(JsonSerializer.SerializeToUtf8Bytes(root, TestOutputHelper.jsonSerializerOptions)));
 		}
 	}
 }
