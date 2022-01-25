@@ -14,7 +14,7 @@ namespace MK94.Assert
     {
         /// <summary>
         /// The default <see cref="DiskAsserter"/> instance. <br />
-        /// Used by <see cref="DiskAssertExtensions"/> and static match methods in <see cref="DiskAssertStatic"/>.
+        /// Used by <see cref="DiskAssert"/> and static match methods in <see cref="DiskAssert"/>.
         /// </summary>
         public static DiskAsserter Default { get; set; }
         
@@ -183,8 +183,9 @@ namespace MK94.Assert
     /// </summary>
     public static class DiskAssert
     {
-        /// <inheritdoc cref="DiskAsserter.MatchesRaw(string, string)"/>
-        public static string MatchesRaw(string step, string rawData) => DiskAsserter.Default.MatchesRaw(step, rawData);
+        /// <inheritdoc cref="DiskAsserter.MatchesRaw(string, string, string, IDifferenceFormatter{string})"/>
+        public static string MatchesRaw(string step, string rawData, string fileType = null, IDifferenceFormatter<string> formatter = null) 
+            => DiskAsserter.Default.MatchesRaw(step, rawData, fileType, formatter);
 
         /// <inheritdoc cref="DiskAsserter.Matches{T}(string, T)"/>
         public static T Matches<T>(string step, T instance) => DiskAsserter.Default.Matches<T>(step, instance);
