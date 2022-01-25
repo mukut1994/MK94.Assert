@@ -34,7 +34,7 @@ namespace MK94.Assert
 
     /// <summary>
     /// A guid provider using the default .net <see cref="Guid.NewGuid"/> <br />
-    /// Ideally this class should be implemented at the project to avoid referencing <see cref="MK94.Assert"/> (<see cref="NewGuid"/> simply returns <see cref="Guid.NewGuid"/>)
+    /// Ideally this class should be implemented at the project to avoid referencing MK94.Assert (<see cref="NewGuid"/> simply returns <see cref="Guid.NewGuid"/>)
     /// </summary>
     public class GuidProvider : IGuidProvider
     {
