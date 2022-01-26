@@ -5,7 +5,7 @@
         /// <summary>
         /// Sets the default <see cref="DiskAsserter"/> and only adds a common build agent check
         /// </summary>
-        /// <returns>An unconfigured <see cref="DiskAsserter"/></returns>
+        /// <returns>An instance of <see cref="DiskAsserter"/> with basic settings.</returns>
         public static DiskAsserter WithBasicSettings()
         {
             DiskAsserter.Default = InstanceWithBasicSettings();
@@ -14,7 +14,7 @@
         }
 
         /// <summary>
-        /// Sets the default <see cref="DiskAsserter"/> and fully initialises
+        /// Sets the default and fully initialises <see cref="DiskAsserter"/>
         /// </summary>
         /// <returns>A ready to use <see cref="DiskAsserter"/></returns>
         public static DiskAsserter WithRecommendedSettings(string solutionFolder, string outputFolder = "TestData")
@@ -27,7 +27,7 @@
         /// <summary>
         /// Creates a new <see cref="DiskAsserter"/> and only adds a common build agent check
         /// </summary>
-        /// <returns>An unconfigured <see cref="DiskAsserter"/></returns>
+        /// <returns>An instance of <see cref="DiskAsserter"/> with basic settings.</returns>
         public static DiskAsserter InstanceWithBasicSettings()
         {
             var ret = new DiskAsserter()
@@ -38,9 +38,9 @@
         }
 
         /// <summary>
-        /// Creates a new <see cref="DiskAsserter"/> and fully initialises
+        /// Creates a new and fully initialises <see cref="DiskAsserter"/> as an instance.
         /// </summary>
-        /// <returns>A ready to use <see cref="DiskAsserter"/></returns>
+        /// <returns>A ready to use <see cref="DiskAsserter"/> instance.</returns>
         public static DiskAsserter InstanceWithRecommendedSettings(string solutionFolder, string outputFolder = "TestData")
         {
             var ret = new DiskAsserter()

@@ -18,7 +18,7 @@ namespace MK94.Assert
         /// </summary>
         public static DiskAsserter Default { get; set; }
         
-        private static JsonSerializerOptions serializerOptions = new JsonSerializerOptions { WriteIndented = true };
+        private static readonly JsonSerializerOptions SerializerOptions = new JsonSerializerOptions { WriteIndented = true };
 
         public IPathResolver pathResolver;
         public ITestOutput output;
@@ -97,7 +97,7 @@ namespace MK94.Assert
             // On windows this generates \r\n but on unix it's \n
             // This causes a hash mismatch
             // We should probably just ignore \r in the hash algo
-            var serialized = JsonSerializer.Serialize(instance, serializerOptions).Replace("\r", string.Empty);
+            var serialized = JsonSerializer.Serialize(instance, SerializerOptions).Replace("\r", string.Empty);
 
             foreach (var post in postProcessors)
                 serialized = post(serialized);

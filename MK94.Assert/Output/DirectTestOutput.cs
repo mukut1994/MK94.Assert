@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
-using System.Text;
 using System.Text.Json;
 
 namespace MK94.Assert.Output
 {
     public class DirectTestOutput : ITestOutput
     {
-        private static object writeLock = new object();
+        private static readonly object WriteLock = new object();
 
         private readonly IFileOutput fileOutput;
 
@@ -39,7 +37,7 @@ namespace MK94.Assert.Output
             writer.Flush();
             writer.Close();
 
-            return root != null && root.TryGetValue(path, out var existinghash) && existinghash.Equals(TestOutputHelper.HashToString(hash.Hash));
+            return root != null && root.TryGetValue(path, out var existingHash) && existingHash.Equals(TestOutputHelper.HashToString(hash.Hash));
         }
 
         public Stream OpenRead(string path, bool cache)
@@ -61,7 +59,7 @@ namespace MK94.Assert.Output
             writer.Close();
             cs.Close();
 
-            lock (writeLock)
+            lock (WriteLock)
             {
                 var root = LoadRootFile() ?? new Dictionary<string, string>();
 

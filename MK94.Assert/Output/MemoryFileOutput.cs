@@ -1,23 +1,22 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Collections.Concurrent;
 
 namespace MK94.Assert.Output
 {
     public class MemoryFileOutput : IFileOutput
     {
-		public ConcurrentDictionary<string, string> files { get; } = new ConcurrentDictionary<string, string>();
+		public ConcurrentDictionary<string, string> Files { get; } = new ConcurrentDictionary<string, string>();
 
         public Stream OpenRead(string path)
         {
-            if (!files.ContainsKey(path))
+            if (!Files.ContainsKey(path))
                 return null;
 
             var ret = new MemoryStream();
 
             using var writer = new StreamWriter(ret, System.Text.Encoding.UTF8, 1024, true);
 
-            writer.Write(files[path]);
+            writer.Write(Files[path]);
             writer.Flush();
             ret.Position = 0;
 
@@ -26,13 +25,13 @@ namespace MK94.Assert.Output
 
         public void Delete(string file)
         {
-			files.TryRemove(file, out _);
+			Files.TryRemove(file, out _);
         }
 
         public void Write(string file, Stream sourceStream)
         {
 			using var reader = new StreamReader(sourceStream);
-			files[file] = reader.ReadToEnd();
+			Files[file] = reader.ReadToEnd();
         }
     }
 }
