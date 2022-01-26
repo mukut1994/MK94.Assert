@@ -12,7 +12,7 @@ namespace MK94.Assert.NUnit
         public static DiskAsserter WithRecommendedSettings(this DiskAsserter diskAsserter, string solutionFolder, string outputFolder = "TestData")
         {
             return diskAsserter
-                .WithDeduplication(solutionFolder, outputFolder)
+                .WithClassTestFolderStructure(solutionFolder, outputFolder)
                 .WithCommonBuildAgentsCheck()
                 .WithPseudoRandom();
         }
@@ -65,7 +65,7 @@ namespace MK94.Assert.NUnit
         public static DiskAsserter WithDeduplication(this DiskAsserter diskAsserter, string solutionFolder, string folder = "TestData")
         {
             var diskOutput = new Output.DiskFileOutput(PathHelper.PathRelativeToParentFolder(solutionFolder, folder));
-            diskAsserter.output = new Output.HashedFileOutput(diskOutput);
+            diskAsserter.output = new Output.HashedTestOutput(diskOutput);
 
             return diskAsserter;
         }
@@ -81,15 +81,18 @@ namespace MK94.Assert.NUnit
         /// <inheritdoc cref="WithDeduplication(DiskAsserter, string, string)"/>
         public static DiskAsserter WithDeduplicationInMemory(this DiskAsserter diskAsserter, Output.MemoryFileOutput output)
         {
-            diskAsserter.output = new Output.HashedFileOutput(output);
+            diskAsserter.output = new Output.HashedTestOutput(output);
 
             return diskAsserter;
         }
 
-        // TODO 
-        private static DiskAsserter WithFolderStructure(this DiskAsserter diskAsserter/*BasedOn basedOn*/)
+        /// <summary>
+        /// Stores files in a Class/Test/Step structure
+        /// </summary>
+        public static DiskAsserter WithClassTestFolderStructure(this DiskAsserter diskAsserter, string solutionFolder, string folder = "TestData")
         {
-            //AssertConfigure.AddPathResolver(x => BasedOnPath(basedOn));
+            var diskOutput = new Output.DiskFileOutput(PathHelper.PathRelativeToParentFolder(solutionFolder, folder));
+            diskAsserter.output = new Output.DirectTestOutput(diskOutput);
 
             return diskAsserter;
         }
