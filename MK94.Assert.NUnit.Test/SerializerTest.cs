@@ -12,7 +12,8 @@ namespace MK94.Assert.NUnit.Test
             
             var asserter = SetupDiskAssert.InstanceWithRecommendedSettings("MK94.Assert", "CustomSerializer")
                 .WithDevModeOnEnvironmentVariable("NONE", "NONE")
-                .WithSerializer(x => JsonSerializer.Serialize(x, serializerOptions));
+                .WithSerializer(x => JsonSerializer.Serialize(x, serializerOptions))
+                .EnableWriteMode();
 
             var fileContent = new
             {
