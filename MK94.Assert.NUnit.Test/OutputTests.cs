@@ -20,7 +20,7 @@ namespace MK94.Assert.NUnit.Test
 
             DiskAssert.Matches("File 1 Content", readBack);
 
-            DiskAssert.Matches("Directory Structure", Directory.GetFiles(path).Select(Path.GetFileName));
+            DiskAssert.Matches("Directory Structure", Directory.GetFiles(path).Select(Path.GetFileName).OrderBy(x => x));
 
             output.Delete("File 2");
 
