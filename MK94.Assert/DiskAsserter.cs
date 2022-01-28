@@ -22,6 +22,7 @@ namespace MK94.Assert
 
         public IPathResolver pathResolver;
         public ITestOutput output;
+        public Func<object, string> Serialize { get; set; } = obj => JsonSerializer.Serialize(obj, SerializerOptions);
 
         private readonly List<Func<string, string>> postProcessors = new List<Func<string, string>>();
         private bool writeMode = false;
@@ -97,7 +98,7 @@ namespace MK94.Assert
             // On windows this generates \r\n but on unix it's \n
             // This causes a hash mismatch
             // We should probably just ignore \r in the hash algo
-            var serialized = JsonSerializer.Serialize(instance, SerializerOptions).Replace("\r", string.Empty);
+            var serialized = Serialize(instance).Replace("\r", string.Empty);
 
             foreach (var post in postProcessors)
                 serialized = post(serialized);

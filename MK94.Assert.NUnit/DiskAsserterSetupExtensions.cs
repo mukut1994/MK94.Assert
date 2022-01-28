@@ -96,5 +96,12 @@ namespace MK94.Assert.NUnit
 
             return diskAsserter;
         }
+
+        public static DiskAsserter WithSerializer(this DiskAsserter diskAsserter, Func<object, string> serializer)
+        {
+            diskAsserter.Serialize = serializer;
+
+            return diskAsserter;
+        }
     }
 }
