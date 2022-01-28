@@ -27,12 +27,13 @@ namespace MK94.Assert.Output
 
 	internal static class TestOutputHelper
 	{
-		public static JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true };
+		public static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true };
 
 		public static string HashToString(byte[] hash)
 		{
 			return Convert.ToBase64String(hash!).Replace('/', '-').ToLower();
 		}
+		
 		public static Dictionary<string, string> LoadRootFile(Dictionary<string, string> rootFile, IFileOutput baseOutput)
 		{
 			if (rootFile != null)
@@ -160,7 +161,7 @@ namespace MK94.Assert.Output
 
 		private void WriteRootFile(Dictionary<string, string> root)
 		{
-			baseOutput.Write("root.json", new MemoryStream(JsonSerializer.SerializeToUtf8Bytes(root, TestOutputHelper.jsonSerializerOptions)));
+			baseOutput.Write("root.json", new MemoryStream(JsonSerializer.SerializeToUtf8Bytes(root, TestOutputHelper.JsonSerializerOptions)));
 		}
 	}
 }
