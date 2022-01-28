@@ -20,7 +20,7 @@ namespace MK94.Assert
         public string Actual { get; set; }
     }
 
-    public interface IDifferenceFormatter<T>
+    public interface IDifferenceFormatter<in T>
     {
         IEnumerable<Difference> FindDifferences(T expected, T actual);
     }

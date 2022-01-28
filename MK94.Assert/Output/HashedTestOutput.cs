@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Security.Cryptography;
-using System.Linq;
 using System.Collections.Concurrent;
 using System.Text.Json;
 
@@ -67,8 +65,8 @@ namespace MK94.Assert.Output
 			}
 		}
 
-		private static object writeLock = new object();
-		private static ConcurrentDictionary<string, byte[]> readCache = new ConcurrentDictionary<string, byte[]>();
+		private static readonly object WriteLock = new object();
+		private static readonly ConcurrentDictionary<string, byte[]> ReadCache = new ConcurrentDictionary<string, byte[]>();
 
 		private Dictionary<string, string> rootFile;
 
@@ -98,12 +96,12 @@ namespace MK94.Assert.Output
 			writer.Flush();
 			writer.Close();
 
-			return root != null && root.TryGetValue(path, out var existinghash) && existinghash.Equals(TestOutputHelper.HashToString(hash.Hash));
+			return root != null && root.TryGetValue(path, out var existingHash) && existingHash.Equals(TestOutputHelper.HashToString(hash.Hash));
 		}
 
 		public Stream OpenRead(string path, bool cache)
 		{
-			if (readCache.TryGetValue(path, out var buffer))
+			if (ReadCache.TryGetValue(path, out var buffer))
 				return new MemoryStream(buffer, false);
 
 			var root = LoadRootFile();
@@ -121,7 +119,7 @@ namespace MK94.Assert.Output
 
 			buffer = new byte[ret.Length];
 			ret.Read(buffer);
-			readCache.TryAdd(path, buffer);
+			ReadCache.TryAdd(path, buffer);
 
 			return new MemoryStream(buffer, false);
 		}
@@ -138,7 +136,7 @@ namespace MK94.Assert.Output
 			writer.Close();
 			cs.Close();
 
-			lock (writeLock)
+			lock (WriteLock)
 			{
 				var root = LoadRootFile() ?? new Dictionary<string, string>();
 

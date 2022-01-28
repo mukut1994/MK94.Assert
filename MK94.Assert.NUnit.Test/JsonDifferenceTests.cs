@@ -21,9 +21,9 @@ namespace MK94.Assert.NUnit.Test
             // On windows this causes root to contain \r\n 
             // On unix this is \n
             // Hacky fix make them both consistent
-            output.files["root.json"] = output.files["root.json"].Replace("\r", string.Empty);
+            output.Files["root.json"] = output.Files["root.json"].Replace("\r", string.Empty);
 
-            DiskAssert.Matches("Deduplication in memory", output.files.OrderBy(x => x.Key));
+            DiskAssert.Matches("Deduplication in memory", output.Files.OrderBy(x => x.Key));
         }
 
         [Test]
@@ -47,12 +47,12 @@ namespace MK94.Assert.NUnit.Test
         [Test]
         public void JsonDifferenceOnArray()
         {
-            var initialObject = new int[]
+            var initialObject = new []
             {
                 1, 2, 3
             };
 
-            var updatedObject = new int[]
+            var updatedObject = new []
             {
                 1, 3
             };
