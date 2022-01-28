@@ -57,11 +57,10 @@ namespace MK94.Assert
             if (output.IsHashMatch(outputFile, rawData))
                 return rawData;
 
-            ThrowDifferences(step, rawData, formatter, outputFile);
-            return null;
+            return ThrowDifferences(step, rawData, formatter, outputFile);
         }
 
-        private void ThrowDifferences(string step, string rawData, IDifferenceFormatter<string> formatter, string outputFile)
+        private string ThrowDifferences(string step, string rawData, IDifferenceFormatter<string> formatter, string outputFile)
         {
             using var file = output.OpenRead(outputFile, false);
 

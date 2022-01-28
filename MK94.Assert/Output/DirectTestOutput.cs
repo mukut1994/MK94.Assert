@@ -77,7 +77,7 @@ namespace MK94.Assert.Output
 
         private void WriteRootFile(Dictionary<string, string> root)
         {
-            fileOutput.Write("root.json", new MemoryStream(JsonSerializer.SerializeToUtf8Bytes(root, TestOutputHelper.jsonSerializerOptions)));
+            fileOutput.Write("root.json", new MemoryStream(JsonSerializer.SerializeToUtf8Bytes(root, TestOutputHelper.JsonSerializerOptions)));
         }
     }
 }
