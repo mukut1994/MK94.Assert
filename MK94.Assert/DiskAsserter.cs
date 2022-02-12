@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MK94.Assert
@@ -17,12 +18,15 @@ namespace MK94.Assert
         /// Used by <see cref="DiskAssert"/> and static match methods in <see cref="DiskAssert"/>.
         /// </summary>
         public static DiskAsserter Default { get; set; }
-        
+
+        private const string sequenceFile = "_sequence.json";
+
         private static readonly JsonSerializerOptions SerializerOptions = new JsonSerializerOptions { WriteIndented = true };
 
         public IPathResolver PathResolver;
         public ITestOutput Output;
         public ISerializer Serializer = new SystemTextJsonSerializer();
+        public AsyncLocal<List<AssertOperation>> Operations { get; } = new AsyncLocal<List<AssertOperation>>();
 
         public bool WriteMode { get; private set; } = false;
 
@@ -45,6 +49,9 @@ namespace MK94.Assert
             EnsureSetupWasCalled();
 
             var outputFile = Path.Combine(PathResolver.GetStepPath(), fileType != null ? $"{step}.{fileType}" : step);
+
+            Operations.Value = Operations.Value ?? new List<AssertOperation>();
+            Operations.Value.Add(new AssertOperation(OperationMode.Output, outputFile));
 
             if (WriteMode)
             {
@@ -138,6 +145,16 @@ namespace MK94.Assert
         }
 
         /// <summary>
+        /// Call at the end of tests to make sure the sequence of events stays consistent between test runs
+        /// </summary>
+        public void MatchesSequence()
+        {
+            // TODO in write mode also remove unused output files
+
+            MatchesRaw(sequenceFile, Serializer.Serialize(Operations.Value), null, JsonDifferenceFormatter.Instance);
+        }
+
+        /// <summary>
         /// Safety method to avoid running code in CI/CD environments
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown when environment is not a Dev machine</exception>
@@ -168,46 +185,25 @@ namespace MK94.Assert
             return this;
         }
 
-        public TestChainer WithInputs() => new TestChainer(this);
+        /// <summary>
+        /// Returns all the operations that occurred in a previous test run <br />
+        /// Cannot be called in write mode.
+        /// </summary>
+        /// <exception cref="InvalidOperationException"></exception>
+        public List<AssertOperation> GetOperations()
+        {
+            if (WriteMode)
+                throw new InvalidOperationException($"{nameof(GetOperations)} is not supported when {nameof(WriteMode)} is enabled");
+
+            using var input = Output.OpenRead(Path.Combine(PathResolver.GetStepPath(), sequenceFile), true);
+
+            return Serializer.Deserialize<List<AssertOperation>>(input);
+        }
 
         private void EnsureSetupWasCalled()
         {
             if (PathResolver == null || Output == null)
                 throw new InvalidOperationException($"DiskAsserter is not fully setup. Call DiskAsserter.WithRecommendedDefaults() first");
         }
-    }
-
-    /// <summary>
-    /// Helper class to call <see cref="DiskAssert"/> methods via its default instance
-    /// </summary>
-    public static class DiskAssert
-    {
-        /// <inheritdoc cref="DiskAsserter.MatchesRaw(string, string, string, IDifferenceFormatter{string})"/>
-        public static string MatchesRaw(string step, string rawData, string fileType = null, IDifferenceFormatter<string> formatter = null) 
-            => DiskAsserter.Default.MatchesRaw(step, rawData, fileType, formatter);
-
-        /// <inheritdoc cref="DiskAsserter.Matches{T}(string, T)"/>
-        public static T Matches<T>(string step, T instance) => DiskAsserter.Default.Matches<T>(step, instance);
-
-        /// <inheritdoc cref="DiskAsserter.Matches{T}(string, Task{T})"/>
-        public static Task<T> Matches<T>(string step, Task<T> asyncInstance) => DiskAsserter.Default.Matches<T>(step, asyncInstance);
-
-        /// <inheritdoc cref="DiskAsserter.MatchesException{T}(string, Task)"/>
-        public static Task MatchesException<T>(string step, Task asyncInstance) where T : Exception
-            => DiskAsserter.Default.MatchesException<T>(step, asyncInstance);
-
-        /// <inheritdoc cref="DiskAsserter.Matches{T}(string, Task{T})"/>
-        public static Task<T> Matches<T>(this Task<T> asyncInstance, string step)
-            => DiskAsserter.Default.Matches(step, asyncInstance);
-
-        /// <inheritdoc cref="DiskAsserter.MatchesException{T}(string, Task)"/>
-        public static Task MatchesException<T>(this Task asyncInstance, string step) where T : Exception
-            => DiskAsserter.Default.MatchesException<T>(step, asyncInstance);
-
-        /// <inheritdoc cref="DiskAsserter.EnableWriteMode"/>
-        public static void EnableWriteMode() => DiskAsserter.Default.EnableWriteMode();
-
-        /// <inheritdoc cref="DiskAsserter.WithInputs"/>
-        public static TestChainer WithInputs() => DiskAsserter.Default.WithInputs();
     }
 }

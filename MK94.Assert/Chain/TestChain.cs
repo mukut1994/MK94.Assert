@@ -5,7 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 
-namespace MK94.Assert
+namespace MK94.Assert.Chain
 {
     public class TestChainer
     {
@@ -18,7 +18,6 @@ namespace MK94.Assert
             DiskAsserter = diskAsserter;
         }
 
-        // TODO rename, action
         public TestChainer From(string fullClassName, string testCaseName)
         {
             TestChainContexts.Add(new ChainPathResolver(fullClassName, testCaseName));
@@ -36,10 +35,14 @@ namespace MK94.Assert
                 var ret = DiskAsserter.Output.OpenRead(path, false);
 
                 if (ret != null)
+                {
+                    DiskAsserter.Operations.Value = DiskAsserter.Operations.Value ?? new List<AssertOperation>();
+                    DiskAsserter.Operations.Value.Add(new AssertOperation(OperationMode.Input, path));
                     return ret;
+                }
             }
 
-            throw new InvalidOperationException($@"The step {step} does not exist in any context.
+                throw new InvalidOperationException($@"The step {step} does not exist in any context.
 Have you run the previous tests with EnableWriteMode or are missing a call to {nameof(From)}?");
         }
 

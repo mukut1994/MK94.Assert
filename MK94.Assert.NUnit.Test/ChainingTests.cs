@@ -33,6 +33,8 @@ namespace MK94.Assert.NUnit.Test
         [Test]
         public void Step2()
         {
+            DiskAssert.EnableWriteMode();
+
             var inputs = DiskAssert
                 .WithInputs()
                 .From(Step1);
@@ -44,11 +46,14 @@ namespace MK94.Assert.NUnit.Test
             context.C += 10;
 
             DiskAssert.Matches("Step 1", context);
+            DiskAssert.MatchesSequence();
         }
 
         [Test]
         public void Step3()
         {
+            DiskAssert.EnableWriteMode();
+
             var inputs = DiskAssert
                 .WithInputs()
                 .From(Step1)
@@ -61,6 +66,7 @@ namespace MK94.Assert.NUnit.Test
             context.C += 10;
 
             DiskAssert.Matches("Step 1", context);
+            DiskAssert.MatchesSequence();
         }
     }
 }
