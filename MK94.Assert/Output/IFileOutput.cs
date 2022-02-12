@@ -6,7 +6,7 @@ namespace MK94.Assert.Output
 	/// Used for writing/reading files. <br />
 	/// E.g. write to disk/memory/network etc
 	/// </summary>
-    public interface IFileOutput
+    	public interface IFileOutput
 	{
 		Stream OpenRead(string path);
 
