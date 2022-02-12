@@ -37,5 +37,8 @@
   "MK94.Assert.NUnit.Test.Tests/StateMachineTest(1,2)/Result.json": "tgdahwk\u002B24tgzgxb3s-jrra3ijcwfeafzat\u002Brym0n84=",
   "MK94.Assert.NUnit.Test.Tests/StateMachineTest(2,3)/Setup B.json": "\u002Bptuylhkakxy6ithtbngdiifxuayshtv\u002B6\u002Bmrrwagrw=",
   "MK94.Assert.NUnit.Test.Tests/StateMachineTest(2,3)/Result.json": "7y0sfen7lcuq0gff5usmyzofijj7lrvpvsepvwsv450=",
-  "MK94.Assert.NUnit.Test.ChainingTests/Step1/Step 1.json": "fy2oeottfebx8irc5um9q339y4yj4q37csvunoc-mdy="
+  "MK94.Assert.NUnit.Test.ChainingTests/Step1/Step 1.json": "fy2oeottfebx8irc5um9q339y4yj4q37csvunoc-mdy=",
+  "MK94.Assert.NUnit.Test.ChainingTests/Step2/Step 1.json": "ljtjo7ivr83sc-jzginuret3qpym1fmve1s4vkdxyh8=",
+  "MK94.Assert.NUnit.Test.ChainingTests/Step3/Step 1.json": "wwggzl6wssauwk6h2iej\u002Bxwwgmmyn\u002Bvn4yqbmmz6afe=",
+  "MK94.Assert.NUnit.Test.ChainingTests/PreventChainingMethodNonNUnit/Exception non test method": "68znhog6hsvcilhxxgkz0n57qvj8d3eutgdtvtvhngm="
 }

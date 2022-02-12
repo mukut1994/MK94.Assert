@@ -9,21 +9,19 @@ namespace MK94.Assert
 {
     public class TestChainer
     {
-        public DiskAsserter DiskAsserter { get; set; }
+        public DiskAsserter DiskAsserter { get; }
 
         private List<ChainPathResolver> TestChainContexts { get; set; } = new List<ChainPathResolver>();
 
-        // TODO rename, action
-        public TestChainer GetContextOf(string className, string testCaseName)
+        public TestChainer(DiskAsserter diskAsserter)
         {
-            /*
-            var ret = new DiskAsserter();
-            ret.Serialize = DiskAsserter.Serialize;
-            ret.Output = DiskAsserter.Output;
-            ret.PathResolver = new ChainPathResolver(className, testCaseName);
-            */
+            DiskAsserter = diskAsserter;
+        }
 
-            TestChainContexts.Add(new ChainPathResolver(className, testCaseName));
+        // TODO rename, action
+        public TestChainer From(string fullClassName, string testCaseName)
+        {
+            TestChainContexts.Add(new ChainPathResolver(fullClassName, testCaseName));
 
             return this;
         }
@@ -42,7 +40,7 @@ namespace MK94.Assert
             }
 
             throw new InvalidOperationException($@"The step {step} does not exist in any context.
-Have you run the previous tests with EnableWriteMode or are missing a call to {nameof(GetContextOf)}?");
+Have you run the previous tests with EnableWriteMode or are missing a call to {nameof(From)}?");
         }
 
         public T Read<T>(string step)

@@ -17,22 +17,50 @@ namespace MK94.Assert.NUnit.Test
         }
 
         [Test]
+        public void PreventChainingMethodNonNUnit()
+        {
+            // TODO add non-task overload to MatchesException<T>
+            DiskAssert.MatchesException<InvalidOperationException>("Exception non test method",
+                Task.Run(() => DiskAssert.WithInputs().From(() => { }))); 
+        }
+
+        [Test]
         public void Step1()
         {
-            DiskAssert.EnableWriteMode();
-
-            DiskAssert.Matches("Step 1", new TestObject { A = 1, B = 2, C = 3});
+            DiskAssert.Matches("Step 1", new TestObject { A = 1, B = 2, C = 3 });
         }
 
         [Test]
         public void Step2()
         {
-            var x = new TestChainer();
-            x.DiskAsserter = DiskAsserter.Default;
+            var inputs = DiskAssert
+                .WithInputs()
+                .From(Step1);
 
-            x.GetContextOf("MK94.Assert.NUnit.Test." + nameof(ChainingTests), nameof(Step1));
+            var context = inputs.Read<TestObject>("Step 1.json");
 
-            var ret = x.Read<TestObject>("Step 1.json");
+            context.A += 10;
+            context.B += 10;
+            context.C += 10;
+
+            DiskAssert.Matches("Step 1", context);
+        }
+
+        [Test]
+        public void Step3()
+        {
+            var inputs = DiskAssert
+                .WithInputs()
+                .From(Step1)
+                .From(Step2);
+
+            var context = inputs.Read<TestObject>("Step 1.json");
+
+            context.A += 10;
+            context.B += 10;
+            context.C += 10;
+
+            DiskAssert.Matches("Step 1", context);
         }
     }
 }

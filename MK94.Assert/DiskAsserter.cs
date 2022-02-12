@@ -24,7 +24,7 @@ namespace MK94.Assert
         public ITestOutput Output;
         public ISerializer Serializer = new SystemTextJsonSerializer();
 
-        private bool writeMode = false;
+        public bool WriteMode { get; private set; } = false;
 
         /// <summary>
         /// Safety flag to avoid checking in <see cref="EnableWriteMode"/> by accident <br />
@@ -46,7 +46,7 @@ namespace MK94.Assert
 
             var outputFile = Path.Combine(PathResolver.GetStepPath(), fileType != null ? $"{step}.{fileType}" : step);
 
-            if (writeMode)
+            if (WriteMode)
             {
                 EnsureDevMode();
                 Output.Write(outputFile, rawData);
@@ -153,7 +153,7 @@ namespace MK94.Assert
         public DiskAsserter EnableWriteMode()
         {
             EnsureDevMode();
-            writeMode = true;
+            WriteMode = true;
 
             return this;
         }
@@ -163,10 +163,12 @@ namespace MK94.Assert
         /// </summary>
         public DiskAsserter DisableWriteMode()
         {
-            writeMode = false;
+            WriteMode = false;
 
             return this;
         }
+
+        public TestChainer WithInputs() => new TestChainer(this);
 
         private void EnsureSetupWasCalled()
         {
@@ -204,5 +206,8 @@ namespace MK94.Assert
 
         /// <inheritdoc cref="DiskAsserter.EnableWriteMode"/>
         public static void EnableWriteMode() => DiskAsserter.Default.EnableWriteMode();
+
+        /// <inheritdoc cref="DiskAsserter.WithInputs"/>
+        public static TestChainer WithInputs() => DiskAsserter.Default.WithInputs();
     }
 }
