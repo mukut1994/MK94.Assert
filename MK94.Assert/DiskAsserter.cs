@@ -20,11 +20,10 @@ namespace MK94.Assert
         
         private static readonly JsonSerializerOptions SerializerOptions = new JsonSerializerOptions { WriteIndented = true };
 
-        public IPathResolver pathResolver;
-        public ITestOutput output;
-        public Func<object, string> Serialize { get; set; } = obj => JsonSerializer.Serialize(obj, SerializerOptions);
+        public IPathResolver PathResolver;
+        public ITestOutput Output;
+        public ISerializer Serializer = new SystemTextJsonSerializer();
 
-        private readonly List<Func<string, string>> postProcessors = new List<Func<string, string>>();
         private bool writeMode = false;
 
         /// <summary>
@@ -38,23 +37,24 @@ namespace MK94.Assert
         /// </summary>
         /// <param name="step">A descriptive name of the step that generated the data</param>
         /// <param name="rawData">The raw data to be compared</param>
+        /// <param name="formatter">The error message formatter to use when there are differences</param>
         /// <returns>The unmodified <paramref name="rawData"/></returns>
         /// <exception cref="Exception">Thrown when some differences have been detected</exception>
         public string MatchesRaw(string step, string rawData, string fileType = null, IDifferenceFormatter<string> formatter = null)
         {
             EnsureSetupWasCalled();
 
-            var outputFile = Path.Combine(pathResolver.GetStepPath(), fileType != null ? $"{step}.{fileType}" : step);
+            var outputFile = Path.Combine(PathResolver.GetStepPath(), fileType != null ? $"{step}.{fileType}" : step);
 
             if (writeMode)
             {
                 EnsureDevMode();
-                output.Write(outputFile, rawData);
+                Output.Write(outputFile, rawData);
 
                 return rawData;
             }
 
-            if (output.IsHashMatch(outputFile, rawData))
+            if (Output.IsHashMatch(outputFile, rawData))
                 return rawData;
 
             return ThrowDifferences(step, rawData, formatter, outputFile);
@@ -62,7 +62,7 @@ namespace MK94.Assert
 
         private string ThrowDifferences(string step, string rawData, IDifferenceFormatter<string> formatter, string outputFile)
         {
-            using var file = output.OpenRead(outputFile, false);
+            using var file = Output.OpenRead(outputFile, false);
 
             if (file == null)
                  throw new Exception($"Missing file {outputFile}; Is this a new test?");
@@ -93,14 +93,11 @@ namespace MK94.Assert
         /// <exception cref="Exception">Thrown when some differences have been detected</exception>
         public T Matches<T>(string step, T instance)
         {
-            // TODO replace is a hacky fix; 
-            // On windows this generates \r\n but on unix it's \n
+            // TODO Replace(string, string) is a hacky fix; 
+            // On windows Serialize(T) generates \r\n but on unix it's \n
             // This causes a hash mismatch
             // We should probably just ignore \r in the hash algo
-            var serialized = Serialize(instance).Replace("\r", string.Empty);
-
-            foreach (var post in postProcessors)
-                serialized = post(serialized);
+            var serialized = Serializer.Serialize(instance).Replace("\r", string.Empty);
 
             MatchesRaw($"{step}", serialized, "json", JsonDifferenceFormatter.Instance);
 
@@ -173,7 +170,7 @@ namespace MK94.Assert
 
         private void EnsureSetupWasCalled()
         {
-            if (pathResolver == null || output == null)
+            if (PathResolver == null || Output == null)
                 throw new InvalidOperationException($"DiskAsserter is not fully setup. Call DiskAsserter.WithRecommendedDefaults() first");
         }
     }

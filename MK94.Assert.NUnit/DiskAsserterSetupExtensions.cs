@@ -65,7 +65,7 @@ namespace MK94.Assert.NUnit
         public static DiskAsserter WithDeduplication(this DiskAsserter diskAsserter, string solutionFolder, string folder = "TestData")
         {
             var diskOutput = new Output.DiskFileOutput(PathHelper.PathRelativeToParentFolder(solutionFolder, folder));
-            diskAsserter.output = new Output.HashedTestOutput(diskOutput);
+            diskAsserter.Output = new Output.HashedTestOutput(diskOutput);
 
             return diskAsserter;
         }
@@ -81,7 +81,7 @@ namespace MK94.Assert.NUnit
         /// <inheritdoc cref="WithDeduplication(DiskAsserter, string, string)"/>
         public static DiskAsserter WithDeduplicationInMemory(this DiskAsserter diskAsserter, Output.MemoryFileOutput output)
         {
-            diskAsserter.output = new Output.HashedTestOutput(output);
+            diskAsserter.Output = new Output.HashedTestOutput(output);
 
             return diskAsserter;
         }
@@ -92,14 +92,29 @@ namespace MK94.Assert.NUnit
         public static DiskAsserter WithClassTestFolderStructure(this DiskAsserter diskAsserter, string solutionFolder, string folder = "TestData")
         {
             var diskOutput = new Output.DiskFileOutput(PathHelper.PathRelativeToParentFolder(solutionFolder, folder));
-            diskAsserter.output = new Output.DirectTestOutput(diskOutput);
+            diskAsserter.Output = new Output.DirectTestOutput(diskOutput);
 
             return diskAsserter;
         }
 
+        /// <summary>
+        /// Sets the serializer to be used for writing when <see cref="DiskAssert.Matches"/> or related methods are called <br />
+        /// Sets the serializer to be used for reading when <see cref="TestChainer.Read"/> or related methods are called
+        /// </summary>
+        public static DiskAsserter WithSerializer(this DiskAsserter diskAsserter, ISerializer serializer)
+        {
+            diskAsserter.Serializer = serializer;
+
+            return diskAsserter;
+        }
+
+        /// <summary>
+        /// Sets the serializer to be used for writing when <see cref="DiskAssert.Matches"/> or related methods are called <br />
+        /// Does <b>not</b> support read operations required for <see cref="TestChainer"/>. Call <see cref="WithSerializer(DiskAsserter, ISerializer)"/> instead!!!
+        /// </summary>
         public static DiskAsserter WithSerializer(this DiskAsserter diskAsserter, Func<object, string> serializer)
         {
-            diskAsserter.Serialize = serializer;
+            diskAsserter.Serializer = new SerializeOnlyFunc(serializer);
 
             return diskAsserter;
         }

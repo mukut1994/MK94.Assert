@@ -32,7 +32,7 @@
         {
             var ret = new DiskAsserter()
                 .WithCommonBuildAgentsCheck();
-            ret.pathResolver = new NUnitPathResolver();
+            ret.PathResolver = new NUnitPathResolver();
 
             return ret;
         }
@@ -46,7 +46,7 @@
             var ret = new DiskAsserter()
                 .WithRecommendedSettings(solutionFolder, outputFolder);
 
-            ret.pathResolver = new NUnitPathResolver();
+            ret.PathResolver = new NUnitPathResolver();
 
             return ret;
         }
