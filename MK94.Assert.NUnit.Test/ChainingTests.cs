@@ -25,17 +25,17 @@ namespace MK94.Assert.NUnit.Test
         }
 
         [Test]
-        public void Step1()
+        public void TestCase1()
         {
             DiskAssert.Matches("Step 1", new TestObject { A = 1, B = 2, C = 3 });
         }
 
         [Test]
-        public void Step2()
+        public void TestCase2()
         {
             var inputs = DiskAssert
                 .WithInputs()
-                .From(Step1);
+                .From(TestCase1);
 
             var context = inputs.Read<TestObject>("Step 1.json");
 
@@ -47,12 +47,12 @@ namespace MK94.Assert.NUnit.Test
         }
 
         [Test]
-        public void Step3()
+        public void TestCase3()
         {
             var inputs = DiskAssert
                 .WithInputs()
-                .From(Step1)
-                .From(Step2);
+                .From(TestCase1)
+                .From(TestCase2);
 
             var context = inputs.Read<TestObject>("Step 1.json");
 
