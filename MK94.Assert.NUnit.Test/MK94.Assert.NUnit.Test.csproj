@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\MK94.Assert.Mocking\MK94.Assert.Mocking.csproj" />
       <ProjectReference Include="..\MK94.Assert.NUnit\MK94.Assert.NUnit.csproj" />
       <ProjectReference Include="..\MK94.Assert\MK94.Assert.csproj" />
     </ItemGroup>

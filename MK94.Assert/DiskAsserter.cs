@@ -42,16 +42,17 @@ namespace MK94.Assert
         /// <param name="step">A descriptive name of the step that generated the data</param>
         /// <param name="rawData">The raw data to be compared</param>
         /// <param name="formatter">The error message formatter to use when there are differences</param>
+        /// <param name="mode">The mode to add it as to Operations</param>
         /// <returns>The unmodified <paramref name="rawData"/></returns>
         /// <exception cref="Exception">Thrown when some differences have been detected</exception>
-        public string MatchesRaw(string step, string rawData, string fileType = null, IDifferenceFormatter<string> formatter = null)
+        public string MatchesRaw(string step, string rawData, string fileType = null, IDifferenceFormatter<string> formatter = null, OperationMode mode = OperationMode.Output)
         {
             EnsureSetupWasCalled();
 
             var outputFile = Path.Combine(PathResolver.GetStepPath(), fileType != null ? $"{step}.{fileType}" : step);
 
             Operations.Value = Operations.Value ?? new List<AssertOperation>();
-            Operations.Value.Add(new AssertOperation(OperationMode.Output, outputFile));
+            Operations.Value.Add(new AssertOperation(mode, outputFile));
 
             if (WriteMode)
             {
@@ -100,11 +101,7 @@ namespace MK94.Assert
         /// <exception cref="Exception">Thrown when some differences have been detected</exception>
         public T Matches<T>(string step, T instance)
         {
-            // TODO Replace(string, string) is a hacky fix; 
-            // On windows Serialize(T) generates \r\n but on unix it's \n
-            // This causes a hash mismatch
-            // We should probably just ignore \r in the hash algo
-            var serialized = Serializer.Serialize(instance).Replace("\r", string.Empty);
+            var serialized = Serializer.Serialize(instance);
 
             MatchesRaw($"{step}", serialized, "json", JsonDifferenceFormatter.Instance);
 
@@ -196,6 +193,9 @@ namespace MK94.Assert
                 throw new InvalidOperationException($"{nameof(GetOperations)} is not supported when {nameof(WriteMode)} is enabled");
 
             using var input = Output.OpenRead(Path.Combine(PathResolver.GetStepPath(), sequenceFile), true);
+
+            if (input == null)
+                throw new InvalidOperationException($"No sequence recorded for current test, is this a new test? Run with EnableWriteMode() and call MatchesSequence at the end of the test");
 
             return Serializer.Deserialize<List<AssertOperation>>(input);
         }
