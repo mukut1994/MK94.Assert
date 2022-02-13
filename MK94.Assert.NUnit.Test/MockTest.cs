@@ -36,7 +36,7 @@ namespace MK94.Assert.NUnit.Test
         [Test]
         public void BasicTest()
         {
-            // DiskAssert.EnableWriteMode();
+            DiskAssert.EnableWriteMode();
 
             var mock = new Mocker(DiskAsserter.Default);
             mock.Begin();
@@ -47,9 +47,9 @@ namespace MK94.Assert.NUnit.Test
             database.Insert(2, "Text 2");
             database.Insert(3, "Text 3");
 
-            database.Select(3);
-            database.Select(1);
-            database.Select(2);
+            DiskAssert.Matches("Step 1", database.Select(3));
+            DiskAssert.Matches("Step 2", database.Select(1));
+            DiskAssert.Matches("Step 3", database.Select(2));
 
             DiskAssert.MatchesSequence();
         }
