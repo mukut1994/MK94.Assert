@@ -37,7 +37,7 @@ namespace MK94.Assert.Chain
                 if (ret != null)
                 {
                     DiskAsserter.Operations.Value = DiskAsserter.Operations.Value ?? new List<AssertOperation>();
-                    DiskAsserter.Operations.Value.Add(new AssertOperation(OperationMode.Input, path));
+                    DiskAsserter.Operations.Value.Add(new AssertOperation(OperationMode.Input, path.Replace('\\', '/')));
                     return ret;
                 }
             }

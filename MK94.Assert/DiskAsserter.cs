@@ -52,7 +52,7 @@ namespace MK94.Assert
             var outputFile = Path.Combine(PathResolver.GetStepPath(), fileType != null ? $"{step}.{fileType}" : step);
 
             Operations.Value = Operations.Value ?? new List<AssertOperation>();
-            Operations.Value.Add(new AssertOperation(OperationMode.Output, outputFile));
+            Operations.Value.Add(new AssertOperation(OperationMode.Output, outputFile.Replace('\\', '/')));
 
             if (WriteMode)
             {
@@ -152,7 +152,7 @@ namespace MK94.Assert
         {
             // TODO in write mode also remove unused output files
 
-            MatchesRaw(sequenceFile, Serializer.Serialize(Operations.Value), null, JsonDifferenceFormatter.Instance);
+            Matches(sequenceFile, Operations);
         }
 
         /// <summary>
