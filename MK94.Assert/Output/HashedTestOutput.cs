@@ -7,25 +7,7 @@ using System.Text.Json;
 
 namespace MK94.Assert.Output
 {
-	public interface ITestOutput
-	{
-		Stream OpenRead(string path, bool cache);
-
-		bool IsHashMatch(string path, string rawData);
-
-		void Write(string path, string rawData);
-	}
-
-	public interface IFileOutput
-	{
-		Stream OpenRead(string path);
-
-		void Write(string path, Stream sourceStream);
-
-		void Delete(string path);
-	}
-
-	internal static class TestOutputHelper
+    internal static class TestOutputHelper
 	{
 		public static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true };
 
