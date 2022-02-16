@@ -33,8 +33,6 @@ namespace MK94.Assert.NUnit.Test
         [Test]
         public void TestCase2()
         {
-            DiskAssert.EnableWriteMode();
-
             var inputs = DiskAssert
                 .WithInputs()
                 .From(TestCase1);
@@ -52,8 +50,6 @@ namespace MK94.Assert.NUnit.Test
         [Test]
         public void TestCase3()
         {
-            DiskAssert.EnableWriteMode();
-
             var inputs = DiskAssert
                 .WithInputs()
                 .From(TestCase1)
