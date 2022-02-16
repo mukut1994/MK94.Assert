@@ -97,7 +97,7 @@ namespace MK94.Assert.Mocking
 
             EnsureExpectedOperationCalled(invocation, returnName + ".json");
 
-            var stepPath = Path.Combine(diskAsserter.PathResolver.GetStepPath(), returnName + ".json");
+            var stepPath = Path.Combine(diskAsserter.PathResolver.GetStepPath(), returnName + ".json").Replace('\\', '/');
 
             diskAsserter.Operations.Value.Add(new AssertOperation(OperationMode.Input, stepPath));
 
