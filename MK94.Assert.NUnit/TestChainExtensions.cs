@@ -13,7 +13,7 @@ namespace MK94.Assert.NUnit
         {
             if (!step.Method.GetCustomAttributes(typeof(TestAttribute), false).Any())
                 throw new InvalidOperationException($@"This does not seem to be a NUnit test method.
-Call {nameof(TestChainer.From)}(string, string) instead to set it manually.");
+Call {nameof(TestChainer)}.{nameof(TestChainer.From)} instead to set it manually.");
 
             return chainer.From(step.Method.DeclaringType.FullName, step.Method.Name);
         }
