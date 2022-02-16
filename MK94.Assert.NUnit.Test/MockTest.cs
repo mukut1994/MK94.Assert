@@ -32,16 +32,12 @@ namespace MK94.Assert.NUnit.Test
             }
         }
 
-
         [Test]
         public void BasicTest()
         {
-            DiskAssert.EnableWriteMode();
-
-            var mock = new Mocker(DiskAsserter.Default);
-            mock.Begin();
-
-            var database = mock.Of<IDatabase>(() => new Database());
+            DiskAssert.Default
+                .WithMocks()
+                .Of<IDatabase>(() => new Database(), out var database);
 
             database.Insert(1, "Text 1");
             database.Insert(2, "Text 2");

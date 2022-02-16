@@ -23,9 +23,24 @@ namespace MK94.Assert
 
         private static readonly JsonSerializerOptions SerializerOptions = new JsonSerializerOptions { WriteIndented = true };
 
+        /// <summary>
+        /// The path resolver to determine per test paths. Usually related to which test framework is being used e.g. XUnit, NUnit, MSTest etc
+        /// </summary>
         public IPathResolver PathResolver;
+
+        /// <summary>
+        /// The output strategy for file chunking and hashing. Default is <see cref="DirectTestOutput"/>
+        /// </summary>
         public ITestOutput Output;
+
+        /// <summary>
+        /// The serializer for calls to <see cref="DiskAsserter.Matches{T}(string, T)"/>
+        /// </summary>
         public ISerializer Serializer = new SystemTextJsonSerializer();
+
+        /// <summary>
+        /// An ordered list of methods that have been called on <see cref="DiskAsserter"/>. Used by <see cref="MatchesSequence"/>
+        /// </summary>
         public AsyncLocal<List<AssertOperation>> Operations { get; } = new AsyncLocal<List<AssertOperation>>();
 
         public bool WriteMode { get; private set; } = false;

@@ -39,5 +39,8 @@ namespace MK94.Assert
 
         /// <inheritdoc cref="Extensions.WithInputs"/>
         public static TestChainer WithInputs() => DiskAsserter.Default.WithInputs();
+
+        /// <inheritdoc cref="DiskAsserter.Default" />
+        public static DiskAsserter Default => DiskAsserter.Default;
     }
 }

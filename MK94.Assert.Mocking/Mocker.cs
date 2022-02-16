@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace MK94.Assert.Mocking
 {
+    /// <summary>
+    /// A class to generate mocks that expect calls from <see cref="DiskAsserter.Operations"/> and setup returns via <see cref="DiskAsserter.Matches{T}(string, T)"/>
+    /// </summary>
     public class Mocker : IInterceptor
     {
         private static readonly ProxyGenerator proxyGenerator = new ProxyGenerator();
@@ -23,21 +26,47 @@ namespace MK94.Assert.Mocking
             this.diskAsserter = diskAsserter;
         }
 
-        public void Begin()
-        {
-            if (diskAsserter.WriteMode)
-                return;
-
-            operations.Value = new Queue<AssertOperation>(diskAsserter.GetOperations().Where(x => x.Mode == OperationMode.Input));
-        }
-
-        public T Of<T>(Func<T> actual = default)
+        /// <summary>
+        /// Creates a mock of <typeparamref name="T"/>
+        /// </summary>
+        /// <typeparam name="T">The class or interface to mock</typeparam>
+        /// <param name="actual">The implementation to use when running in write mode. <br />
+        /// The calls and results of this implementation will be record for future re-runs.</param>
+        /// <returns>A mocked instance of <typeparamref name="T"/></returns>
+        public T Of<T>(Func<T> actual)
             where T : class
         {
             if (diskAsserter.WriteMode && actual != default)
                 return proxyGenerator.CreateInterfaceProxyWithTarget(actual(), this);
 
             return proxyGenerator.CreateInterfaceProxyWithoutTarget<T>(this);
+        }
+
+
+        /// <summary>
+        /// Creates a mock of <typeparamref name="T"/>. Useful for a builder pattern.
+        /// </summary>
+        /// <typeparam name="T">The class or interface to mock</typeparam>
+        /// <param name="actual">The implementation to use when running in write mode. <br />
+        /// The calls and results of this implementation will be record for future re-runs.</param>
+        /// <returns>A mocked instance of <typeparamref name="T"/></returns>
+        /// <param name="mocked">The result mock object</param>
+        /// 
+        /// <example>
+            /// <code>
+                /// 
+                /// DiskAssert.Default
+                ///     .Of&lt;T1&gt;(() => new ImplementationOfT(), out var mocked1)
+                ///     .Of&lt;T2&gt;(() => new ImplementationOfT2(), out var mocked2)
+                ///     
+            /// </code>
+        /// </example>
+        public Mocker Of<T>(Func<T> actual, out T mocked)
+            where T : class
+        {
+            mocked = Of(actual);
+
+            return this;
         }
 
         void IInterceptor.Intercept(IInvocation invocation)
@@ -91,6 +120,9 @@ namespace MK94.Assert.Mocking
 
         private void EnsureExpectedOperationCalled(IInvocation invocation, string stepName)
         {
+            if(operations.Value == null)
+                operations.Value = new Queue<AssertOperation>(diskAsserter.GetOperations().Where(x => x.Mode == OperationMode.Input));
+
             var expectedOperation = operations.Value.Dequeue();
 
             if (expectedOperation.Mode != OperationMode.Input)
