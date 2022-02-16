@@ -44,6 +44,7 @@ namespace MK94.Assert.NUnit.Test
             context.C += 10;
 
             DiskAssert.Matches("Step 1", context);
+            DiskAssert.MatchesSequence();
         }
 
         [Test]
@@ -61,6 +62,7 @@ namespace MK94.Assert.NUnit.Test
             context.C += 10;
 
             DiskAssert.Matches("Step 1", context);
+            DiskAssert.MatchesSequence();
         }
     }
 }

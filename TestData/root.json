@@ -6,7 +6,7 @@
   "MK94.Assert.NUnit.Test.PseudoRandomTests/RandomizerTest2/RandomizedObj_0.json": "udwnu7cjoj6m9w8qkazi-qcakpfjlabmbvenuwy2qeq=",
   "MK94.Assert.NUnit.Test.PseudoRandomTests/RandomizerTest/RandomizedObj_0.json": "saq3utxrj9v3cav825wtiimfwn5lbrdsqu8dctilesq=",
   "MK94.Assert.NUnit.Test.PseudoRandomTests/GuidTest/Guid2.json": "knqdwhcxsdqhuxpjky6hikgyofayhzdcxrkpksw-yuy=",
-  "MK94.Assert.NUnit.Test.ChainingTests/PreventChainingMethodNonNUnit/Exception non test method": "bz9tjvpra8movxkkawlsgu9xhipih0im339ozvfnuxa=",
+  "MK94.Assert.NUnit.Test.ChainingTests/PreventChainingMethodNonNUnit/Exception non test method": "68znhog6hsvcilhxxgkz0n57qvj8d3eutgdtvtvhngm=",
   "MK94.Assert.NUnit.Test.PseudoRandomTests/GuidTest/Guid3.json": "f3bwbw5mnqwyozkh9bh6g\u002Bci5q\u002Bbbxltp9jsye7qhci=",
   "MK94.Assert.NUnit.Test.PseudoRandomTests/RandomizerTest2/RandomizedObj_1.json": "dapzwyec1fipi4dbqi\u002Bdxjrcy0vbihgx2fmzrckzaro=",
   "MK94.Assert.NUnit.Test.PseudoRandomTests/RandomizerTest/RandomizedObj_1.json": "i3mvy9ckoyu5j7ubadxhsmuxitsyqbs\u002Bmtzp8f76qt4=",
@@ -40,5 +40,14 @@
   "MK94.Assert.NUnit.Test.Tests/StateMachineTest(1,2)/Result.json": "tgdahwk\u002B24tgzgxb3s-jrra3ijcwfeafzat\u002Brym0n84=",
   "MK94.Assert.NUnit.Test.Tests/StateMachineTest(2,3)/Setup A.json": "ldiryjtfvxug2bfbm3zeawe\u002Bq-fkvyxsz-oxmtfnkyg=",
   "MK94.Assert.NUnit.Test.Tests/StateMachineTest(2,3)/Setup B.json": "\u002Bptuylhkakxy6ithtbngdiifxuayshtv\u002B6\u002Bmrrwagrw=",
-  "MK94.Assert.NUnit.Test.Tests/StateMachineTest(2,3)/Result.json": "7y0sfen7lcuq0gff5usmyzofijj7lrvpvsepvwsv450="
+  "MK94.Assert.NUnit.Test.Tests/StateMachineTest(2,3)/Result.json": "7y0sfen7lcuq0gff5usmyzofijj7lrvpvsepvwsv450=",
+  "MK94.Assert.NUnit.Test.ChainingTests/Step1/Step 1.json": "cgtrg3nnf\u002Bq6pgltoeopx8l2zfhytut27vifggt61ry=",
+  "MK94.Assert.NUnit.Test.ChainingTests/Step2/Step 1.json": "xkidg\u002Bh0ke2urd4nqd-3dqpzwctw63kbgepyu0dm3j8=",
+  "MK94.Assert.NUnit.Test.ChainingTests/Step3/Step 1.json": "agzff6l0hil6ga507cwb\u002B1g9--2qlfo49nopnc54\u002Bw0=",
+  "MK94.Assert.NUnit.Test.ChainingTests/Step2/_sequence.json": "dkckdh8b5w75z6irrwovxpzvfcufert7bfuzcvjeops=",
+  "MK94.Assert.NUnit.Test.ChainingTests/Step3/_sequence.json": "3wutgzy-putafp3fra9prrns883hjmrkakdgqcetkua=",
+  "MK94.Assert.NUnit.Test.ChainingTests/TestCase2/_sequence.json": "xkw2egp1rfpuyq0alhbcmhmczdgcpsj9bgl\u002Bgfi2ap4=",
+  "MK94.Assert.NUnit.Test.ChainingTests/TestCase3/_sequence.json": "jg6qux6s706p4aqdi1\u002Bc1ms1jjqthwboy7ufzr88mma=",
+  "MK94.Assert.NUnit.Test.ChainingTests/TestCase2/_sequence.json.json": "cydyi4g6thbbrtjdgyasouthxgmyxwwc6q82aeopuec=",
+  "MK94.Assert.NUnit.Test.ChainingTests/TestCase3/_sequence.json.json": "ckqoyhk7turvjwfcsbe-r6rid8uqd8yc8yo4q\u002B673dy="
 }
