@@ -89,7 +89,7 @@ namespace MK94.Assert.Mocking
                 invocation.Proceed();
 
                 var serialized = diskAsserter.Serializer.Serialize(invocation.ReturnValue);
-                
+
                 diskAsserter.MatchesRaw(returnName, serialized, "json", JsonDifferenceFormatter.Instance, OperationMode.Input);
 
                 return;
@@ -101,16 +101,17 @@ namespace MK94.Assert.Mocking
 
             diskAsserter.Operations.Value.Add(new AssertOperation(OperationMode.Input, stepPath));
 
-            if (!MethodReturnIsVoid(invocation))
-            {
-                using var reader = diskAsserter.Output.OpenRead(stepPath, false);
+            if (MethodReturnIsVoid(invocation))
+                return;
 
-                invocation.ReturnValue = diskAsserter.Serializer
-                    .GetType()
-                    .GetMethod(nameof(ISerializer.Deserialize))
-                    .MakeGenericMethod(invocation.Method.ReturnType)
-                    .Invoke(diskAsserter.Serializer, new object[] { reader });
-            }
+            using var reader = diskAsserter.Output.OpenRead(stepPath, false);
+
+            invocation.ReturnValue = diskAsserter.Serializer
+                .GetType()
+                .GetMethod(nameof(ISerializer.Deserialize))
+                .MakeGenericMethod(invocation.Method.ReturnType)
+                .Invoke(diskAsserter.Serializer, new object[] { reader });
+
         }
 
         private bool MethodReturnIsVoid(IInvocation invocation)
