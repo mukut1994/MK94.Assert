@@ -27,8 +27,8 @@ namespace MK94.Assert.NUnit
         private static void EnsureIsValidMethod(Action step)
         {
             if (!step.Method.GetCustomAttributes(typeof(TestAttribute), false).Any())
-                throw new InvalidOperationException($@"This does not seem to be an NUnit test method.
-Call {nameof(TestChainer.From)}(string, string) instead to set it manually.");
+                throw new InvalidOperationException($@"This does not seem to be a NUnit test method.
+Call {nameof(TestChainer)}.{nameof(TestChainer.From)} instead to set it manually.");
         }
 
     }

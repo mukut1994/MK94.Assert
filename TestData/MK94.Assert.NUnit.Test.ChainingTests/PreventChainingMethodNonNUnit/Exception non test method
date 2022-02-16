@@ -1,5 +1,5 @@
-This does not seem to be an NUnit test method.
-Call From(string, string) instead to set it manually.
+This does not seem to be a NUnit test method.
+Call TestChainer.From instead to set it manually.
    MK94.Assert.NUnit.TestChainExtensions.EnsureIsValidMethod(Action step)
    MK94.Assert.NUnit.TestChainExtensions.From(TestChainer chainer, Action step)
    MK94.Assert.NUnit.Test.ChainingTests.<>c.<PreventChainingMethodNonNUnit>b__1_0()
