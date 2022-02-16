@@ -56,6 +56,7 @@ namespace MK94.Assert
         /// </summary>
         /// <param name="step">A descriptive name of the step that generated the data</param>
         /// <param name="rawData">The raw data to be compared</param>
+        /// <param name="fileType">The file type to save as</param>
         /// <param name="formatter">The error message formatter to use when there are differences</param>
         /// <param name="mode">The mode to add it as to Operations</param>
         /// <returns>The unmodified <paramref name="rawData"/></returns>
@@ -163,7 +164,7 @@ namespace MK94.Assert
         {
             // TODO in write mode also remove unused output files
 
-            MatchesRaw(sequenceFile, Serializer.Serialize(Operations.Value), null, JsonDifferenceFormatter.Instance);
+            Matches(sequenceFile, Operations.Value);
         }
 
         /// <summary>
@@ -210,7 +211,7 @@ namespace MK94.Assert
             using var input = Output.OpenRead(Path.Combine(PathResolver.GetStepPath(), sequenceFile), true);
 
             if (input == null)
-                throw new InvalidOperationException($"No sequence recorded for current test, is this a new test? Run with EnableWriteMode() and call MatchesSequence at the end of the test");
+                throw new InvalidOperationException($"No sequence recorded for current test, is this a new test? Run with EnableWriteMode() and call MatchesSequence() at the end of the test");
 
             return Serializer.Deserialize<List<AssertOperation>>(input);
         }
