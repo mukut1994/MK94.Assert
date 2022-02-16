@@ -1,10 +1,10 @@
 [
   {
     "Mode": "Input",
-    "Step": "MK94.Assert.NUnit.Test.ChainingTests\\TestCase2\\Step 1.json"
+    "Step": "MK94.Assert.NUnit.Test.ChainingTests/TestCase2/Step 1.json"
   },
   {
     "Mode": "Output",
-    "Step": "MK94.Assert.NUnit.Test.ChainingTests\\TestCase3\\Step 1.json"
+    "Step": "MK94.Assert.NUnit.Test.ChainingTests/TestCase3/Step 1.json"
   }
 ]

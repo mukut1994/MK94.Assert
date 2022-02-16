@@ -44,7 +44,11 @@ namespace MK94.Assert
 
         public string Serialize<T>(T obj)
         {
-            return JsonSerializer.Serialize(obj, jsonSerializerOptions);
+            // TODO Replace(string, string) is a hacky fix; 
+            // On windows Serialize(T) generates \r\n but on unix it's \n
+            // This causes a hash mismatch
+            // We should probably just ignore \r in the hash algo
+            return JsonSerializer.Serialize(obj, jsonSerializerOptions).Replace("\r", string.Empty);
         }
     }
 }
