@@ -208,7 +208,7 @@ namespace MK94.Assert
             if (WriteMode)
                 throw new InvalidOperationException($"{nameof(GetOperations)} is not supported when {nameof(WriteMode)} is enabled");
 
-            using var input = Output.OpenRead(Path.Combine(PathResolver.GetStepPath(), sequenceFile), true);
+            using var input = Output.OpenRead(Path.Combine(PathResolver.GetStepPath(), sequenceFile + ".json"), true);
 
             if (input == null)
                 throw new InvalidOperationException($"No sequence recorded for current test, is this a new test? Run with EnableWriteMode() and call MatchesSequence() at the end of the test");

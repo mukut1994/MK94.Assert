@@ -128,7 +128,7 @@ namespace MK94.Assert.Mocking
             if (expectedOperation.Mode != OperationMode.Input)
                 throw new InvalidOperationException($"Expecting input from {expectedOperation.Step} but actual is an output to {stepName}");
 
-            var stepPath = Path.Combine(diskAsserter.PathResolver.GetStepPath(), stepName);
+            var stepPath = Path.Combine(diskAsserter.PathResolver.GetStepPath(), stepName).Replace('\\', '/');
 
             if (expectedOperation.Step != stepPath)
                 throw new InvalidOperationException($"Expecting input from {expectedOperation.Step} but actual is an input from {stepPath}");
