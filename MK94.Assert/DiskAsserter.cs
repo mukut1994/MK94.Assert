@@ -19,7 +19,7 @@ namespace MK94.Assert
         /// </summary>
         public static DiskAsserter Default { get; set; }
 
-        private const string sequenceFile = "_sequence.json";
+        private const string sequenceFile = "_sequence";
 
         private static readonly JsonSerializerOptions SerializerOptions = new JsonSerializerOptions { WriteIndented = true };
 
@@ -68,7 +68,7 @@ namespace MK94.Assert
             var outputFile = Path.Combine(PathResolver.GetStepPath(), fileType != null ? $"{step}.{fileType}" : step);
 
             Operations.Value = Operations.Value ?? new List<AssertOperation>();
-            Operations.Value.Add(new AssertOperation(mode, outputFile));
+            Operations.Value.Add(new AssertOperation(mode, outputFile.Replace('\\', '/')));
 
             if (WriteMode)
             {
