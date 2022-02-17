@@ -13,7 +13,7 @@ Only NUnit projects are supported.
 |xUnit            |❌       |
 |MSTest           |❌       |
 
-#NUnit
+# NUnit
 ## Setup
 Configure the library in OneTimeSetUp like so
 ```c#
@@ -33,7 +33,7 @@ public class GlobalSetup
 
 ## File Storage Options
 
-By defult Files are stored in a "TestData/{Class Name}/{Test Name}/{Step Name}" pattern.  
+By default files are stored in a "TestData/{Class Name}/{Test Name}/{Step Name}" pattern.  
 A root.json file is placed at "TestData" to keep track of file hashes to help reduce disk wear.
 
 "TestData" can be overridden via the second parameter in 
