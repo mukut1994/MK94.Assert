@@ -6,7 +6,7 @@ MK94.Assert asserts the actual data in test runs against expected data on disk.
 Expected data can be updated by calling ```DiskAssert.EnableWriteMode();``` in the TestSetup or anywhere in code before any calls to ```DiskAssert.Matches```  
 
 ## Supported Testing Frameworks
-Only NUnit projects are supported. 
+Only NUnit projects are supported at the moment with plans to expand this out in the future. 
 |Testing Framework|Supported|
 |-----------------|---------|
 |NUnit            |✅       |
