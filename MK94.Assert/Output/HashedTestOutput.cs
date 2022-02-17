@@ -89,7 +89,7 @@ namespace MK94.Assert.Output
 
 			var root = LoadRootFile();
 
-			// Replace windows path / with \
+			// Replace windows path \ with /
 			var actualPath = root.GetValueOrDefault(path.Replace('\\', '/'));
 
 			if (actualPath == null)
@@ -127,7 +127,7 @@ namespace MK94.Assert.Output
 
 				var duplicateFileExists = root.ContainsValue(TestOutputHelper.HashToString(hash.Hash));
 
-				// Replace windows path / with \
+				// Replace windows path \ with /
 				root[path.Replace('\\', '/')] = hashAsString;
 
 				WriteRootFile(root);

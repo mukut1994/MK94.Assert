@@ -9,7 +9,7 @@ namespace MK94.Assert
     /// </summary>
     public static class DiskAssert
     {
-        /// <inheritdoc cref="DiskAsserter.MatchesRaw(string, string, string, IDifferenceFormatter{string})"/>
+        /// <inheritdoc cref="DiskAsserter.MatchesRaw(string,string,string,IDifferenceFormatter{string},OperationMode)"/>
         public static string MatchesRaw(string step, string rawData, string fileType = null, IDifferenceFormatter<string> formatter = null) 
             => DiskAsserter.Default.MatchesRaw(step, rawData, fileType, formatter);
 

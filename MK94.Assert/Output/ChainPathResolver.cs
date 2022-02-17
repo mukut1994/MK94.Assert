@@ -18,5 +18,4 @@ namespace MK94.Assert.Output
             return Path.Combine(className, testCaseName);
         }
     }
-
 }

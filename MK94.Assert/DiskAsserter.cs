@@ -21,8 +21,6 @@ namespace MK94.Assert
 
         private const string sequenceFile = "_sequence";
 
-        private static readonly JsonSerializerOptions SerializerOptions = new JsonSerializerOptions { WriteIndented = true };
-
         /// <summary>
         /// The path resolver to determine per test paths. Usually related to which test framework is being used e.g. XUnit, NUnit, MSTest etc
         /// </summary>
