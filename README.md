@@ -6,7 +6,7 @@ MK94.Assert asserts the actual data in test runs against expected data on disk.
 Expected data can be updated by calling ```DiskAssert.EnableWriteMode();``` in the TestSetup or anywhere in code before any calls to ```DiskAssert.Matches```  
 
 ## Supported Testing Frameworks
-Only NUnit projects are supported at the moment. 
+Only NUnit projects are supported. 
 |Testing Framework|Supported|
 |-----------------|---------|
 |NUnit            |✅       |
@@ -33,15 +33,15 @@ public class GlobalSetup
 
 ## File Storage Options
 
-By default files are stored in a "TestData/{Class Name}/{Test Name}/{Step Name}" pattern.  
-A root.json file is placed at "TestData" to keep track of file hashes to help reduce disk wear.
+By default files are stored in a `TestData/{Class Name}/{Test Name}/{Step Name}` pattern.  
+A `root.json` file is placed in the `TestData` folder to keep track of file hashes which is checked first to help reduce disk wear.
 
-"TestData" can be overridden via the second parameter in 
+`TestData` folder can be overridden via the second parameter in `WithRecommendedSettings`
 ```c#
 SetupDiskAssert.WithRecommendedSettings("MK94.Assert", "CustomTestData");
 ```
 
-The {Class Name}/{Test Name} structure can be overridden by setting the Output on the DiskAsserter or calling  
+The `{Class Name}/{Test Name}` structure can also be overridden by setting the Output on the DiskAsserter or calling  `WithDeduplication`:
 ```c#
 SetupDiskAssert.WithRecommendedSettings("MK94.Assert", "CustomTestData").WithDeduplication();
 // OR
@@ -49,15 +49,15 @@ myDiskAsserter.WithDeduplication();
 // OR
 myDiskAsserter.Output = new MyCustomOutputStructure(); // implements ITestOutput
 ```
-WithDeduplication stores the files in a "TestData/{File content Hash}" structure. It's useful to save disk space if many tests output the same data by saving them only once. The root.json contains the actual file paths and their content hash.  
-Because of the structure the files are less accessible and this mode is not generally recommended.
+`WithDeduplication` stores the files in a `TestData/{File content Hash}` structure. This has the benefit of saving disk space if multiple unit tests output the same data by storing them in a single file. The `root.json` contains the actual file paths and their content hash.  
+However, the structure of these files is less accessible and therefore this mode is not generally recommended.
 
 ## Chain Unit tests to form an Integration Test
 
 Unit tests are great because they allow small pieces of code to be debugged faster.  
 Integration tests are great because they check the whole system works well together.  
 
-MK94.Assert allows chaining Unit tests to effectively create integration tests with the benefits of both.
+MK94.Assert allows chaining unit tests to effectively create integration tests with the benefits of both.
 
 ```C#
  [Test]
@@ -79,7 +79,7 @@ MK94.Assert allows chaining Unit tests to effectively create integration tests w
      var context = inputs.Read<TestObject>("Step 1.json"); 
  }
 ```
-TestCase1 and TestCase2 can be run independently in parallel or individually (assuming TestCase1 has been run once in the past with EnableWriteMode).  
+`TestCase1` and `TestCase2` can be run independently in parallel or individually (assuming TestCase1 has been run once in the past with EnableWriteMode).  
 They do not share any data during test runs.
 
 ## Mocking with DiskAssert
@@ -98,7 +98,7 @@ controller.GetWeather(); // Makes a call to database.SelectAll() internally
 ```
 
 On runs with EnableWriteMode() 
- - The  actual object passed in via the first parameter are used
+ - The actual object passed in via the first parameter are used
  - Calls are intercepted, arguments sent to the object and its result are recorded
 
 On Subsequent runs
