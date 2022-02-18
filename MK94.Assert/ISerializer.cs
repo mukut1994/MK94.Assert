@@ -35,7 +35,7 @@ namespace MK94.Assert
 
     public class SystemTextJsonSerializer : ISerializer
     {
-        private static JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true };
+        private static readonly JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true };
 
         public T Deserialize<T>(Stream stream)
         {

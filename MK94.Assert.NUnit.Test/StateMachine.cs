@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MK94.Assert.NUnit.Test
+﻿namespace MK94.Assert.NUnit.Test
 {
     public class StateMachine
     {

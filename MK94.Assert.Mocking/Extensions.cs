@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MK94.Assert.Mocking
+﻿namespace MK94.Assert.Mocking
 {
     public static class Extensions
     {
