@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MK94.Assert.Chain
+﻿namespace MK94.Assert.Chain
 {
     public static class Extensions
     {

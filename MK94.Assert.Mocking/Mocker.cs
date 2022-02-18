@@ -14,12 +14,12 @@ namespace MK94.Assert.Mocking
     /// </summary>
     public class Mocker : IInterceptor
     {
-        private static readonly ProxyGenerator proxyGenerator = new ProxyGenerator();
+        private static readonly ProxyGenerator ProxyGenerator = new ProxyGenerator();
 
         private readonly DiskAsserter diskAsserter;
 
-        private AsyncLocal<Queue<AssertOperation>> operations = new AsyncLocal<Queue<AssertOperation>>();
-        private AsyncLocal<int> count = new AsyncLocal<int>();
+        private readonly AsyncLocal<Queue<AssertOperation>> operations = new AsyncLocal<Queue<AssertOperation>>();
+        private readonly AsyncLocal<int> count = new AsyncLocal<int>();
 
         public Mocker(DiskAsserter diskAsserter)
         {
@@ -37,9 +37,9 @@ namespace MK94.Assert.Mocking
             where T : class
         {
             if (diskAsserter.WriteMode && actual != default)
-                return proxyGenerator.CreateInterfaceProxyWithTarget(actual(), this);
+                return ProxyGenerator.CreateInterfaceProxyWithTarget(actual(), this);
 
-            return proxyGenerator.CreateInterfaceProxyWithoutTarget<T>(this);
+            return ProxyGenerator.CreateInterfaceProxyWithoutTarget<T>(this);
         }
 
 
@@ -77,11 +77,11 @@ namespace MK94.Assert.Mocking
 
             var parameters = invocation.Method.GetParameters();
 
-            string paramName(int i) => $"{stepName}_{parameters[i].Name}";
+            string ParamName(int i) => $"{stepName}_{parameters[i].Name}";
 
             for (var i = 0; i < invocation.Arguments.Length; i++)
             {
-                diskAsserter.Matches($"{stepName}_{paramName(i)}", invocation.Arguments[i]);
+                diskAsserter.Matches($"{stepName}_{ParamName(i)}", invocation.Arguments[i]);
             }
 
             if (diskAsserter.WriteMode)
