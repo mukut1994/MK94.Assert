@@ -1,0 +1,37 @@
+name: Publish Nuget MK94.Assert.Mocking
+
+on:
+  push:
+    branches: [ master ]
+    paths: MK94.Assert.Mocking/nuget.version
+    
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+
+    - name: Install dependencies
+      run: dotnet restore
+      
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    
+    - name: Pack
+      working-directory: MK94.Assert.Mocking
+      run: | 
+        version="`cat nuget.version`"
+        dotnet pack --configuration Release --no-restore /p:Version=$version
+        
+    - name: Publish
+      working-directory: MK94.Assert.Mocking
+      run: | 
+        version="`cat nuget.version`" 
+        cd bin/Release
+        dotnet nuget push MK94.Assert.Mocking.$version.nupkg -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json
