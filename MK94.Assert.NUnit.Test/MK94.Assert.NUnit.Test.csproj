@@ -4,7 +4,7 @@
         <TargetFramework>net5.0</TargetFramework>
         <Nullable>enable</Nullable>
 
-        <IsPackable>false</IsPackable>
+        <IsPackable>false</IsPackable>      
     </PropertyGroup>
 
     <ItemGroup>
@@ -17,7 +17,7 @@
     <ItemGroup>
       <ProjectReference Include="..\MK94.Assert.Mocking\MK94.Assert.Mocking.csproj" />
       <ProjectReference Include="..\MK94.Assert.NUnit\MK94.Assert.NUnit.csproj" />
-      <ProjectReference Include="..\MK94.Assert\MK94.Assert.csproj" />
+      <ProjectReference Include="..\MK94.Assert.Core\MK94.Assert.Core.csproj" />
     </ItemGroup>
 
 </Project>

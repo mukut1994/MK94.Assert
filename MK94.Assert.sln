@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MK94.Assert", "MK94.Assert\MK94.Assert.csproj", "{F82BE4CC-5049-4B55-90AE-D06F1026BD1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MK94.Assert.Core", "MK94.Assert.Core\MK94.Assert.Core.csproj", "{F82BE4CC-5049-4B55-90AE-D06F1026BD1D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MK94.Assert.NUnit", "MK94.Assert.NUnit\MK94.Assert.NUnit.csproj", "{A83E4443-1329-472E-A7D4-09AB9CC3C767}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MK94.Assert.NUnit.Test", "MK94.Assert.NUnit.Test\MK94.Assert.NUnit.Test.csproj", "{3ADD4067-827E-42E3-8221-8016817AB5FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MK94.Assert.Mocking", "MK94.Assert.Mocking\MK94.Assert.Mocking.csproj", "{23D09824-788F-4527-BF20-484E56643743}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MK94.Assert.Mocking", "MK94.Assert.Mocking\MK94.Assert.Mocking.csproj", "{23D09824-788F-4527-BF20-484E56643743}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

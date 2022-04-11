@@ -1,4 +1,4 @@
-name: Publish Nuget MK94.Assert.Mocking
+name: Publish Nuget MK94.Assert.Core
 
 on:
   workflow_dispatch:
@@ -23,9 +23,9 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     
     - name: Pack
-      working-directory: MK94.Assert.Mocking
+      working-directory: MK94.Assert.Core
       run: dotnet pack --configuration Release --no-restore
         
     - name: Publish
-      working-directory: MK94.Assert.Mocking/bin/Release
+      working-directory: MK94.Assert.Core/bin/Release
       run: dotnet nuget push *.nupkg -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json
