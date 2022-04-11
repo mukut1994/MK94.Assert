@@ -1,10 +1,10 @@
-﻿namespace MK94.Assert.Chain
+﻿namespace MK94.Assert.Input
 {
     public static class Extensions
     {
         /// <summary>
-        /// Initialises a <see cref="TestChainer"/> based on this <see cref="DiskAsserter"/>
+        /// Initialises a <see cref="TestInput"/> based on this <see cref="DiskAsserter"/>
         /// </summary>
-        public static TestChainer WithInputs(this DiskAsserter diskAsserter) => new TestChainer(diskAsserter);
+        public static TestInput WithInputs(this DiskAsserter diskAsserter) => new TestInput(diskAsserter);
     }
 }

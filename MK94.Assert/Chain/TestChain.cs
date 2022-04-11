@@ -3,20 +3,27 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace MK94.Assert.Chain
+namespace MK94.Assert.Input
 {
-    public class TestChainer
+    public class TestInput
     {
         private DiskAsserter DiskAsserter { get; }
 
-        private List<ChainPathResolver> TestChainContexts { get; set; } = new List<ChainPathResolver>();
+        private List<IPathResolver> TestChainContexts { get; set; } = new List<IPathResolver>();
 
-        public TestChainer(DiskAsserter diskAsserter)
+        public TestInput(DiskAsserter diskAsserter)
         {
             DiskAsserter = diskAsserter;
         }
 
-        public TestChainer From(string fullClassName, string testCaseName)
+        public TestInput FromPath(string path)
+        {
+            TestChainContexts.Add(new DirectPathResolver(path));
+
+            return this;
+        }
+
+        public TestInput From(string fullClassName, string testCaseName)
         {
             TestChainContexts.Add(new ChainPathResolver(fullClassName, testCaseName));
 

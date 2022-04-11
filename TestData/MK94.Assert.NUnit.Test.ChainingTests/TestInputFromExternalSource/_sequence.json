@@ -1,0 +1,10 @@
+[
+  {
+    "Mode": "Input",
+    "Step": "External/ExamplePostData.json"
+  },
+  {
+    "Mode": "Output",
+    "Step": "MK94.Assert.NUnit.Test.ChainingTests/TestInputFromExternalSource/Step 1.json"
+  }
+]
