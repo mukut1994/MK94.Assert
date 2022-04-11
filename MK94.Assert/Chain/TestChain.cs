@@ -23,13 +23,6 @@ namespace MK94.Assert.Input
             return this;
         }
 
-        public TestInput FromPath(string parentFolder, string parentRelative)
-        {
-            TestChainContexts.Add(new DirectPathResolver(PathHelper.PathRelativeToParentFolder(parentFolder, parentRelative)));
-
-            return this;
-        }
-
         public TestInput From(string fullClassName, string testCaseName)
         {
             TestChainContexts.Add(new ChainPathResolver(fullClassName, testCaseName));
