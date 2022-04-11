@@ -1,5 +1,5 @@
 ﻿using Castle.DynamicProxy;
-using MK94.Assert.Chain;
+using MK94.Assert.Input;
 using System;
 using System.Collections.Generic;
 using System.IO;

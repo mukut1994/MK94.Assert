@@ -64,5 +64,22 @@ namespace MK94.Assert.NUnit.Test
             DiskAssert.Matches("Step 1", context);
             DiskAssert.MatchesSequence();
         }
+
+        [Test]
+        public void TestInputFromExternalSource()
+        {
+            var inputs = DiskAssert
+                .WithInputs()
+                .FromPath("External");
+
+            var context = inputs.Read<TestObject>("ExamplePostData.json");
+
+            context.A += 10;
+            context.B += 10;
+            context.C += 10;
+
+            DiskAssert.Matches("Step 1", context);
+            DiskAssert.MatchesSequence();
+        }
     }
 }

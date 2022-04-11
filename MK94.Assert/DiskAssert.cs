@@ -1,4 +1,4 @@
-﻿using MK94.Assert.Chain;
+﻿using MK94.Assert.Input;
 using System;
 using System.Threading.Tasks;
 
@@ -38,7 +38,7 @@ namespace MK94.Assert
         public static void MatchesSequence() => DiskAsserter.Default.MatchesSequence();
 
         /// <inheritdoc cref="Extensions.WithInputs"/>
-        public static TestChainer WithInputs() => DiskAsserter.Default.WithInputs();
+        public static TestInput WithInputs() => DiskAsserter.Default.WithInputs();
 
         /// <inheritdoc cref="DiskAsserter.Default" />
         public static DiskAsserter Default => DiskAsserter.Default;
