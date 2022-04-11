@@ -1,9 +1,8 @@
-name: Publish Nuget
+name: Publish Nuget MK94.Assert.NUnit
 
 on:
-  push:
+  workflow_dispatch:
     branches: [ master ]
-    paths: MK94.Assert.NUnit/nuget.version
     
 jobs:
   publish:
@@ -25,13 +24,8 @@ jobs:
     
     - name: Pack
       working-directory: MK94.Assert.NUnit
-      run: | 
-        version="`cat nuget.version`"
-        dotnet pack --configuration Release --no-restore /p:Version=$version
+      run: dotnet pack --configuration Release --no-restore
         
     - name: Publish
-      working-directory: MK94.Assert.NUnit
-      run: | 
-        version="`cat nuget.version`" 
-        cd bin/Release
-        dotnet nuget push MK94.Assert.NUnit.$version.nupkg -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json
+      working-directory: MK94.Assert.NUnit/bin/Release
+      run: dotnet nuget push *.nupkg -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json

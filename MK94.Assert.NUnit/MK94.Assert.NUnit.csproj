@@ -4,8 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackageProjectUrl>https://github.com/mukut1994/MK94.Assert</PackageProjectUrl>
     <PackageLicense>https://github.com/mukut1994/SeeRaw/blob/master/LICENSE</PackageLicense>
-    
-    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+    <PackageVersion>0.0.4</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,16 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MK94.Assert\MK94.Assert.csproj">
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-      <IncludeAssets>ProjectB.dll</IncludeAssets>
-    </ProjectReference>
+    <ProjectReference Include="..\MK94.Assert.Core\MK94.Assert.Core.csproj" />
   </ItemGroup>
-  
-  <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
-    <ItemGroup>
-      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
-    </ItemGroup>
-  </Target>
   
 </Project>
