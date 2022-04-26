@@ -73,6 +73,16 @@ namespace MK94.Assert
                 foreach (var diff in FindDifferences(path, expectedItem, actualItem))
                     yield return diff;
             }
+
+            if (expectedLength == actualLength)
+                yield break;
+
+            var smallArrayLength = Math.Min(expectedLength, actualLength);
+            var largeArrayLength = Math.Max(expectedLength, actualLength);
+            var largerArray = expectedLength > actualLength ? expected : actual;
+
+            for(int i = smallArrayLength; i < largeArrayLength; i++)
+                yield return new Difference($"{jsonPath}[{i}]", $"Extra item {largerArray[i]}", "null");
         }
 
         private IEnumerable<Difference> FindDifferencesInObject(string jsonPath, JsonElement expected, JsonElement actual)

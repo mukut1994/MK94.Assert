@@ -8,5 +8,10 @@
     "Location": "$[1]",
     "Expected": "2",
     "Actual": "3"
+  },
+  {
+    "Location": "$[2]",
+    "Expected": "Extra item 3",
+    "Actual": "null"
   }
 ]
