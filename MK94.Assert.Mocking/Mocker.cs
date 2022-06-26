@@ -2,28 +2,48 @@
 using MK94.Assert.Input;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace MK94.Assert.Mocking
 {
     /// <summary>
     /// A class to generate mocks that expect calls from <see cref="DiskAsserter.Operations"/> and setup returns via <see cref="DiskAsserter.Matches{T}(string, T)"/>
     /// </summary>
-    public class Mocker : IInterceptor
+    public class Mocker
     {
+        /// <summary>
+        /// The default Mocker based on <see cref="DiskAssert.Default"/> <br />
+        /// Used by the static methods in <see cref="Mock"/>
+        /// </summary>
+        public static Mocker Default { get; } = DiskAsserter.Default.WithMocks();
+
         private static readonly ProxyGenerator ProxyGenerator = new ProxyGenerator();
 
-        private readonly DiskAsserter diskAsserter;
+        internal readonly DiskAsserter diskAsserter;
 
-        private readonly AsyncLocal<Queue<AssertOperation>> operations = new AsyncLocal<Queue<AssertOperation>>();
-        private readonly AsyncLocal<int> count = new AsyncLocal<int>();
+        internal readonly AsyncLocal<Queue<AssertOperation>> operations = new AsyncLocal<Queue<AssertOperation>>();
+        internal readonly AsyncLocal<int> count = new AsyncLocal<int>();
+
+        internal readonly MockContext instanceResolveContext;
 
         public Mocker(DiskAsserter diskAsserter)
         {
             this.diskAsserter = diskAsserter;
+
+            instanceResolveContext = new MockContext(this, diskAsserter);
+        }
+
+        /// <summary>
+        /// Sets the property <see cref="MockContext.CustomContext"/> of the context passed to the instance resolver lambdas <br />
+        /// Useful instances that rely on instances initialized late but still need to be registered with a DI Container e.g. IServiceCollection and IServiceProvider
+        /// </summary>
+        /// <param name="context">The value that will be passed through</param>
+        /// <returns>The mocker this method was called on</returns>
+        public Mocker SetContext(object context)
+        {
+            instanceResolveContext.CustomContext = context;
+
+            return this;
         }
 
         /// <summary>
@@ -33,15 +53,25 @@ namespace MK94.Assert.Mocking
         /// <param name="actual">The implementation to use when running in write mode. <br />
         /// The calls and results of this implementation will be record for future re-runs.</param>
         /// <returns>A mocked instance of <typeparamref name="T"/></returns>
-        public T Of<T>(Func<T> actual)
+        public T Of<T>(Func<MockContext, T> actual)
             where T : class
         {
-            if (diskAsserter.WriteMode && actual != default)
-                return ProxyGenerator.CreateInterfaceProxyWithTarget(actual(), this);
-
-            return ProxyGenerator.CreateInterfaceProxyWithoutTarget<T>(this);
+            return ProxyGenerator.CreateInterfaceProxyWithoutTarget<T>(new Interceptor(this, actual));
         }
 
+        /// <inheritdoc cref="Of{T}(Func{MockContext, T})"/>
+        public object Of(Type type, Func<MockContext, object> actual) 
+        {
+            return ProxyGenerator.CreateInterfaceProxyWithoutTarget(type, new Interceptor(this, actual));
+        }
+
+        /// <inheritdoc cref="Of{T}(Func{MockContext, T}, out T)"/>
+        public Mocker Of(Type type, Func<MockContext, object> actual, out object mocked)
+        {
+            mocked = ProxyGenerator.CreateInterfaceProxyWithoutTarget(type, new Interceptor(this, actual));
+
+            return this;
+        }
 
         /// <summary>
         /// Creates a mock of <typeparamref name="T"/>. Useful for a builder pattern.
@@ -53,86 +83,20 @@ namespace MK94.Assert.Mocking
         /// <param name="mocked">The result mock object</param>
         /// 
         /// <example>
-            /// <code>
-                /// 
-                /// DiskAssert.Default
-                ///     .Of&lt;T1&gt;(() => new ImplementationOfT(), out var mocked1)
-                ///     .Of&lt;T2&gt;(() => new ImplementationOfT2(), out var mocked2)
-                ///     
-            /// </code>
+        /// <code>
+        /// 
+        /// DiskAssert.Default
+        ///     .Of&lt;T1&gt;(() => new ImplementationOfT(), out var mocked1)
+        ///     .Of&lt;T2&gt;(() => new ImplementationOfT2(), out var mocked2)
+        ///     
+        /// </code>
         /// </example>
-        public Mocker Of<T>(Func<T> actual, out T mocked)
+        public Mocker Of<T>(Func<MockContext, T> actual, out T mocked)
             where T : class
         {
             mocked = Of(actual);
 
             return this;
-        }
-
-        void IInterceptor.Intercept(IInvocation invocation)
-        {
-            var stepName = $"{invocation.Method.DeclaringType.FullName}.{invocation.Method.Name}_{count.Value}";
-            var returnName = $"{stepName}_return";
-            count.Value++;
-
-            var parameters = invocation.Method.GetParameters();
-
-            string ParamName(int i) => $"{stepName}_{parameters[i].Name}";
-
-            for (var i = 0; i < invocation.Arguments.Length; i++)
-            {
-                diskAsserter.Matches($"{stepName}_{ParamName(i)}", invocation.Arguments[i]);
-            }
-
-            if (diskAsserter.WriteMode)
-            {
-                invocation.Proceed();
-
-                var serialized = diskAsserter.Serializer.Serialize(invocation.ReturnValue);
-
-                diskAsserter.MatchesRaw(returnName, serialized, "json", JsonDifferenceFormatter.Instance, OperationMode.Input);
-
-                return;
-            }
-
-            EnsureExpectedOperationCalled(invocation, returnName + ".json");
-
-            var stepPath = Path.Combine(diskAsserter.PathResolver.GetStepPath(), returnName + ".json").Replace('\\', '/');
-
-            diskAsserter.Operations.Value.Add(new AssertOperation(OperationMode.Input, stepPath));
-
-            if (MethodReturnIsVoid(invocation))
-                return;
-
-            using var reader = diskAsserter.Output.OpenRead(stepPath, false);
-
-            invocation.ReturnValue = diskAsserter.Serializer
-                .GetType()
-                .GetMethod(nameof(ISerializer.Deserialize))
-                .MakeGenericMethod(invocation.Method.ReturnType)
-                .Invoke(diskAsserter.Serializer, new object[] { reader });
-
-        }
-
-        private bool MethodReturnIsVoid(IInvocation invocation)
-        {
-            return invocation.Method.ReturnType == typeof(void) || invocation.Method.ReturnType == typeof(Task);
-        } 
-
-        private void EnsureExpectedOperationCalled(IInvocation invocation, string stepName)
-        {
-            if(operations.Value == null)
-                operations.Value = new Queue<AssertOperation>(diskAsserter.GetOperations().Where(x => x.Mode == OperationMode.Input));
-
-            var expectedOperation = operations.Value.Dequeue();
-
-            if (expectedOperation.Mode != OperationMode.Input)
-                throw new InvalidOperationException($"Expecting input from {expectedOperation.Step} but actual is an output to {stepName}");
-
-            var stepPath = Path.Combine(diskAsserter.PathResolver.GetStepPath(), stepName).Replace('\\', '/');
-
-            if (expectedOperation.Step != stepPath)
-                throw new InvalidOperationException($"Expecting input from {expectedOperation.Step} but actual is an input from {stepPath}");
         }
     }
 }
