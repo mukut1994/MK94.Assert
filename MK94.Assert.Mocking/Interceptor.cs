@@ -36,7 +36,7 @@ namespace MK94.Assert.Mocking
 
             if (parent.diskAsserter.WriteMode)
             {
-                invocation.Method.Invoke(mocked.Value, invocation.Arguments);
+                invocation.ReturnValue = invocation.Method.Invoke(mocked.Value, invocation.Arguments);
 
                 var serialized = parent.diskAsserter.Serializer.Serialize(invocation.ReturnValue);
 

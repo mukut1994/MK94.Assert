@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MK94.Assert.NUnit.Test
@@ -35,7 +36,7 @@ namespace MK94.Assert.NUnit.Test
 
         [Test]
         public void BasicTest()
-        { 
+        {
             DiskAssert.Default
                 .WithMocks()
                 .Of<IDatabase>((m) => new Database(), out var database);
