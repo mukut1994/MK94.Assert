@@ -1,0 +1,27 @@
+[
+  {
+    "Location": "$.PropA",
+    "Expected": "1",
+    "Actual": "3"
+  },
+  {
+    "Location": "$.PropC.PropI",
+    "Expected": "{}",
+    "Actual": "undefined"
+  },
+  {
+    "Location": "$.PropD",
+    "Expected": "Length: 1",
+    "Actual": "Length: 0"
+  },
+  {
+    "Location": "$.PropD[0]",
+    "Expected": "Extra item {}",
+    "Actual": "null"
+  },
+  {
+    "Location": "$.PropB",
+    "Expected": "undefined",
+    "Actual": "4"
+  }
+]

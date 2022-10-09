@@ -8,5 +8,10 @@
     "Location": "$.PropB",
     "Expected": "2",
     "Actual": "undefined"
+  },
+  {
+    "Location": "$.PropC",
+    "Expected": "{\n    \u0022PropI\u0022: 1\n  }",
+    "Actual": "null"
   }
 ]

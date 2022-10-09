@@ -35,7 +35,7 @@ namespace MK94.Assert.Mocking
 
         /// <summary>
         /// Sets the property <see cref="MockContext.CustomContext"/> of the context passed to the instance resolver lambdas <br />
-        /// Useful instances that rely on instances initialized late but still need to be registered with a DI Container e.g. IServiceCollection and IServiceProvider
+        /// Useful for creating instances that rely on other instances that are initialized late but still need to be registered with a DI Container e.g. IServiceCollection and IServiceProvider
         /// </summary>
         /// <param name="context">The value that will be passed through</param>
         /// <returns>The mocker this method was called on</returns>

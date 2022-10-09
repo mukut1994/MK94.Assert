@@ -32,13 +32,50 @@ namespace MK94.Assert.NUnit.Test
             var initialObject = new
             {
                 PropA = 1,
-                PropB = 2
+                PropB = 2,
+                PropC = new
+                {
+                    PropI = 1
+                }
             };
 
             var updatedObject = new
             {
                 PropA = 3,
                 // PropB is deleted
+                PropC = (object?) null
+            };
+
+            MatchDifferences(initialObject, updatedObject);
+        }
+
+        [Test]
+        public void JsonDifferenceOnProperties_NullToValue()
+        {
+            var initialObject = new
+            {
+                PropA = 1,
+                PropC = new
+                {
+                    PropI = new object()
+                },
+                PropD = new[]
+                {
+                    new {}
+                }
+            };
+
+            var updatedObject = new
+            {
+                PropA = 3,
+                PropB = 4,
+                PropC = new
+                {
+
+                },
+                PropD = new object[]
+                {
+                }
             };
 
             MatchDifferences(initialObject, updatedObject);

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks.Sources;
 
 namespace MK94.Assert
 {
@@ -87,8 +90,19 @@ namespace MK94.Assert
 
         private IEnumerable<Difference> FindDifferencesInObject(string jsonPath, JsonElement expected, JsonElement actual)
         {
+            if(expected.ValueKind == JsonValueKind.Null ^ actual.ValueKind == JsonValueKind.Null)
+            {
+                yield return new Difference(jsonPath, expected.ValueKind == JsonValueKind.Null ? "null" : expected.ToString(), actual.ValueKind == JsonValueKind.Null ? "null" : actual.ToString());
+
+                yield break;
+            }
+
+            var checkedProps = new HashSet<string>();
+
             foreach(var expectedProperty in expected.EnumerateObject())
             {
+                checkedProps.Add(expectedProperty.Name);
+
                 var path = $"{jsonPath}.{expectedProperty.Name}";
 
                 if (!actual.TryGetProperty(expectedProperty.Name, out var actualProperty))
@@ -100,11 +114,16 @@ namespace MK94.Assert
                 }
             }
 
-            foreach (var actualProperty in actual.EnumerateObject())
+            foreach (var actualProperty in actual.EnumerateObject().Where(x => !checkedProps.Contains(x.Name)))
             {
                 var path = $"{jsonPath}.{actualProperty.Name}";
-                if (!actual.TryGetProperty(actualProperty.Name, out var _))
+                if (!expected.TryGetProperty(actualProperty.Name, out var expectedProperty))
                     yield return new Difference(path, "undefined", actualProperty.Value.ToString());
+                else
+                {
+                    foreach (var diff in FindDifferences(path, expectedProperty, actualProperty.Value))
+                        yield return diff;
+                }
             }
         }
     }
