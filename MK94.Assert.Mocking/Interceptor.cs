@@ -21,9 +21,11 @@ namespace MK94.Assert.Mocking
 
         void IInterceptor.Intercept(IInvocation invocation)
         {
-            var stepName = $"{invocation.Method.DeclaringType.FullName}.{invocation.Method.Name}_{parent.count.Value}";
+            parent.count.Value = parent.count.Value ?? new Mocker.Counter();
+
+            var stepName = $"{invocation.Method.DeclaringType.FullName}.{invocation.Method.Name}_{parent.count.Value.Count}";
             var returnName = $"{stepName}_return";
-            parent.count.Value++;
+            parent.count.Value.Count++;
 
             var parameters = invocation.Method.GetParameters();
 
@@ -54,6 +56,12 @@ namespace MK94.Assert.Mocking
             if (MethodReturnIsVoid(invocation))
                 return;
 
+            if (MethodReturnIsTask(invocation))
+            {
+                invocation.ReturnValue = Task.FromResult(true);
+                return;
+            }
+
             using var reader = parent.diskAsserter.Output.OpenRead(stepPath, false);
 
             invocation.ReturnValue = parent.diskAsserter.Serializer
@@ -66,7 +74,12 @@ namespace MK94.Assert.Mocking
 
         private bool MethodReturnIsVoid(IInvocation invocation)
         {
-            return invocation.Method.ReturnType == typeof(void) || invocation.Method.ReturnType == typeof(Task);
+            return invocation.Method.ReturnType == typeof(void);
+        }
+
+        private bool MethodReturnIsTask(IInvocation invocation)
+        {
+            return invocation.Method.ReturnType == typeof(Task);
         }
 
         private void EnsureExpectedOperationCalled(IInvocation invocation, string stepName)

@@ -11,6 +11,13 @@ namespace MK94.Assert.Mocking
     /// </summary>
     public class Mocker
     {
+        // somewhat hacky workaround 
+        // the counter value is reset between threads unless it's a ref type
+        internal class Counter
+        {
+            public int Count { get; set; }
+        }
+
         /// <summary>
         /// The default Mocker based on <see cref="DiskAssert.Default"/> <br />
         /// Used by the static methods in <see cref="Mock"/>
@@ -22,7 +29,7 @@ namespace MK94.Assert.Mocking
         internal readonly DiskAsserter diskAsserter;
 
         internal readonly AsyncLocal<Queue<AssertOperation>> operations = new AsyncLocal<Queue<AssertOperation>>();
-        internal readonly AsyncLocal<int> count = new AsyncLocal<int>();
+        internal readonly AsyncLocal<Counter> count = new AsyncLocal<Counter>();
 
         internal readonly MockContext instanceResolveContext;
 
