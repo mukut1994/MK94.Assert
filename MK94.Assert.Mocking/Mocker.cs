@@ -28,7 +28,7 @@ namespace MK94.Assert.Mocking
 
         internal readonly DiskAsserter diskAsserter;
 
-        internal readonly AsyncLocal<Queue<AssertOperation>> operations = new AsyncLocal<Queue<AssertOperation>>();
+        internal readonly AsyncLocal<List<AssertOperation>> operations = new AsyncLocal<List<AssertOperation>>();
         internal readonly AsyncLocal<Counter> count = new AsyncLocal<Counter>();
 
         internal readonly MockContext instanceResolveContext;

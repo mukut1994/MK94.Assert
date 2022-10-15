@@ -40,7 +40,12 @@ namespace MK94.Assert.Mocking
             {
                 invocation.ReturnValue = invocation.Method.Invoke(mocked.Value, invocation.Arguments);
 
-                var serialized = parent.diskAsserter.Serializer.Serialize(invocation.ReturnValue);
+                var toSerialize = invocation.ReturnValue;
+
+                if (invocation.Method.ReturnType.IsGenericType && invocation.Method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
+                    toSerialize = invocation.Method.ReturnType.GetMember(nameof(Task<object>.Result)); // TODO should run task properly?
+
+                var serialized = parent.diskAsserter.Serializer.Serialize(toSerialize);
 
                 parent.diskAsserter.MatchesRaw(returnName, serialized, "json", JsonDifferenceFormatter.Instance, OperationMode.Input);
 
@@ -64,7 +69,23 @@ namespace MK94.Assert.Mocking
 
             using var reader = parent.diskAsserter.Output.OpenRead(stepPath, false);
 
-            invocation.ReturnValue = parent.diskAsserter.Serializer
+            if (invocation.Method.ReturnType.IsGenericType && invocation.Method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
+            {
+                var result = parent.diskAsserter.Serializer
+                .GetType()
+                .GetMethod(nameof(ISerializer.Deserialize))
+                .MakeGenericMethod(invocation.Method.ReturnType.GetGenericArguments()[0])
+                .Invoke(parent.diskAsserter.Serializer, new object[] { reader });
+
+                invocation.ReturnValue = typeof(Task)
+                    .GetMethod(nameof(Task.FromResult), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
+                    .MakeGenericMethod(invocation.Method.ReturnType.GetGenericArguments()[0])
+                    .Invoke(null, new[] { result });
+
+                return;
+            }
+
+                invocation.ReturnValue = parent.diskAsserter.Serializer
                 .GetType()
                 .GetMethod(nameof(ISerializer.Deserialize))
                 .MakeGenericMethod(invocation.Method.ReturnType)
@@ -85,9 +106,9 @@ namespace MK94.Assert.Mocking
         private void EnsureExpectedOperationCalled(IInvocation invocation, string stepName)
         {
             if (parent.operations.Value == null)
-                parent.operations.Value = new Queue<AssertOperation>(parent.diskAsserter.GetOperations().Where(x => x.Mode == OperationMode.Input));
+                parent.operations.Value = parent.diskAsserter.GetOperations();
 
-            var expectedOperation = parent.operations.Value.Dequeue();
+            var expectedOperation = parent.operations.Value.Skip(parent.diskAsserter.Operations.Value.Count).First(x => x.Mode == OperationMode.Input);
 
             if (expectedOperation.Mode != OperationMode.Input)
                 throw new InvalidOperationException($"Expecting input from {expectedOperation.Step} but actual is an output to {stepName}");

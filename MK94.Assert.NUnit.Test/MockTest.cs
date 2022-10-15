@@ -14,46 +14,48 @@ namespace MK94.Assert.NUnit.Test
     {
         public interface IDatabase
         {
-            void Insert(int id, string text);
+            Task Insert(int id, string text);
 
-            string Select(int id);
+            Task<string> Select(int id);
         }
 
         private class Database : IDatabase
         {
             private Dictionary<int, string> fakeDb = new();
 
-            public void Insert(int id, string text)
+            public Task Insert(int id, string text)
             {
                 fakeDb[id] = text;
+
+                return Task.CompletedTask;
             }
 
-            public string Select(int id)
+            public Task<string> Select(int id)
             {
-                return fakeDb[id];
+                return Task.FromResult(fakeDb[id]);
             }
         }
 
         [Test]
-        public void BasicTest()
+        public async Task BasicTest()
         {
             DiskAssert.Default
                 .WithMocks()
                 .Of<IDatabase>((m) => new Database(), out var database);
 
-            database.Insert(1, "Text 1");
-            database.Insert(2, "Text 2");
-            database.Insert(3, "Text 3");
+            await database.Insert(1, "Text 1");
+            await database.Insert(2, "Text 2");
+            await database.Insert(3, "Text 3");
 
-            DiskAssert.Matches("Step 1", database.Select(3));
-            DiskAssert.Matches("Step 2", database.Select(1));
-            DiskAssert.Matches("Step 3", database.Select(2));
+            DiskAssert.Matches("Step 1", await database.Select(3));
+            DiskAssert.Matches("Step 2", await database.Select(1));
+            DiskAssert.Matches("Step 3", await database.Select(2));
 
             DiskAssert.MatchesSequence();
         }
 
         [Test]
-        public void ServiceProviderTest()
+        public async Task ServiceProviderTest()
         {
             var services = new ServiceCollection();
 
@@ -75,13 +77,13 @@ namespace MK94.Assert.NUnit.Test
             // In write mode a new Database is instantiated and recorded
             var database = provider.GetRequiredService<IDatabase>();
 
-            database.Insert(10, "Text 10");
-            database.Insert(20, "Text 20");
-            database.Insert(30, "Text 30");
+            await database.Insert(10, "Text 10");
+            await database.Insert(20, "Text 20");
+            await database.Insert(30, "Text 30");
 
-            DiskAssert.Matches("Service Provider Step 1", database.Select(30));
-            DiskAssert.Matches("Service Provider Step 2", database.Select(10));
-            DiskAssert.Matches("Service Provider Step 3", database.Select(20));
+            DiskAssert.Matches("Service Provider Step 1", await database.Select(30));
+            DiskAssert.Matches("Service Provider Step 2", await database.Select(10));
+            DiskAssert.Matches("Service Provider Step 3", await database.Select(20));
 
             DiskAssert.MatchesSequence();
         }
