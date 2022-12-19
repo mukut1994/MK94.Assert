@@ -11,42 +11,88 @@ using System.Threading.Tasks;
 
 namespace MK94.Assert
 {
-    public class DiskAsserter
+    public interface IDiskAsserterConfig
     {
-        /// <summary>
-        /// The default <see cref="DiskAsserter"/> instance. <br />
-        /// Used by <see cref="DiskAssert"/> and static match methods in <see cref="DiskAssert"/>.
-        /// </summary>
-        public static DiskAsserter Default { get; set; }
-
-        private const string sequenceFile = "_sequence";
-
         /// <summary>
         /// The path resolver to determine per test paths. Usually related to which test framework is being used e.g. XUnit, NUnit, MSTest etc
         /// </summary>
-        public IPathResolver PathResolver;
+        public IPathResolver PathResolver { get; set; }
 
         /// <summary>
         /// The output strategy for file chunking and hashing. Default is <see cref="DirectTestOutput"/>
         /// </summary>
-        public ITestOutput Output;
+        public ITestOutput Output { get; set; }
 
         /// <summary>
         /// The serializer for calls to <see cref="DiskAsserter.Matches{T}(string, T)"/>
         /// </summary>
-        public ISerializer Serializer = new SystemTextJsonSerializer();
-
-        /// <summary>
-        /// An ordered list of methods that have been called on <see cref="DiskAsserter"/>. Used by <see cref="MatchesSequence"/>
-        /// </summary>
-        public AsyncLocal<List<AssertOperation>> Operations { get; } = new AsyncLocal<List<AssertOperation>>();
-
-        public bool WriteMode { get; private set; } = false;
+        public ISerializer Serializer { get; set; }
 
         /// <summary>
         /// Safety flag to avoid checking in <see cref="EnableWriteMode"/> by accident <br />
         /// False by default; Set to true on Dev environments (recommended way is via environment variable)
         /// </summary>
+        public bool IsDevEnvironment { get; set; }
+
+        /// <summary>
+        /// Changes any calls to <see cref="DiskAsserter.Matches{T}(string, T)"/> and related methods to write to disk instead of comparing
+        /// </summary>
+        public IDiskAsserterConfig EnableWriteMode();
+
+        public DiskAsserter Build();
+    }
+
+    public class DiskAsserterConfig : IDiskAsserterConfig
+    {
+        public IPathResolver PathResolver { get; set; }
+        public ITestOutput Output { get; set; }
+        public ISerializer Serializer { get; set; }
+        public bool IsDevEnvironment { get; set; }
+        public bool WriteMode { get; set; }
+
+        public DiskAsserter Build()
+        {
+
+            var ret = new DiskAsserter();
+            ret.Output = Output;
+            ret.IsDevEnvironment = IsDevEnvironment;
+            ret.PathResolver = PathResolver;
+
+
+            if (WriteMode)
+                ret.EnableWriteMode();
+
+            if (Serializer != null)
+                ret.Serializer = Serializer;
+
+            return ret;
+        }
+
+        public IDiskAsserterConfig EnableWriteMode()
+        {
+            DiskAsserter.EnsureDevMode(this);
+
+            WriteMode = true;
+
+            return this;
+        }
+    }
+
+    public class DiskAsserter : IDiskAsserterConfig
+    {
+        private const string sequenceFile = "_sequence";
+
+        public IPathResolver PathResolver { get; set; }
+        public ITestOutput Output { get; set; }
+        public ISerializer Serializer { get; set; } = new SystemTextJsonSerializer();
+
+        /// <summary>
+        /// An ordered list of methods that have been called on <see cref="DiskAsserter"/>. Used by <see cref="MatchesSequence"/>
+        /// </summary>
+        public List<AssertOperation> Operations { get; } = new List<AssertOperation>();
+
+        public bool WriteMode { get; private set; } = false;
+
         public bool IsDevEnvironment { get; set; }
 
         /// <summary>
@@ -65,12 +111,11 @@ namespace MK94.Assert
 
             var outputFile = Path.Combine(PathResolver.GetStepPath(), fileType != null ? $"{step}.{fileType}" : step);
 
-            Operations.Value = Operations.Value ?? new List<AssertOperation>();
-            Operations.Value.Add(new AssertOperation(mode, outputFile.Replace('\\', '/')));
+            Operations.Add(new AssertOperation(mode, outputFile.Replace('\\', '/')));
 
             if (WriteMode)
             {
-                EnsureDevMode();
+                EnsureDevMode(this);
                 Output.Write(outputFile, rawData);
 
                 return rawData;
@@ -162,25 +207,22 @@ namespace MK94.Assert
         {
             // TODO in write mode also remove unused output files
 
-            Matches(sequenceFile, Operations.Value);
+            Matches(sequenceFile, Operations);
         }
 
         /// <summary>
         /// Safety method to avoid running code in CI/CD environments
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown when environment is not a Dev machine</exception>
-        private void EnsureDevMode()
+        internal static void EnsureDevMode(IDiskAsserterConfig config)
         {
-            if (!IsDevEnvironment)
+            if (!config.IsDevEnvironment)
                 throw new InvalidOperationException($"Trying to write during assert but not in a dev environment!!! Make sure EnableWriteMode is not called.");
         }
 
-        /// <summary>
-        /// Changes any calls to <see cref="DiskAsserter.Matches{T}(string, T)"/> and related methods to write to disk instead of comparing
-        /// </summary>
-        public DiskAsserter EnableWriteMode()
+        public IDiskAsserterConfig EnableWriteMode()
         {
-            EnsureDevMode();
+            EnsureDevMode(this);
             WriteMode = true;
 
             return this;
@@ -218,6 +260,11 @@ namespace MK94.Assert
         {
             if (PathResolver == null || Output == null)
                 throw new InvalidOperationException($"DiskAsserter is not fully setup. Call DiskAsserter.WithRecommendedDefaults() first");
+        }
+
+        public DiskAsserter Build()
+        {
+            return this;
         }
     }
 }

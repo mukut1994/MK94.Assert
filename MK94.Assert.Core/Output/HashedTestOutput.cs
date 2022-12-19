@@ -62,7 +62,8 @@ namespace MK94.Assert.Output
 
 		private Dictionary<string, string> LoadRootFile()
         {
-			return TestOutputHelper.LoadRootFile(rootFile, baseOutput);
+			rootFile = TestOutputHelper.LoadRootFile(rootFile, baseOutput);
+			return rootFile;
         }
 
 		public bool IsHashMatch(string path, string rawData)

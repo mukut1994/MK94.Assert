@@ -21,11 +21,11 @@ namespace MK94.Assert.Mocking
 
         void IInterceptor.Intercept(IInvocation invocation)
         {
-            parent.count.Value = parent.count.Value ?? new Mocker.Counter();
+            parent.count ??= new Mocker.Counter();
 
-            var stepName = $"{invocation.Method.DeclaringType.FullName}.{invocation.Method.Name}_{parent.count.Value.Count}";
+            var stepName = $"{invocation.Method.DeclaringType.FullName}.{invocation.Method.Name}_{parent.count.Count}";
             var returnName = $"{stepName}_return";
-            parent.count.Value.Count++;
+            parent.count.Count++;
 
             var parameters = invocation.Method.GetParameters();
 
@@ -56,7 +56,7 @@ namespace MK94.Assert.Mocking
 
             var stepPath = Path.Combine(parent.diskAsserter.PathResolver.GetStepPath(), returnName + ".json").Replace('\\', '/');
 
-            parent.diskAsserter.Operations.Value.Add(new AssertOperation(OperationMode.Input, stepPath));
+            parent.diskAsserter.Operations.Add(new AssertOperation(OperationMode.Input, stepPath));
 
             if (MethodReturnIsVoid(invocation))
                 return;
@@ -105,10 +105,10 @@ namespace MK94.Assert.Mocking
 
         private void EnsureExpectedOperationCalled(IInvocation invocation, string stepName)
         {
-            if (parent.operations.Value == null)
-                parent.operations.Value = parent.diskAsserter.GetOperations();
+            if (parent.operations == null)
+                parent.operations = parent.diskAsserter.GetOperations();
 
-            var expectedOperation = parent.operations.Value.Skip(parent.diskAsserter.Operations.Value.Count).First(x => x.Mode == OperationMode.Input);
+            var expectedOperation = parent.operations.Skip(parent.diskAsserter.Operations.Count).First(x => x.Mode == OperationMode.Input);
 
             if (expectedOperation.Mode != OperationMode.Input)
                 throw new InvalidOperationException($"Expecting input from {expectedOperation.Step} but actual is an output to {stepName}");

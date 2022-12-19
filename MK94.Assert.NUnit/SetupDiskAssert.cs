@@ -8,29 +8,29 @@
         /// <returns>An instance of <see cref="DiskAsserter"/> with basic settings.</returns>
         public static DiskAsserter WithBasicSettings()
         {
-            DiskAsserter.Default = InstanceWithBasicSettings();
+            DiskAssert.DefaultConfig = InstanceWithBasicSettings();
 
-            return DiskAsserter.Default;
+            return DiskAssert.Default;
         }
 
         /// <summary>
         /// Sets the default and fully initialises <see cref="DiskAsserter"/>
         /// </summary>
         /// <returns>A ready to use <see cref="DiskAsserter"/></returns>
-        public static DiskAsserter WithRecommendedSettings(string solutionFolder, string outputFolder = "TestData")
+        public static IDiskAsserterConfig WithRecommendedSettings(string solutionFolder, string outputFolder = "TestData")
         {
-            DiskAsserter.Default = InstanceWithRecommendedSettings(solutionFolder, outputFolder);
+            DiskAssert.DefaultConfig = InstanceWithRecommendedSettings(solutionFolder, outputFolder);
 
-            return DiskAsserter.Default;
+            return DiskAssert.DefaultConfig;
         }
 
         /// <summary>
         /// Creates a new <see cref="DiskAsserter"/> and only adds a common build agent check
         /// </summary>
         /// <returns>An instance of <see cref="DiskAsserter"/> with basic settings.</returns>
-        public static DiskAsserter InstanceWithBasicSettings()
+        public static IDiskAsserterConfig InstanceWithBasicSettings()
         {
-            var ret = new DiskAsserter()
+            var ret = new DiskAsserterConfig()
                 .WithCommonBuildAgentsCheck();
             ret.PathResolver = new NUnitPathResolver();
 
@@ -41,9 +41,9 @@
         /// Creates a new and fully initialises <see cref="DiskAsserter"/> as an instance.
         /// </summary>
         /// <returns>A ready to use <see cref="DiskAsserter"/> instance.</returns>
-        public static DiskAsserter InstanceWithRecommendedSettings(string solutionFolder, string outputFolder = "TestData")
+        public static IDiskAsserterConfig InstanceWithRecommendedSettings(string solutionFolder, string outputFolder = "TestData")
         {
-            var ret = new DiskAsserter()
+            var ret = new DiskAsserterConfig()
                 .WithRecommendedSettings(solutionFolder, outputFolder);
 
             ret.PathResolver = new NUnitPathResolver();

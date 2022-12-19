@@ -22,16 +22,16 @@ namespace MK94.Assert.Mocking
         /// The default Mocker based on <see cref="DiskAssert.Default"/> <br />
         /// Used by the static methods in <see cref="Mock"/>
         /// </summary>
-        public static Mocker Default { get; } = DiskAsserter.Default.WithMocks();
+        public static AsyncLocal<Mocker> Default { get; } = new AsyncLocal<Mocker>();
 
         private static readonly ProxyGenerator ProxyGenerator = new ProxyGenerator();
 
         internal readonly DiskAsserter diskAsserter;
 
-        internal readonly AsyncLocal<List<AssertOperation>> operations = new AsyncLocal<List<AssertOperation>>();
-        internal readonly AsyncLocal<Counter> count = new AsyncLocal<Counter>();
+        internal List<AssertOperation> operations;
+        internal Counter count = new Counter();
 
-        internal readonly MockContext instanceResolveContext;
+        internal MockContext instanceResolveContext;
 
         public Mocker(DiskAsserter diskAsserter)
         {

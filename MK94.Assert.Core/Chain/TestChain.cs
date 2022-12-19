@@ -55,9 +55,8 @@ namespace MK94.Assert.Input
 
                 if (ret == null) continue;
                 
-                DiskAsserter.Operations.Value ??= new List<AssertOperation>();
                 // Replace windows path \ with /
-                DiskAsserter.Operations.Value.Add(new AssertOperation(OperationMode.Input, path.Replace('\\', '/')));
+                DiskAsserter.Operations.Add(new AssertOperation(OperationMode.Input, path.Replace('\\', '/')));
                 return ret;
             }
 

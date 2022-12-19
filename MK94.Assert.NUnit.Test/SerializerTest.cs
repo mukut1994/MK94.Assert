@@ -12,7 +12,8 @@ namespace MK94.Assert.NUnit.Test
             
             var asserter = SetupDiskAssert
                 .InstanceWithRecommendedSettings("MK94.Assert", "CustomSerializer")
-                .WithSerializer(x => JsonSerializer.Serialize(x, serializerOptions));
+                .WithSerializer(x => JsonSerializer.Serialize(x, serializerOptions))
+                .Build();
 
             var fileContent = new
             {
@@ -29,7 +30,8 @@ namespace MK94.Assert.NUnit.Test
         {
             var asserter = SetupDiskAssert
                 .InstanceWithRecommendedSettings("MK94.Assert", "CustomSerializer")
-                .WithSerializer(Newtonsoft.Json.JsonConvert.SerializeObject);
+                .WithSerializer(Newtonsoft.Json.JsonConvert.SerializeObject)
+                .Build();
 
             var fileContent = new
             {

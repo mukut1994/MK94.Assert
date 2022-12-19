@@ -11,7 +11,8 @@ namespace MK94.Assert.NUnit.Test
             var asserter = SetupDiskAssert.InstanceWithBasicSettings()
                 .WithDevModeOnEnvironmentVariable("NONE", "NONE")
                 .WithDeduplicationInMemory(out var output)
-                .EnableWriteMode();
+                .EnableWriteMode()
+                .Build();
 
             var fileContent = 1;
 
@@ -102,7 +103,8 @@ namespace MK94.Assert.NUnit.Test
             var asserter = SetupDiskAssert.InstanceWithBasicSettings()
                 .WithDevModeOnEnvironmentVariable("NONE", "NONE")
                 .WithDeduplicationInMemory(out _)
-                .EnableWriteMode();
+                .EnableWriteMode()
+                .Build();
 
             asserter.Matches("Step 1", initialObject);
             asserter.DisableWriteMode();

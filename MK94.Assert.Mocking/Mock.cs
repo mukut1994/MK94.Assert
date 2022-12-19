@@ -7,7 +7,14 @@ namespace MK94.Assert.Mocking
     public static class Mock
     {
         /// <inheritdoc cref="Mocker.Default"/>
-        public static Mocker Default { get; } = Mocker.Default;
+        public static Mocker Default
+        {
+            get
+            {
+                Mocker.Default.Value ??= DiskAssert.Default.WithMocks();
+                return Mocker.Default.Value;
+            }
+        }
 
         /// <inheritdoc cref="Mocker.SetContext(object)"/>
         public static Mocker SetContext(object context) => Default.SetContext(context);
