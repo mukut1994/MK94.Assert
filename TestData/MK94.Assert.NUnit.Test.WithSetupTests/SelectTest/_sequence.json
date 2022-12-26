@@ -1,0 +1,14 @@
+[
+  {
+    "Mode": "Output",
+    "Step": "MK94.Assert.NUnit.Test.WithSetupTests/SelectTest/MK94.Assert.NUnit.Test.IDatabase.Select_0_MK94.Assert.NUnit.Test.IDatabase.Select_0_id.json"
+  },
+  {
+    "Mode": "Input",
+    "Step": "MK94.Assert.NUnit.Test.WithSetupTests/SelectTest/MK94.Assert.NUnit.Test.IDatabase.Select_0_return.json"
+  },
+  {
+    "Mode": "Output",
+    "Step": "MK94.Assert.NUnit.Test.WithSetupTests/SelectTest/Some manual check.json"
+  }
+]

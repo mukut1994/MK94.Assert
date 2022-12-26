@@ -59,5 +59,11 @@ namespace MK94.Assert
 
         /// <inheritdoc cref="Extensions.WithInputs"/>
         public static TestInput WithInputs() => Default.WithInputs();
+
+        /// <inheritdoc cref="DiskAssertSetupExtensions.WithSetup(DiskAsserter, Func{Task})"/>
+        public static Task<DiskAsserter> WithSetup(Func<Task> task) => DiskAssertSetupExtensions.WithSetup(Default, task);
+
+        /// <inheritdoc cref="DiskAssertSetupExtensions.WithSetup(DiskAsserter, Action)"/>
+        public static DiskAsserter WithSetup(Action task) => DiskAssertSetupExtensions.WithSetup(Default, task);
     }
 }

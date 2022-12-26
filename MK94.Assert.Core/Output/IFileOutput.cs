@@ -8,6 +8,8 @@ namespace MK94.Assert.Output
 	/// </summary>
 	public interface IFileOutput
 	{
+		string GetAbsolutePathOf(string path);
+
 		Stream OpenRead(string path);
 
 		void Write(string path, Stream sourceStream);

@@ -146,5 +146,10 @@ namespace MK94.Assert.Output
 		{
 			baseOutput.Write("root.json", new MemoryStream(JsonSerializer.SerializeToUtf8Bytes(root, TestOutputHelper.JsonSerializerOptions)));
 		}
+
+		public string GetAbsolutePathOf(string path)
+        {
+            return baseOutput.GetAbsolutePathOf(path);
+        }
 	}
 }

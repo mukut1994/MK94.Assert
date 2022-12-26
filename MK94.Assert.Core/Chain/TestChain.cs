@@ -51,12 +51,11 @@ namespace MK94.Assert.Input
             {
                 var path = Path.Combine(TestChainContexts[i].GetStepPath(), step);
 
-                var ret = DiskAsserter.Output.OpenRead(path, false);
+                // Replace windows path \ with /
+                var ret = DiskAsserter.Read(path.Replace('\\', '/'));
 
                 if (ret == null) continue;
-                
-                // Replace windows path \ with /
-                DiskAsserter.Operations.Add(new AssertOperation(OperationMode.Input, path.Replace('\\', '/')));
+
                 return ret;
             }
 

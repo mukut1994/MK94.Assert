@@ -37,5 +37,10 @@ namespace MK94.Assert.Output
 			sourceStream.CopyTo(targetStream);
 			targetStream.Flush();
 		}
-    }
+
+		public string GetAbsolutePathOf(string path)
+		{
+            return Path.GetFullPath(Path.Combine(rootDirectory, path));
+        }
+	}
 }

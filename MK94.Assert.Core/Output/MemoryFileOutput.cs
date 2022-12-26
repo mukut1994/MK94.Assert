@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Collections.Concurrent;
+using System;
 
 namespace MK94.Assert.Output
 {
@@ -32,6 +33,11 @@ namespace MK94.Assert.Output
         {
 			using var reader = new StreamReader(sourceStream);
 			Files[file] = reader.ReadToEnd();
+        }
+
+        public string GetAbsolutePathOf(string path)
+        {
+            return path;
         }
     }
 }

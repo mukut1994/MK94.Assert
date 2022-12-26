@@ -11,73 +11,6 @@ using System.Threading.Tasks;
 
 namespace MK94.Assert
 {
-    public interface IDiskAsserterConfig
-    {
-        /// <summary>
-        /// The path resolver to determine per test paths. Usually related to which test framework is being used e.g. XUnit, NUnit, MSTest etc
-        /// </summary>
-        public IPathResolver PathResolver { get; set; }
-
-        /// <summary>
-        /// The output strategy for file chunking and hashing. Default is <see cref="DirectTestOutput"/>
-        /// </summary>
-        public ITestOutput Output { get; set; }
-
-        /// <summary>
-        /// The serializer for calls to <see cref="DiskAsserter.Matches{T}(string, T)"/>
-        /// </summary>
-        public ISerializer Serializer { get; set; }
-
-        /// <summary>
-        /// Safety flag to avoid checking in <see cref="EnableWriteMode"/> by accident <br />
-        /// False by default; Set to true on Dev environments (recommended way is via environment variable)
-        /// </summary>
-        public bool IsDevEnvironment { get; set; }
-
-        /// <summary>
-        /// Changes any calls to <see cref="DiskAsserter.Matches{T}(string, T)"/> and related methods to write to disk instead of comparing
-        /// </summary>
-        public IDiskAsserterConfig EnableWriteMode();
-
-        public DiskAsserter Build();
-    }
-
-    public class DiskAsserterConfig : IDiskAsserterConfig
-    {
-        public IPathResolver PathResolver { get; set; }
-        public ITestOutput Output { get; set; }
-        public ISerializer Serializer { get; set; }
-        public bool IsDevEnvironment { get; set; }
-        public bool WriteMode { get; set; }
-
-        public DiskAsserter Build()
-        {
-
-            var ret = new DiskAsserter();
-            ret.Output = Output;
-            ret.IsDevEnvironment = IsDevEnvironment;
-            ret.PathResolver = PathResolver;
-
-
-            if (WriteMode)
-                ret.EnableWriteMode();
-
-            if (Serializer != null)
-                ret.Serializer = Serializer;
-
-            return ret;
-        }
-
-        public IDiskAsserterConfig EnableWriteMode()
-        {
-            DiskAsserter.EnsureDevMode(this);
-
-            WriteMode = true;
-
-            return this;
-        }
-    }
-
     public class DiskAsserter : IDiskAsserterConfig
     {
         private const string sequenceFile = "_sequence";
@@ -86,14 +19,33 @@ namespace MK94.Assert
         public ITestOutput Output { get; set; }
         public ISerializer Serializer { get; set; } = new SystemTextJsonSerializer();
 
+        private List<AssertOperation> operations { get; } = new List<AssertOperation>();
+
         /// <summary>
         /// An ordered list of methods that have been called on <see cref="DiskAsserter"/>. Used by <see cref="MatchesSequence"/>
         /// </summary>
-        public List<AssertOperation> Operations { get; } = new List<AssertOperation>();
+        public IReadOnlyList<AssertOperation> Operations => operations;
 
-        public bool WriteMode { get; private set; } = false;
+        public bool WriteMode { get; internal set; } = false;
+
+        public bool InSetup { get; internal set; } = false;
 
         public bool IsDevEnvironment { get; set; }
+
+        /// <summary>
+        /// Read a step from the current test path and add it to the Operations list
+        /// </summary>
+        /// <param name="step">The step name</param>
+        /// <returns>A stream to the step or null if it doesn't exist</returns>
+        public Stream Read(string step)
+        {
+            var ret = Output.OpenRead(step, false);
+
+            if (!InSetup && ret != null)
+                operations.Add(new AssertOperation(OperationMode.Input, step));
+
+            return ret;
+        }
 
         /// <summary>
         /// Checks if a text file matches raw text without any serialization or post processing
@@ -107,11 +59,14 @@ namespace MK94.Assert
         /// <exception cref="Exception">Thrown when some differences have been detected</exception>
         public string MatchesRaw(string step, string rawData, string fileType = null, IDifferenceFormatter<string> formatter = null, OperationMode mode = OperationMode.Output)
         {
+            if (InSetup)
+                return rawData;
+
             EnsureSetupWasCalled();
 
-            var outputFile = Path.Combine(PathResolver.GetStepPath(), fileType != null ? $"{step}.{fileType}" : step);
+            var outputFile = GetStepPath(step, fileType);
 
-            Operations.Add(new AssertOperation(mode, outputFile.Replace('\\', '/')));
+            operations.Add(new AssertOperation(mode, outputFile.Replace('\\', '/')));
 
             if (WriteMode)
             {
@@ -220,8 +175,19 @@ namespace MK94.Assert
                 throw new InvalidOperationException($"Trying to write during assert but not in a dev environment!!! Make sure EnableWriteMode is not called.");
         }
 
+        /// <summary>
+        /// Safety method to avoid running code in <see cref="DiskAssertSetupExtensions.WithSetup(DiskAsserter, Func{Task})"/>
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown when called within a setup context</exception>
+        private void EnsureNotSetupMode()
+        {
+            if (InSetup)
+                throw new InvalidOperationException($"Trying to write during setup!!! Make sure EnableWriteMode is not called in methods called by WithSetup.");
+        }
+
         public IDiskAsserterConfig EnableWriteMode()
         {
+            EnsureNotSetupMode();
             EnsureDevMode(this);
             WriteMode = true;
 
@@ -265,6 +231,18 @@ namespace MK94.Assert
         public DiskAsserter Build()
         {
             return this;
+        }
+
+        public string GetStepAbsolutePath(string step, string fileType = null)
+        {
+            return Output.GetAbsolutePathOf(GetStepPath(step, fileType));
+        }
+
+        public string GetStepPath(string step, string fileType = null)
+        {
+            var stepPath = Path.Combine(PathResolver.GetStepPath(), fileType != null ? $"{step}.{fileType}" : step);
+
+            return stepPath;
         }
     }
 }

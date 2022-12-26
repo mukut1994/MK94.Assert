@@ -7,8 +7,10 @@ namespace MK94.Assert.Output
 	/// Responsible for caching reads, physical file location and hashing.
 	/// </summary>
 	public interface ITestOutput
-	{
-		Stream OpenRead(string path, bool cache);
+    {
+        string GetAbsolutePathOf(string path);
+
+        Stream OpenRead(string path, bool cache);
 
 		bool IsHashMatch(string path, string rawData);
 

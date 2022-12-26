@@ -1,47 +1,47 @@
 [
   {
     "Mode": "Output",
-    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.MockTest\u002BIDatabase.Insert_0_MK94.Assert.NUnit.Test.MockTest\u002BIDatabase.Insert_0_id.json"
+    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.IDatabase.Insert_0_MK94.Assert.NUnit.Test.IDatabase.Insert_0_id.json"
   },
   {
     "Mode": "Output",
-    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.MockTest\u002BIDatabase.Insert_0_MK94.Assert.NUnit.Test.MockTest\u002BIDatabase.Insert_0_text.json"
+    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.IDatabase.Insert_0_MK94.Assert.NUnit.Test.IDatabase.Insert_0_text.json"
   },
   {
     "Mode": "Input",
-    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.MockTest\u002BIDatabase.Insert_0_return.json"
+    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.IDatabase.Insert_0_return.json"
   },
   {
     "Mode": "Output",
-    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.MockTest\u002BIDatabase.Insert_1_MK94.Assert.NUnit.Test.MockTest\u002BIDatabase.Insert_1_id.json"
+    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.IDatabase.Insert_1_MK94.Assert.NUnit.Test.IDatabase.Insert_1_id.json"
   },
   {
     "Mode": "Output",
-    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.MockTest\u002BIDatabase.Insert_1_MK94.Assert.NUnit.Test.MockTest\u002BIDatabase.Insert_1_text.json"
+    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.IDatabase.Insert_1_MK94.Assert.NUnit.Test.IDatabase.Insert_1_text.json"
   },
   {
     "Mode": "Input",
-    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.MockTest\u002BIDatabase.Insert_1_return.json"
+    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.IDatabase.Insert_1_return.json"
   },
   {
     "Mode": "Output",
-    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.MockTest\u002BIDatabase.Insert_2_MK94.Assert.NUnit.Test.MockTest\u002BIDatabase.Insert_2_id.json"
+    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.IDatabase.Insert_2_MK94.Assert.NUnit.Test.IDatabase.Insert_2_id.json"
   },
   {
     "Mode": "Output",
-    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.MockTest\u002BIDatabase.Insert_2_MK94.Assert.NUnit.Test.MockTest\u002BIDatabase.Insert_2_text.json"
+    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.IDatabase.Insert_2_MK94.Assert.NUnit.Test.IDatabase.Insert_2_text.json"
   },
   {
     "Mode": "Input",
-    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.MockTest\u002BIDatabase.Insert_2_return.json"
+    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.IDatabase.Insert_2_return.json"
   },
   {
     "Mode": "Output",
-    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.MockTest\u002BIDatabase.Select_3_MK94.Assert.NUnit.Test.MockTest\u002BIDatabase.Select_3_id.json"
+    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.IDatabase.Select_3_MK94.Assert.NUnit.Test.IDatabase.Select_3_id.json"
   },
   {
     "Mode": "Input",
-    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.MockTest\u002BIDatabase.Select_3_return.json"
+    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.IDatabase.Select_3_return.json"
   },
   {
     "Mode": "Output",
@@ -49,11 +49,11 @@
   },
   {
     "Mode": "Output",
-    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.MockTest\u002BIDatabase.Select_4_MK94.Assert.NUnit.Test.MockTest\u002BIDatabase.Select_4_id.json"
+    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.IDatabase.Select_4_MK94.Assert.NUnit.Test.IDatabase.Select_4_id.json"
   },
   {
     "Mode": "Input",
-    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.MockTest\u002BIDatabase.Select_4_return.json"
+    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.IDatabase.Select_4_return.json"
   },
   {
     "Mode": "Output",
@@ -61,11 +61,11 @@
   },
   {
     "Mode": "Output",
-    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.MockTest\u002BIDatabase.Select_5_MK94.Assert.NUnit.Test.MockTest\u002BIDatabase.Select_5_id.json"
+    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.IDatabase.Select_5_MK94.Assert.NUnit.Test.IDatabase.Select_5_id.json"
   },
   {
     "Mode": "Input",
-    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.MockTest\u002BIDatabase.Select_5_return.json"
+    "Step": "MK94.Assert.NUnit.Test.MockTest/ServiceProviderTest/MK94.Assert.NUnit.Test.IDatabase.Select_5_return.json"
   },
   {
     "Mode": "Output",

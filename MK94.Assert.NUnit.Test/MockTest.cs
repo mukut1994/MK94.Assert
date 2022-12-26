@@ -12,30 +12,6 @@ namespace MK94.Assert.NUnit.Test
 {
     public class MockTest
     {
-        public interface IDatabase
-        {
-            Task Insert(int id, string text);
-
-            Task<string> Select(int id);
-        }
-
-        private class Database : IDatabase
-        {
-            private Dictionary<int, string> fakeDb = new();
-
-            public Task Insert(int id, string text)
-            {
-                fakeDb[id] = text;
-
-                return Task.CompletedTask;
-            }
-
-            public Task<string> Select(int id)
-            {
-                return Task.FromResult(fakeDb[id]);
-            }
-        }
-
         [Test]
         public async Task BasicTest()
         {
