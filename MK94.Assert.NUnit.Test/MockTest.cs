@@ -77,6 +77,5 @@ namespace MK94.Assert.NUnit.Test
 
             DiskAssert.MatchesSequence();
         }
-
     }
 }

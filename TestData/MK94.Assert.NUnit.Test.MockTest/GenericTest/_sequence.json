@@ -1,11 +1,11 @@
 [
   {
     "Mode": "Output",
-    "Step": "MK94.Assert.NUnit.Test.MockTest/GenericTest/MK94.Assert.NUnit.Test.IGenericDatabase(System.Int32).Insert_0_MK94.Assert.NUnit.Test.IGenericDatabase(System.Int32).Insert_0_id.json"
+    "Step": "MK94.Assert.NUnit.Test.MockTest/GenericTest/MK94.Assert.NUnit.Test.IGenericDatabase(System.Int32).Insert_0_id.json"
   },
   {
     "Mode": "Output",
-    "Step": "MK94.Assert.NUnit.Test.MockTest/GenericTest/MK94.Assert.NUnit.Test.IGenericDatabase(System.Int32).Insert_0_MK94.Assert.NUnit.Test.IGenericDatabase(System.Int32).Insert_0_text.json"
+    "Step": "MK94.Assert.NUnit.Test.MockTest/GenericTest/MK94.Assert.NUnit.Test.IGenericDatabase(System.Int32).Insert_0_text.json"
   },
   {
     "Mode": "Input",
@@ -13,7 +13,7 @@
   },
   {
     "Mode": "Output",
-    "Step": "MK94.Assert.NUnit.Test.MockTest/GenericTest/MK94.Assert.NUnit.Test.IGenericDatabase(System.Int32).Select_1_MK94.Assert.NUnit.Test.IGenericDatabase(System.Int32).Select_1_id.json"
+    "Step": "MK94.Assert.NUnit.Test.MockTest/GenericTest/MK94.Assert.NUnit.Test.IGenericDatabase(System.Int32).Select_1_id.json"
   },
   {
     "Mode": "Input",

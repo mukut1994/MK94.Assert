@@ -135,11 +135,9 @@ namespace MK94.Assert.Mocking
         {
             var parameters = invocation.Method.GetParameters();
 
-            string ParamName(int i) => $"{stepName}_{parameters[i].Name}";
-
             for (var i = 0; i < invocation.Arguments.Length; i++)
             {
-                parent.diskAsserter.Matches($"{stepName}_{ParamName(i)}", invocation.Arguments[i]);
+                parent.diskAsserter.Matches($"{stepName}_{parameters[i].Name}", invocation.Arguments[i]);
             }
         }
 
