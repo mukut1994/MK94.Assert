@@ -15,6 +15,7 @@ namespace MK94.Assert.NUnit.Test
         [SetUp]
         public void Setup()
         {
+            DiskAssert.EnableWriteMode();
             DiskAssert.Default
                 .WithMocks()
                 .Of<IDatabase>((m) => new Database(), out database);
