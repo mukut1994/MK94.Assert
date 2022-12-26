@@ -37,8 +37,7 @@ namespace MK94.Assert.NUnit.Test
         [Test]
         public async Task SelectTest()
         {
-            // TODO static withsetup
-            await DiskAssert.Default.WithSetup(InsertTest);
+            await DiskAssert.WithSetup(InsertTest);
 
             await database.Select(1);
 
@@ -50,9 +49,7 @@ namespace MK94.Assert.NUnit.Test
         [Test]
         public async Task InsertMoreTest_NestedSetups()
         {
-            DiskAssert.EnableWriteMode();
-
-            await DiskAssert.Default.WithSetup(SelectTest);
+            await DiskAssert.WithSetup(SelectTest);
 
             await database.Insert(4, "Text 4");
 
