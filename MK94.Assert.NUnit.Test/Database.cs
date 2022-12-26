@@ -29,4 +29,29 @@ namespace MK94.Assert.NUnit.Test
             return Task.FromResult(fakeDb[id]);
         }
     }
+
+
+    public interface IGenericDatabase<TType>
+    {
+        Task Insert(int id, TType text);
+
+        Task<TType> Select(int id);
+    }
+
+    public class Database<TType> : IGenericDatabase<TType>
+    {
+        private Dictionary<int, TType> fakeDb = new();
+
+        public Task Insert(int id, TType value)
+        {
+            fakeDb[id] = value;
+
+            return Task.CompletedTask;
+        }
+
+        public Task<TType> Select(int id)
+        {
+            return Task.FromResult(fakeDb[id]);
+        }
+    }
 }

@@ -29,7 +29,7 @@ namespace MK94.Assert.Mocking
 
             parent.count ??= new Mocker.Counter();
 
-            var stepName = $"{invocation.Method.DeclaringType.FullName}.{invocation.Method.Name}_{parent.count.Count}";
+            var stepName = $"{GetPathFriendlyClassName(invocation)}.{invocation.Method.Name}_{parent.count.Count}";
             var returnName = $"{stepName}_return.json";
 
             parent.count.Count++;
@@ -52,6 +52,24 @@ namespace MK94.Assert.Mocking
             EnsureExpectedOperationCalled(invocation, returnName);
 
             SetReturnValueFromPreviousRun(invocation, returnName);
+        }
+
+        private static string GetPathFriendlyClassName(IInvocation invocation)
+        {
+            return GetPathFriendlyClassName(invocation.Method.DeclaringType);
+        }
+
+        private static string GetPathFriendlyClassName(Type type)
+        {
+            if (type.IsGenericType)
+            {
+                var name = type.GetGenericTypeDefinition().FullName;
+                var genericPart = type.GetGenericArguments().Select(g => GetPathFriendlyClassName(g)).Aggregate((a, b) => $"{a}, {b}");
+
+                return $"{name.Substring(0, name.IndexOf('`'))}({genericPart})";
+            }
+
+            return type.FullName;
         }
 
         private void SetReturnValueFromPreviousRun(IInvocation invocation, string returnName)
@@ -150,5 +168,7 @@ namespace MK94.Assert.Mocking
             if (expectedOperation.Step != stepPath)
                 throw new InvalidOperationException($"Expecting input from {expectedOperation.Step} but actual is an input from {stepPath}");
         }
+
+
     }
 }

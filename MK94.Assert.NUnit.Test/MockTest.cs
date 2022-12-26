@@ -63,5 +63,20 @@ namespace MK94.Assert.NUnit.Test
 
             DiskAssert.MatchesSequence();
         }
+
+        [Test]
+        public async Task GenericTest()
+        {
+            DiskAssert.Default
+                .WithMocks()
+                .Of<IGenericDatabase<int>>((m) => new Database<int>(), out var database);
+
+            await database.Insert(1, 11);
+
+            DiskAssert.Matches("Step 1", await database.Select(1));
+
+            DiskAssert.MatchesSequence();
+        }
+
     }
 }
