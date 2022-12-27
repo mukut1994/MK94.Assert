@@ -234,5 +234,8 @@
   "MK94.Assert.NUnit.Test.WithSetupTests/InsertTest/MK94.Assert.NUnit.Test.IDatabase.Select_5_id.json": "1hneoizefu7gp1lxi5tdawgcb9i2xr\u002Bq2jpmbuwtqzu=",
   "MK94.Assert.NUnit.Test.WithSetupTests/SelectTest/MK94.Assert.NUnit.Test.IDatabase.Select_0_id.json": "a4ayc-80-ogda4bo-1o-v0etpoqilx1jwb5s3behw0s=",
   "MK94.Assert.NUnit.Test.WithSetupTests/InsertMoreTest_NestedSetups/MK94.Assert.NUnit.Test.IDatabase.Insert_0_id.json": "syj3d9tdh8ycb4hpsgqdartridp9moywi1ux-kzav4o=",
-  "MK94.Assert.NUnit.Test.WithSetupTests/InsertMoreTest_NestedSetups/MK94.Assert.NUnit.Test.IDatabase.Insert_0_text.json": "h3md6iporl6hd1-byyk0dsfwxznsy\u002Bl10odbjbbywp8="
+  "MK94.Assert.NUnit.Test.WithSetupTests/InsertMoreTest_NestedSetups/MK94.Assert.NUnit.Test.IDatabase.Insert_0_text.json": "h3md6iporl6hd1-byyk0dsfwxznsy\u002Bl10odbjbbywp8=",
+  "MK94.Assert.NUnit.Test.PseudoRandomTests/GuidTestWithChain/Guid4.json": "ce85ru8tkr1yfiydexums5agyd2x1c0xw7lebaaegpq=",
+  "MK94.Assert.NUnit.Test.PseudoRandomTests/GuidTestWithChain/Guid5.json": "9krzjzrog8vgpa-rbbspsc2tgmvmbt40naatcmnd74u=",
+  "MK94.Assert.NUnit.Test.PseudoRandomTests/GuidTestWithChain/Guid6.json": "0h\u002Byjozy-mmcsgptwp9irp85h3xktwy10qjt08wlfak="
 }

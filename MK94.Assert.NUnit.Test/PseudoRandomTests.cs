@@ -55,5 +55,15 @@ namespace MK94.Assert.NUnit.Test
             DiskAssert.Matches("Guid2", new PseudoRandomGuidProvider().NewGuid());
             DiskAssert.Matches("Guid3", new PseudoRandomGuidProvider().NewGuid());
         }
+
+        [Test]
+        public void GuidTestWithChain()
+        {
+            DiskAssert.WithSetup(GuidTest);
+
+            DiskAssert.Matches("Guid4", new PseudoRandomGuidProvider().NewGuid());
+            DiskAssert.Matches("Guid5", new PseudoRandomGuidProvider().NewGuid());
+            DiskAssert.Matches("Guid6", new PseudoRandomGuidProvider().NewGuid());
+        }
     }
 }

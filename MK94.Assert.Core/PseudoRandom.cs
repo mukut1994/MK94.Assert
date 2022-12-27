@@ -10,6 +10,8 @@ namespace MK94.Assert
     /// <summary>
     /// A source for pseudo random generators
     /// </summary>
+    // TODO make it instantiable for better multithread support
+    // Similar to the changes to DiskAsserter and Mocker
     public static class PseudoRandom
     {
         private class Instance
@@ -21,7 +23,7 @@ namespace MK94.Assert
             public Random dateRandomizer;
         }
 
-        private static Func<string> seedGenerator;
+        internal static Func<string> SeedGenerator { get; set; }
 
         private static AsyncLocal<Instance> instance = new AsyncLocal<Instance>();
 
@@ -29,17 +31,17 @@ namespace MK94.Assert
         {
             Contract.Requires(seedGenerator != null, $"{nameof(seedGenerator)} cannot be null or empty");
 
-            PseudoRandom.seedGenerator = seedGenerator;
+            PseudoRandom.SeedGenerator = seedGenerator;
         }
 
         private static void CheckDynamicSeedChanged()
         {
             instance.Value ??= new Instance();
 
-            if (seedGenerator == null)
+            if (SeedGenerator == null)
                 return;
 
-            var newSeed = seedGenerator();
+            var newSeed = SeedGenerator();
             if (newSeed == instance.Value.oldSeed)
                 return;
 

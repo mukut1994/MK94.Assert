@@ -40,14 +40,17 @@ namespace MK94.Assert
 
             var previousSetupMode = diskAsserter.InSetup;
             var previousWriteMode = diskAsserter.WriteMode;
+            var previousSeedGenerator = PseudoRandom.SeedGenerator;
 
             diskAsserter.WriteMode = false;
             diskAsserter.InSetup = true;
+            PseudoRandom.SeedGenerator = () => "SETUP" + previousSeedGenerator;
 
             task();
 
             diskAsserter.WriteMode = previousWriteMode;
             diskAsserter.InSetup = previousSetupMode;
+            PseudoRandom.SeedGenerator = previousSeedGenerator;
 
             return diskAsserter;
         }
