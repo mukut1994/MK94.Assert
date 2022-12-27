@@ -18,16 +18,11 @@ namespace MK94.Assert
             if (!diskAsserter.WriteMode && !diskAsserter.InSetup)
                 return diskAsserter;
 
-            var previousSetupMode = diskAsserter.InSetup;
-            var previousWriteMode = diskAsserter.WriteMode;
-
-            diskAsserter.WriteMode = false;
-            diskAsserter.InSetup = true;
+            PreRunConfigureContext(diskAsserter, out var previousSetupMode, out var previousWriteMode, out var previousSeedGenerator);
 
             await task();
 
-            diskAsserter.WriteMode = previousWriteMode;
-            diskAsserter.InSetup = previousSetupMode;
+            PostRunRestoreContext(diskAsserter, previousSetupMode, previousWriteMode, previousSeedGenerator);
 
             return diskAsserter;
         }
@@ -35,16 +30,10 @@ namespace MK94.Assert
         /// <inheritdoc cref="WithSetup(DiskAsserter, Func{Task})"/>
         public static DiskAsserter WithSetup(this DiskAsserter diskAsserter, Action task)
         {
-            if (!diskAsserter.WriteMode && !diskAsserter.InSetup)
+            if (!ShouldRunSetup(diskAsserter))
                 return diskAsserter;
 
-            var previousSetupMode = diskAsserter.InSetup;
-            var previousWriteMode = diskAsserter.WriteMode;
-            var previousSeedGenerator = PseudoRandom.SeedGenerator;
-
-            diskAsserter.WriteMode = false;
-            diskAsserter.InSetup = true;
-            PseudoRandom.SeedGenerator = () => "SETUP" + previousSeedGenerator;
+            PreRunConfigureContext(diskAsserter, out var previousSetupMode, out var previousWriteMode, out var previousSeedGenerator);
 
             task();
 
@@ -53,6 +42,31 @@ namespace MK94.Assert
             PseudoRandom.SeedGenerator = previousSeedGenerator;
 
             return diskAsserter;
+        }
+
+        private static void PreRunConfigureContext(DiskAsserter diskAsserter, out bool previousSetupMode, out bool previousWriteMode, out Func<string> previousSeedGenerator)
+        {
+            previousSetupMode = diskAsserter.InSetup;
+            previousWriteMode = diskAsserter.WriteMode;
+            previousSeedGenerator = PseudoRandom.SeedGenerator;
+
+            var seedAppend = PseudoRandom.SeedGenerator;
+
+            diskAsserter.WriteMode = false;
+            diskAsserter.InSetup = true;
+            PseudoRandom.SeedGenerator = () => "SETUP" + seedAppend;
+        }
+
+        private static void PostRunRestoreContext(DiskAsserter diskAsserter, bool previousSetupMode, bool previousWriteMode, Func<string> previousSeedGenerator)
+        {
+            diskAsserter.WriteMode = previousWriteMode;
+            diskAsserter.InSetup = previousSetupMode;
+            PseudoRandom.SeedGenerator = previousSeedGenerator;
+        }
+
+        private static bool ShouldRunSetup(DiskAsserter diskAsserter)
+        {
+            return diskAsserter.WriteMode || diskAsserter.InSetup;
         }
     }
 }
