@@ -18,6 +18,13 @@ namespace MK94.Assert
         public IPathResolver PathResolver { get; set; }
         public ITestOutput Output { get; set; }
         public ISerializer Serializer { get; set; } = new SystemTextJsonSerializer();
+        public Func<string> SeedGenerator { get; set; }
+
+        /// <summary>
+        /// The random data generator tied to this <see cref="DiskAsserter"/>.
+        /// It's set by <see cref="SeedGenerator"/> during build.
+        /// </summary>
+        public PseudoRandomizer PseudoRandomizer { get; internal set; }
 
         private List<AssertOperation> operations { get; } = new List<AssertOperation>();
 
@@ -230,6 +237,9 @@ namespace MK94.Assert
 
         public DiskAsserter Build()
         {
+            if(SeedGenerator != null && PseudoRandomizer == null)
+                PseudoRandomizer = new PseudoRandomizer(SeedGenerator());
+
             return this;
         }
 

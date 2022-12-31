@@ -17,16 +17,19 @@ namespace MK94.Assert
     /// </summary>
     public class PseudoRandomGuidProvider : IGuidProvider
     {
-        private readonly Random random;
+        private readonly DiskAsserter asserter;
 
-        public PseudoRandomGuidProvider() { random = PseudoRandom.GetRandomizer(); }
-        public PseudoRandomGuidProvider(Random random) { this.random = random; }
+        [Obsolete]
+        public PseudoRandomGuidProvider() {  }
+        public PseudoRandomGuidProvider(DiskAsserter asserter) { this.asserter = asserter; }
 
         public Guid NewGuid()
         {
             var buffer = new byte[16];
 
-            random.NextBytes(buffer);
+            asserter.PseudoRandomizer
+                .GetRandomizer("guid")
+                .NextBytes(buffer);
 
             return new Guid(buffer);
         }

@@ -41,7 +41,7 @@ namespace MK94.Assert.NUnit
         /// </summary>
         public static IDiskAsserterConfig WithPseudoRandom(this IDiskAsserterConfig diskAsserter)
         {
-            PseudoRandom.WithBaseSeed(() => Path.Combine(TestContext.CurrentContext.Test.ClassName, TestContext.CurrentContext.Test.Name));
+            diskAsserter.SeedGenerator = () => Path.Combine(TestContext.CurrentContext.Test.ClassName, TestContext.CurrentContext.Test.Name);
 
             return diskAsserter;
         }

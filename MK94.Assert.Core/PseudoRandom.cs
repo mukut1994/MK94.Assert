@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Security.Cryptography;
@@ -14,60 +15,6 @@ namespace MK94.Assert
     // Similar to the changes to DiskAsserter and Mocker
     public static class PseudoRandom
     {
-        private class Instance
-        {
-            public string oldSeed;
-            public Random randomizer;
-            public Random stringRandomizer;
-            public Random numberRandomizer;
-            public Random dateRandomizer;
-        }
-
-        internal static Func<string> SeedGenerator { get; set; }
-
-        private static AsyncLocal<Instance> instance = new AsyncLocal<Instance>();
-
-        public static void WithBaseSeed(Func<string> seedGenerator)
-        {
-            Contract.Requires(seedGenerator != null, $"{nameof(seedGenerator)} cannot be null or empty");
-
-            PseudoRandom.SeedGenerator = seedGenerator;
-        }
-
-        private static void CheckDynamicSeedChanged()
-        {
-            instance.Value ??= new Instance();
-
-            if (SeedGenerator == null)
-                return;
-
-            var newSeed = SeedGenerator();
-            if (newSeed == instance.Value.oldSeed)
-                return;
-
-            instance.Value.oldSeed = newSeed;
-            WithBaseSeed(newSeed);
-        }
-
-        /// <summary>
-        /// Sets the seed for randomizer. Has to be called before anything else and ideally at test initialize
-        /// </summary>
-        /// <param name="seed">The seed value. Currently executing test name is recommended</param>
-        public static void WithBaseSeed(string seed)
-        {
-            seed = seed.Replace(System.IO.Path.DirectorySeparatorChar, ' ').Replace(System.IO.Path.DirectorySeparatorChar, ' ');
-            
-            Contract.Requires(!string.IsNullOrEmpty(seed), $"{nameof(seed)} cannot be null or empty");
-
-            var intSeed = BitConverter.ToInt32(SHA256.Create().ComputeHash(Encoding.ASCII.GetBytes(seed)).Take(4).ToArray(), 0);
-
-            instance.Value.randomizer = new Random(intSeed);
-
-            instance.Value.stringRandomizer = GetRandomizer();
-            instance.Value.numberRandomizer = GetRandomizer();
-            instance.Value.dateRandomizer = GetRandomizer();
-        }
-
         /// <summary>
         /// Returns a randomizer derived from the base seed. <br />
         /// The returned randomizer is independent from any subsequent calls to <see cref="GetRandomizer"/> <br />
@@ -75,32 +22,27 @@ namespace MK94.Assert
         /// </summary>
         public static Random GetRandomizer()
         {
-            CheckDynamicSeedChanged();
-
-            Contract.Requires(instance.Value.randomizer != null, $"Call {nameof(PseudoRandom)}.{nameof(WithBaseSeed)} first");
+            Contract.Requires(DiskAssert.Default.SeedGenerator != null, $"Set {nameof(DiskAsserter)}.{nameof(DiskAsserter.SeedGenerator)} first");
 
             var buffer = new byte[4];
-            instance.Value.randomizer.NextBytes(buffer);
+            DiskAssert.Default.PseudoRandomizer.NextBytes(buffer);
 
             return new Random(BitConverter.ToInt32(buffer, 0));
         }
 
         public static string String(int length = 10, bool noSpecialCharacters = true)
         {
-            CheckDynamicSeedChanged();
-            return instance.Value.stringRandomizer.String(length, noSpecialCharacters);
+            return DiskAssert.Default.PseudoRandomizer.String(length, noSpecialCharacters);
         }
 
         public static int Int(int min = int.MinValue, int max = int.MaxValue)
         {
-            CheckDynamicSeedChanged();
-            return instance.Value.numberRandomizer.Next(min, max);
+            return DiskAssert.Default.PseudoRandomizer.Int(min, max);
         }
 
         public static DateTime DateTime(bool includeTime = true, DateTimeKind kind = DateTimeKind.Utc, DateTime? min = null, DateTime? max = null)
         {
-            CheckDynamicSeedChanged();
-            return instance.Value.dateRandomizer.DateTime(includeTime, kind, min, max);
+            return DiskAssert.Default.PseudoRandomizer.DateTime(includeTime, kind, min, max);
         }
     }
 
@@ -150,6 +92,73 @@ namespace MK94.Assert
             }
 
             return new DateTime(year, month, day, hour, minute, second, millisecond, kind);
+        }
+    }
+
+    /// <summary>
+    /// A source for pseudo random generators
+    /// </summary>
+    // TODO make it instantiable for better multithread support
+    // Similar to the changes to DiskAsserter and Mocker
+    public class PseudoRandomizer
+    {
+        private Random randomizer;
+        private Random stringRandomizer;
+        private Random numberRandomizer;
+        private Random dateRandomizer;
+        private ConcurrentDictionary<string, Random> namedRandomizers = new ConcurrentDictionary<string, Random>();
+
+        public static AsyncLocal<PseudoRandomizer> Default = new AsyncLocal<PseudoRandomizer>();
+
+        public PseudoRandomizer(string seed)
+        {
+            seed = seed.Replace(System.IO.Path.DirectorySeparatorChar, ' ').Replace(System.IO.Path.DirectorySeparatorChar, ' ');
+
+            Contract.Requires(!string.IsNullOrEmpty(seed), $"{nameof(seed)} cannot be null or empty");
+
+            var intSeed = BitConverter.ToInt32(SHA256.Create().ComputeHash(Encoding.ASCII.GetBytes(seed)).Take(4).ToArray(), 0);
+
+            randomizer = new Random(intSeed);
+            stringRandomizer = new Random(randomizer.Next());
+            numberRandomizer = new Random(randomizer.Next());
+            dateRandomizer = new Random(randomizer.Next());
+        }
+
+        /// <summary>
+        /// Returns a randomizer derived from the base seed. <br />
+        /// It's recommended to call GetRandomizer with a name every time a new value is needed 
+        /// for good multi-threaded and <see cref="DiskAssertSetupExtensions.WithSetup(DiskAsserter, Action)"/> support.
+        /// <paramref name="name">A unique name for this randomizer so subsequent calls to GetRandomizer can access the same instance</paramref>
+        /// </summary>
+        public Random GetRandomizer(string? name = null)
+        {
+            if (name != null)
+                return namedRandomizers.GetOrAdd(name, (x) => new Random(randomizer.Int()));
+            
+            var buffer = new byte[4];
+            randomizer.NextBytes(buffer);
+
+            return new Random(BitConverter.ToInt32(buffer, 0));
+        }
+
+        public void NextBytes(byte[] buffer)
+        {
+            randomizer.NextBytes(buffer);
+        }
+
+        public string String(int length = 10, bool noSpecialCharacters = true)
+        {
+            return stringRandomizer.String(length, noSpecialCharacters);
+        }
+
+        public int Int(int min = int.MinValue, int max = int.MaxValue)
+        {
+            return numberRandomizer.Next(min, max);
+        }
+
+        public DateTime DateTime(bool includeTime = true, DateTimeKind kind = DateTimeKind.Utc, DateTime? min = null, DateTime? max = null)
+        {
+            return dateRandomizer.DateTime(includeTime, kind, min, max);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MK94.Assert.Output;
+using System;
 
 namespace MK94.Assert
 {
@@ -30,6 +31,8 @@ namespace MK94.Assert
         /// </summary>
         public IDiskAsserterConfig EnableWriteMode();
 
+        public Func<string> SeedGenerator { get; set; }
+
         public DiskAsserter Build();
     }
 
@@ -40,6 +43,7 @@ namespace MK94.Assert
         public ISerializer Serializer { get; set; }
         public bool IsDevEnvironment { get; set; }
         public bool WriteMode { get; set; }
+        public Func<string> SeedGenerator { get; set; }
 
         public DiskAsserter Build()
         {
@@ -47,6 +51,7 @@ namespace MK94.Assert
             ret.Output = Output;
             ret.IsDevEnvironment = IsDevEnvironment;
             ret.PathResolver = PathResolver;
+            ret.PseudoRandomizer = new PseudoRandomizer(SeedGenerator());
 
             if (WriteMode)
                 ret.EnableWriteMode();
