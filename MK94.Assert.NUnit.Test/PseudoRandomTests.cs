@@ -51,9 +51,9 @@ namespace MK94.Assert.NUnit.Test
         [Test]
         public void GuidTest()
         {
-            DiskAssert.Matches("Guid1", new PseudoRandomGuidProvider().NewGuid());
-            DiskAssert.Matches("Guid2", new PseudoRandomGuidProvider().NewGuid());
-            DiskAssert.Matches("Guid3", new PseudoRandomGuidProvider().NewGuid());
+            DiskAssert.Matches("Guid1", new PseudoRandomGuidProvider(DiskAssert.Default).NewGuid());
+            DiskAssert.Matches("Guid2", new PseudoRandomGuidProvider(DiskAssert.Default).NewGuid());
+            DiskAssert.Matches("Guid3", new PseudoRandomGuidProvider(DiskAssert.Default).NewGuid());
         }
 
         [Test]
@@ -61,9 +61,9 @@ namespace MK94.Assert.NUnit.Test
         {
             DiskAssert.WithSetup(GuidTest);
 
-            DiskAssert.Matches("Guid4", new PseudoRandomGuidProvider().NewGuid());
-            DiskAssert.Matches("Guid5", new PseudoRandomGuidProvider().NewGuid());
-            DiskAssert.Matches("Guid6", new PseudoRandomGuidProvider().NewGuid());
+            DiskAssert.Matches("Guid4", new PseudoRandomGuidProvider(DiskAssert.Default).NewGuid());
+            DiskAssert.Matches("Guid5", new PseudoRandomGuidProvider(DiskAssert.Default).NewGuid());
+            DiskAssert.Matches("Guid6", new PseudoRandomGuidProvider(DiskAssert.Default).NewGuid());
         }
     }
 }
