@@ -22,6 +22,8 @@ namespace MK94.Assert.NUnit.Test
         public async Task TestStep1()
         {
             await database.Insert(1, DiskAssert.Default.PseudoRandomizer.String());
+
+            DiskAssert.MatchesSequence();
         }
 
         [Test]
@@ -30,6 +32,8 @@ namespace MK94.Assert.NUnit.Test
             await DiskAssert.WithSetup(TestStep1);
 
             await database.Insert(2, DiskAssert.Default.PseudoRandomizer.String());
+
+            DiskAssert.MatchesSequence();
         }
 
         [Test]

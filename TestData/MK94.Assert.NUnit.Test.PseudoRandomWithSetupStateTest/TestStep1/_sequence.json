@@ -1,0 +1,14 @@
+[
+  {
+    "Mode": "Output",
+    "Step": "MK94.Assert.NUnit.Test.PseudoRandomWithSetupStateTest/TestStep1/MK94.Assert.NUnit.Test.IDatabase.Insert_0_id.json"
+  },
+  {
+    "Mode": "Output",
+    "Step": "MK94.Assert.NUnit.Test.PseudoRandomWithSetupStateTest/TestStep1/MK94.Assert.NUnit.Test.IDatabase.Insert_0_text.json"
+  },
+  {
+    "Mode": "Input",
+    "Step": "MK94.Assert.NUnit.Test.PseudoRandomWithSetupStateTest/TestStep1/MK94.Assert.NUnit.Test.IDatabase.Insert_0_return.json"
+  }
+]
