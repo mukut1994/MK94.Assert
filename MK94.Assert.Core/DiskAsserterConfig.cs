@@ -52,6 +52,7 @@ namespace MK94.Assert
             ret.IsDevEnvironment = IsDevEnvironment;
             ret.PathResolver = PathResolver;
             ret.PseudoRandomizer = SeedGenerator != null ? new PseudoRandomizer(SeedGenerator()) : null;
+            ret.SeedGenerator = SeedGenerator;
 
             if (WriteMode)
                 ret.EnableWriteMode();

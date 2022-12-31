@@ -55,7 +55,7 @@ namespace MK94.Assert
 
             diskAsserter.WriteMode = false;
             diskAsserter.InSetup = true;
-            diskAsserter.SeedGenerator = () => "SETUP" + seedAppend;
+            diskAsserter.SeedGenerator = () => "SETUP" + seedAppend();
             diskAsserter.PseudoRandomizer = new PseudoRandomizer(diskAsserter.SeedGenerator());
         }
 

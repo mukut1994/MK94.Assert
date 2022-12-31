@@ -30,26 +30,26 @@ namespace MK94.Assert.Input
             return this;
         }
 
-        public T Read<T>(string step)
+        public T Read<T>(string step, string? fileType = ".json")
         {
-            using var stream = OpenRead(step);
+            using var stream = OpenRead(step, fileType);
 
             return DiskAsserter.Serializer.Deserialize<T>(stream);
         }
 
-        public string Read(string step)
+        public string Read(string step, string? fileType = ".json")
         {
-            using var reader = new StreamReader(OpenRead(step));
+            using var reader = new StreamReader(OpenRead(step, fileType));
 
             return reader.ReadToEnd();
         }
         
-        private Stream OpenRead(string step)
+        private Stream OpenRead(string step, string? fileType)
         {
             // reverse order; get the latest context first
             for (var i = TestChainContexts.Count - 1; i > -1; i--)
             {
-                var path = Path.Combine(TestChainContexts[i].GetStepPath(), step);
+                var path = Path.Combine(TestChainContexts[i].GetStepPath(), step + fileType ?? string.Empty);
 
                 // Replace windows path \ with /
                 var ret = DiskAsserter.Read(path.Replace('\\', '/'));

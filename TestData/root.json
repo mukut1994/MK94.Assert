@@ -237,5 +237,6 @@
   "MK94.Assert.NUnit.Test.WithSetupTests/InsertMoreTest_NestedSetups/MK94.Assert.NUnit.Test.IDatabase.Insert_0_text.json": "h3md6iporl6hd1-byyk0dsfwxznsy\u002Bl10odbjbbywp8=",
   "MK94.Assert.NUnit.Test.PseudoRandomTests/GuidTestWithChain/Guid4.json": "gjq5ci2b08\u002B2sj5ivlhoq-o7hv6pjz9b1pptve2jfa4=",
   "MK94.Assert.NUnit.Test.PseudoRandomTests/GuidTestWithChain/Guid5.json": "ynbwx0u8re4wvcfi-po7vzxrrlnlwqrd5vpgg38b65k=",
-  "MK94.Assert.NUnit.Test.PseudoRandomTests/GuidTestWithChain/Guid6.json": "tcvsg95e16duhlfenuvycxgjl6qdul\u002Bvy7yhdte--pg="
+  "MK94.Assert.NUnit.Test.PseudoRandomTests/GuidTestWithChain/Guid6.json": "tcvsg95e16duhlfenuvycxgjl6qdul\u002Bvy7yhdte--pg=",
+  "MK94.Assert.NUnit.Test.PseudoRandomWithSetupStateTest/TestStep3/DB should have 3 unique values.json": "h-ppxjsnzajofsixfi4bl7mgietvotqrvpkmxq0thmq="
 }
