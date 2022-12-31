@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using MK94.Assert.Mocking;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,36 +10,38 @@ namespace MK94.Assert.NUnit.Test
 {
     public class PseudoRandomWithSetupStateTest
     {
-        private List<string> someDbState;
+        private IDatabase database;
 
         [SetUp]
         public void Setup()
         {
-            someDbState = new List<string>();            
+            database = Mock.Of<IDatabase>(x => new Database());
         }
 
         [Test]
-        public void TestStep1()
+        public async Task TestStep1()
         {
-            someDbState.Add(DiskAssert.Default.PseudoRandomizer.String());
+            await database.Insert(1, DiskAssert.Default.PseudoRandomizer.String());
         }
 
         [Test]
-        public void TestStep2()
+        public async Task TestStep2()
         {
-            DiskAssert.WithSetup(TestStep1);
+            await DiskAssert.WithSetup(TestStep1);
 
-            someDbState.Add(DiskAssert.Default.PseudoRandomizer.String());
+            await database.Insert(2, DiskAssert.Default.PseudoRandomizer.String());
         }
 
         [Test]
-        public void TestStep3()
+        public async Task TestStep3()
         {
-            DiskAssert.WithSetup(TestStep2);
+            await DiskAssert.WithSetup(TestStep2);
 
-            someDbState.Add(DiskAssert.Default.PseudoRandomizer.String());
+            await database.Insert(3, DiskAssert.Default.PseudoRandomizer.String());
 
-            DiskAssert.Matches("DB should have 3 unique values", someDbState);
+            DiskAssert.Matches("DB should have 3 unique values", await database.Everything());
+
+            DiskAssert.MatchesSequence();
         }
     }
 }

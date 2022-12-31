@@ -238,5 +238,10 @@
   "MK94.Assert.NUnit.Test.PseudoRandomTests/GuidTestWithChain/Guid4.json": "gjq5ci2b08\u002B2sj5ivlhoq-o7hv6pjz9b1pptve2jfa4=",
   "MK94.Assert.NUnit.Test.PseudoRandomTests/GuidTestWithChain/Guid5.json": "ynbwx0u8re4wvcfi-po7vzxrrlnlwqrd5vpgg38b65k=",
   "MK94.Assert.NUnit.Test.PseudoRandomTests/GuidTestWithChain/Guid6.json": "tcvsg95e16duhlfenuvycxgjl6qdul\u002Bvy7yhdte--pg=",
-  "MK94.Assert.NUnit.Test.PseudoRandomWithSetupStateTest/TestStep3/DB should have 3 unique values.json": "h-ppxjsnzajofsixfi4bl7mgietvotqrvpkmxq0thmq="
+  "MK94.Assert.NUnit.Test.PseudoRandomWithSetupStateTest/TestStep3/DB should have 3 unique values.json": "wpzinefpntktzeerbrmfs9tbgm7lan2yfc-\u002Bnefwfkg=",
+  "MK94.Assert.NUnit.Test.PseudoRandomWithSetupStateTest/TestStep3/MK94.Assert.NUnit.Test.IDatabase.Insert_0_id.json": "tgdahwk\u002B24tgzgxb3s-jrra3ijcwfeafzat\u002Brym0n84=",
+  "MK94.Assert.NUnit.Test.PseudoRandomWithSetupStateTest/TestStep3/MK94.Assert.NUnit.Test.IDatabase.Insert_0_text.json": "bajzj7evyyu45eg-cvkwk3u10wgevehzfnaetiasrc0=",
+  "MK94.Assert.NUnit.Test.PseudoRandomWithSetupStateTest/TestStep3/MK94.Assert.NUnit.Test.IDatabase.Insert_0_return.json": "dcnomk-nsy\u002B12vhzaslxiswzlgt5uha7jagykvmcuqs=",
+  "MK94.Assert.NUnit.Test.PseudoRandomWithSetupStateTest/TestStep3/MK94.Assert.NUnit.Test.IDatabase.Everything_1_return.json": "wpzinefpntktzeerbrmfs9tbgm7lan2yfc-\u002Bnefwfkg=",
+  "MK94.Assert.NUnit.Test.PseudoRandomWithSetupStateTest/TestStep3/_sequence.json": "2lph16avznd82jspcpqhp55uoiwifvlrrbroaisjkru="
 }

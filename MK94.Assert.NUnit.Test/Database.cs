@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,11 +12,18 @@ namespace MK94.Assert.NUnit.Test
         Task Insert(int id, string text);
 
         Task<string> Select(int id);
+
+        Task<IReadOnlyDictionary<int, string>> Everything();
     }
 
     public class Database : IDatabase
     {
         private Dictionary<int, string> fakeDb = new();
+
+        public Task<IReadOnlyDictionary<int, string>> Everything()
+        {
+            return Task.FromResult((IReadOnlyDictionary<int, string>) fakeDb);
+        }
 
         public Task Insert(int id, string text)
         {

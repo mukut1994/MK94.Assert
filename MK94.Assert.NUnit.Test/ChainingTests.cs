@@ -37,7 +37,7 @@ namespace MK94.Assert.NUnit.Test
                 .WithInputs()
                 .From(TestCase1);
 
-            var context = inputs.Read<TestObject>("Step 1.json");
+            var context = inputs.Read<TestObject>("Step 1");
 
             context.A += 10;
             context.B += 10;
@@ -55,7 +55,7 @@ namespace MK94.Assert.NUnit.Test
                 .From(TestCase1)
                 .From(TestCase2);
 
-            var context = inputs.Read<TestObject>("Step 1.json");
+            var context = inputs.Read<TestObject>("Step 1");
 
             context.A += 10;
             context.B += 10;
@@ -72,7 +72,7 @@ namespace MK94.Assert.NUnit.Test
                 .WithInputs()
                 .FromPath("External");
 
-            var context = inputs.Read<TestObject>("ExamplePostData.json");
+            var context = inputs.Read<TestObject>("ExamplePostData");
 
             context.A += 10;
             context.B += 10;
