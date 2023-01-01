@@ -15,7 +15,7 @@ namespace MK94.Assert.Output
 		{
 			return Convert.ToBase64String(hash!).Replace('/', '-').ToLower();
 		}
-		
+
 		public static Dictionary<string, string> LoadRootFile(Dictionary<string, string> rootFile, IFileOutput baseOutput)
 		{
 			if (rootFile != null)
@@ -24,9 +24,18 @@ namespace MK94.Assert.Output
 			using var reader = baseOutput.OpenRead("root.json");
 
 			if (reader == null)
-				rootFile = new Dictionary<string, string>();
+				return new Dictionary<string, string>();
 			else
-				rootFile = JsonSerializer.DeserializeAsync<Dictionary<string, string>>(reader).Result;
+			{
+				try
+				{
+					rootFile = JsonSerializer.DeserializeAsync<Dictionary<string, string>>(reader).Result;
+				}
+				catch (Exception e)
+				{
+					throw new InvalidDataException($"root.json file seems corrupted, please delete and rerun your tests", e);
+				}
+			}
 
 			return rootFile;
 		}

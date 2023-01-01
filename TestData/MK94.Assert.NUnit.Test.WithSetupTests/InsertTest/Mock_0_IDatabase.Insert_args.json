@@ -1,0 +1,7 @@
+{
+  "Class": "MK94.Assert.NUnit.Test.IDatabase",
+  "Arguments": {
+    "id": 1,
+    "text": "Text 1"
+  }
+}

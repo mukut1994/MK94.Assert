@@ -61,7 +61,7 @@ namespace MK94.Assert
         /// <param name="rawData">The raw data to be compared</param>
         /// <param name="fileType">The file type to save as</param>
         /// <param name="formatter">The error message formatter to use when there are differences</param>
-        /// <param name="mode">The mode to add it as to Operations</param>
+        /// <param name="mode">The mode to add it as to <see cref="Operations"/></param>
         /// <returns>The unmodified <paramref name="rawData"/></returns>
         /// <exception cref="Exception">Thrown when some differences have been detected</exception>
         public string MatchesRaw(string step, string rawData, string fileType = null, IDifferenceFormatter<string> formatter = null, OperationMode mode = OperationMode.Output)

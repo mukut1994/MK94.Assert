@@ -1,19 +1,19 @@
 [
   {
     "Mode": "Output",
-    "Step": "MK94.Assert.NUnit.Test.PseudoRandomWithSetupStateTest/TestStep3/MK94.Assert.NUnit.Test.IDatabase.Insert_0_id.json"
+    "Step": "MK94.Assert.NUnit.Test.PseudoRandomWithSetupStateTest/TestStep3/Mock_0_IDatabase.Insert_args.json"
+  },
+  {
+    "Mode": "Input",
+    "Step": "MK94.Assert.NUnit.Test.PseudoRandomWithSetupStateTest/TestStep3/Mock_0_IDatabase.Insert_return.json"
   },
   {
     "Mode": "Output",
-    "Step": "MK94.Assert.NUnit.Test.PseudoRandomWithSetupStateTest/TestStep3/MK94.Assert.NUnit.Test.IDatabase.Insert_0_text.json"
+    "Step": "MK94.Assert.NUnit.Test.PseudoRandomWithSetupStateTest/TestStep3/Mock_1_IDatabase.Everything_args.json"
   },
   {
     "Mode": "Input",
-    "Step": "MK94.Assert.NUnit.Test.PseudoRandomWithSetupStateTest/TestStep3/MK94.Assert.NUnit.Test.IDatabase.Insert_0_return.json"
-  },
-  {
-    "Mode": "Input",
-    "Step": "MK94.Assert.NUnit.Test.PseudoRandomWithSetupStateTest/TestStep3/MK94.Assert.NUnit.Test.IDatabase.Everything_1_return.json"
+    "Step": "MK94.Assert.NUnit.Test.PseudoRandomWithSetupStateTest/TestStep3/Mock_1_IDatabase.Everything_return.json"
   },
   {
     "Mode": "Output",

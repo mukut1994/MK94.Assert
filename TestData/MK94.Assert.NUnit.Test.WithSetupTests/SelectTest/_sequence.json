@@ -1,11 +1,11 @@
 [
   {
     "Mode": "Output",
-    "Step": "MK94.Assert.NUnit.Test.WithSetupTests/SelectTest/MK94.Assert.NUnit.Test.IDatabase.Select_0_id.json"
+    "Step": "MK94.Assert.NUnit.Test.WithSetupTests/SelectTest/Mock_0_IDatabase.Select_args.json"
   },
   {
     "Mode": "Input",
-    "Step": "MK94.Assert.NUnit.Test.WithSetupTests/SelectTest/MK94.Assert.NUnit.Test.IDatabase.Select_0_return.json"
+    "Step": "MK94.Assert.NUnit.Test.WithSetupTests/SelectTest/Mock_0_IDatabase.Select_return.json"
   },
   {
     "Mode": "Output",

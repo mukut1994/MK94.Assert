@@ -29,7 +29,7 @@ namespace MK94.Assert.Mocking
 
             parent.count ??= new Mocker.Counter();
 
-            var stepName = $"{GetPathFriendlyClassName(invocation)}.{invocation.Method.Name}_{parent.count.Count}";
+            var stepName = $"Mock_{parent.count.Count}_{GetPathFriendlyClassName(invocation.Method.DeclaringType)}.{invocation.Method.Name}";
             var returnName = $"{stepName}_return.json";
 
             parent.count.Count++;
@@ -54,19 +54,24 @@ namespace MK94.Assert.Mocking
             SetReturnValueFromPreviousRun(invocation, returnName);
         }
 
-        private static string GetPathFriendlyClassName(IInvocation invocation)
+        private static string GetPathFriendlyClassName(Type type)
         {
-            return GetPathFriendlyClassName(invocation.Method.DeclaringType);
+            var name = type.Name;
+
+            if(type.IsGenericType)
+                return name.Substring(0, name.IndexOf('`'));
+
+            return name;
         }
 
-        private static string GetPathFriendlyClassName(Type type)
+        private static string GetFriendlyClassName(Type type)
         {
             if (type.IsGenericType)
             {
                 var name = type.GetGenericTypeDefinition().FullName;
-                var genericPart = type.GetGenericArguments().Select(g => GetPathFriendlyClassName(g)).Aggregate((a, b) => $"{a}, {b}");
+                var genericPart = type.GetGenericArguments().Select(g => GetFriendlyClassName(g)).Aggregate((a, b) => $"{a}, {b}");
 
-                return $"{name.Substring(0, name.IndexOf('`'))}({genericPart})";
+                return $"{name.Substring(0, name.IndexOf('`'))}[{genericPart}]";
             }
 
             return type.FullName;
@@ -134,11 +139,20 @@ namespace MK94.Assert.Mocking
         private void MatchParameters(IInvocation invocation, string stepName)
         {
             var parameters = invocation.Method.GetParameters();
+            var dict = new Dictionary<string, object>();
 
             for (var i = 0; i < invocation.Arguments.Length; i++)
             {
-                parent.diskAsserter.Matches($"{stepName}_{parameters[i].Name}", invocation.Arguments[i]);
+                dict[parameters[i].Name] = invocation.Arguments[i];
             }
+
+            var record = new MockRecord
+            {
+                Arguments = dict,
+                Class = GetFriendlyClassName(invocation.Method.DeclaringType)
+            };
+
+            parent.diskAsserter.Matches($"{stepName}_args", record);
         }
 
         private bool MethodReturnIsVoid(IInvocation invocation)
@@ -167,6 +181,10 @@ namespace MK94.Assert.Mocking
                 throw new InvalidOperationException($"Expecting input from {expectedOperation.Step} but actual is an input from {stepPath}");
         }
 
-
+        private class MockRecord
+        {
+            public string Class { get; set; }
+            public Dictionary<string, object> Arguments { get; set; }
+        }
     }
 }
