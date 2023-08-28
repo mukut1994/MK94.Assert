@@ -49,10 +49,8 @@ namespace MK94.Assert.Input
             // reverse order; get the latest context first
             for (var i = TestChainContexts.Count - 1; i > -1; i--)
             {
-                var path = Path.Combine(TestChainContexts[i].GetStepPath(), step + fileType ?? string.Empty);
-
                 // Replace windows path \ with /
-                var ret = DiskAsserter.Read(path.Replace('\\', '/'));
+                var ret = DiskAsserter.Read(TestChainContexts[i].GetStepPath(), step + fileType ?? string.Empty);
 
                 if (ret == null) continue;
 

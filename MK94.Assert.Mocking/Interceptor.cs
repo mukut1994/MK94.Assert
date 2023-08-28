@@ -79,9 +79,7 @@ namespace MK94.Assert.Mocking
 
         private void SetReturnValueFromPreviousRun(IInvocation invocation, string returnName)
         {
-            var stepPath = Path.Combine(parent.diskAsserter.PathResolver.GetStepPath(), returnName).Replace('\\', '/');
-
-            using var reader = parent.diskAsserter.Read(stepPath);
+            using var reader = parent.diskAsserter.Read(parent.diskAsserter.PathResolver.GetStepPath(), returnName);
 
             if (MethodReturnIsVoid(invocation))
                 return;

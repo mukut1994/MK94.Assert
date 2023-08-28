@@ -1,0 +1,10 @@
+[
+  {
+    "Mode": "Input",
+    "Step": "MK94.Assert.NUnit.Test.ChainingTestsWithSetup/TestCase1/Step 1.json"
+  },
+  {
+    "Mode": "Output",
+    "Step": "MK94.Assert.NUnit.Test.ChainingTestsWithSetup/TestCase2/Step 1 before after diff.json"
+  }
+]

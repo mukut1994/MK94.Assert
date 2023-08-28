@@ -1,0 +1,17 @@
+[
+  {
+    "Location": "$.A",
+    "Expected": "-2111886863",
+    "Actual": "1181541995"
+  },
+  {
+    "Location": "$.B",
+    "Expected": "-143151164",
+    "Actual": "786419868"
+  },
+  {
+    "Location": "$.C",
+    "Expected": "1886728219",
+    "Actual": "-1884361695"
+  }
+]

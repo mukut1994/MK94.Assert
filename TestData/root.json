@@ -327,5 +327,12 @@
   "MK94.Assert.NUnit.Test.WithSetupTests/SelectTest/Mock_0_IDatabase.Select_args.json": "btb4j\u002Bswtngnugsoe22bkrmmzsgytes9qgiz0g-kqv0=",
   "MK94.Assert.NUnit.Test.WithSetupTests/SelectTest/Mock_0_IDatabase.Select_return.json": "aksf\u002Bq3dnxlmslkvofgaedl2soyujggc\u002Btkrkdk5gyu=",
   "MK94.Assert.NUnit.Test.WithSetupTests/InsertMoreTest_NestedSetups/Mock_0_IDatabase.Insert_args.json": "buifyj8bqf5ysxotgyu5xwfvzxbowqjxgrveig9xu-s=",
-  "MK94.Assert.NUnit.Test.WithSetupTests/InsertMoreTest_NestedSetups/Mock_0_IDatabase.Insert_return.json": "dcnomk-nsy\u002B12vhzaslxiswzlgt5uha7jagykvmcuqs="
+  "MK94.Assert.NUnit.Test.WithSetupTests/InsertMoreTest_NestedSetups/Mock_0_IDatabase.Insert_return.json": "dcnomk-nsy\u002B12vhzaslxiswzlgt5uha7jagykvmcuqs=",
+  "MK94.Assert.NUnit.Test.ChainingTestsWithSetup/TestCase1/Step 1.json": "gdw4w5jd1ahtxlzsm-f5cx4dnu\u002Bsdqnjc45ujzrxyrq=",
+  "MK94.Assert.NUnit.Test.ChainingTestsWithSetup/TestCase2/Step 1 before.json": "amuqnhk7rgl7yx6dnxvq3xnk-zctl34ivrufg5gztbu=",
+  "MK94.Assert.NUnit.Test.ChainingTestsWithSetup/TestCase2/Step 1 after.json": "gdw4w5jd1ahtxlzsm-f5cx4dnu\u002Bsdqnjc45ujzrxyrq=",
+  "MK94.Assert.NUnit.Test.ChainingTestsWithSetup/TestCase2/_sequence.json": "xpeyotxq1axhqc-whr9\u002Bbsrkno-2e1of78oavswfsvk=",
+  "MK94.Assert.NUnit.Test.ChainingTestsWithSetup/TestCase2/Step 1 before after diff.json": "vrevfx\u002Bcsk443d9yuop\u002Bljaxj247bfeiooa5g-\u002Bkrhq=",
+  "MK94.Assert.NUnit.Test.ChainingTestsWithSetup/TestCase4/Step 3.json": "boq-1toctvijed\u002Bk6-j49yh1cyp9fp2kzxhk2itlore=",
+  "MK94.Assert.NUnit.Test.ChainingTestsWithSetup/TestCase4/_sequence.json": "wcwhvdszlzvp9akjhesbebxejby7kpsi2egpro8ieyy="
 }

@@ -39,13 +39,23 @@ namespace MK94.Assert
 
         public bool IsDevEnvironment { get; set; }
 
+        public Dictionary<string, Lazy<string>> InSetupFiles { get; } = new Dictionary<string, Lazy<string>>();
+
         /// <summary>
         /// Read a step from the current test path and add it to the Operations list
         /// </summary>
-        /// <param name="step">The step name</param>
+        /// <param name="stepParts">The step name</param>
         /// <returns>A stream to the step or null if it doesn't exist</returns>
-        public Stream Read(string step)
+        public Stream Read(params string[] stepParts)
         {
+            if(InSetupFiles.TryGetValue(stepParts.Last(), out var value))
+            {
+                // TODO avoid copying the whole string; optimize
+                return new MemoryStream(Encoding.UTF8.GetBytes(value.Value));
+            }
+
+            var step = Path.Combine(stepParts).Replace('\\', '/');
+
             var ret = Output.OpenRead(step, false);
 
             if (!InSetup && ret != null)
@@ -64,14 +74,21 @@ namespace MK94.Assert
         /// <param name="mode">The mode to add it as to <see cref="Operations"/></param>
         /// <returns>The unmodified <paramref name="rawData"/></returns>
         /// <exception cref="Exception">Thrown when some differences have been detected</exception>
-        public string MatchesRaw(string step, string rawData, string fileType = null, IDifferenceFormatter<string> formatter = null, OperationMode mode = OperationMode.Output)
+        public void MatchesRaw(string step, Lazy<string> rawDataGetter, string fileType = null, IDifferenceFormatter<string> formatter = null, OperationMode mode = OperationMode.Output)
         {
-            if (InSetup)
-                return rawData;
-
             EnsureSetupWasCalled();
 
+            if (InSetup)
+            {
+                // TODO better context on the key here
+                InSetupFiles[$"{step}.{fileType}"] = rawDataGetter;
+
+                return;
+            }
+
             var outputFile = GetStepPath(step, fileType);
+
+            var rawData = rawDataGetter.Value;
 
             operations.Add(new AssertOperation(mode, outputFile.Replace('\\', '/')));
 
@@ -80,13 +97,23 @@ namespace MK94.Assert
                 EnsureDevMode(this);
                 Output.Write(outputFile, rawData);
 
-                return rawData;
+                return;
             }
 
             if (Output.IsHashMatch(outputFile, rawData))
-                return rawData;
+                return;
 
-            return ThrowDifferences(step, rawData, formatter, outputFile);
+            ThrowDifferences(step, rawData, formatter, outputFile);
+        }
+
+        /// <inheritdoc cref="MatchesRaw(string, string, string, IDifferenceFormatter{string}, OperationMode)"/>
+        public string MatchesRaw(string step, string rawData, string fileType = null, IDifferenceFormatter<string> formatter = null, OperationMode mode = OperationMode.Output)
+        {
+            var ret = new Lazy<string>(() => rawData);
+
+            MatchesRaw(step, ret, fileType, formatter, mode);
+
+            return ret.Value;
         }
 
         private string ThrowDifferences(string step, string rawData, IDifferenceFormatter<string> formatter, string outputFile)
@@ -99,11 +126,11 @@ namespace MK94.Assert
             using var reader = new StreamReader(file);
 
             if (formatter == null)
-                throw new Exception($"Difference in step {step}; Expected {reader.ReadToEnd()}; Actual: {rawData}");
+                throw new Exception($"Difference in stepParts {step}; Expected {reader.ReadToEnd()}; Actual: {rawData}");
 
             var differences = formatter.FindDifferences(reader.ReadToEnd(), rawData).ToList();
             var errorBuilder = new StringBuilder();
-            errorBuilder.AppendLine($"Difference in step {step}");
+            errorBuilder.AppendLine($"Difference in stepParts {step}");
 
             foreach (var diff in differences)
             {
@@ -122,9 +149,9 @@ namespace MK94.Assert
         /// <exception cref="Exception">Thrown when some differences have been detected</exception>
         public T Matches<T>(string step, T instance)
         {
-            var serialized = Serializer.Serialize(instance);
+            var lazySerialized = new Lazy<string>(() => Serializer.Serialize(instance));
 
-            MatchesRaw($"{step}", serialized, "json", JsonDifferenceFormatter.Instance);
+            MatchesRaw($"{step}", lazySerialized, "json", JsonDifferenceFormatter.Instance);
 
             return instance;
         }

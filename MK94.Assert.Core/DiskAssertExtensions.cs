@@ -13,9 +13,20 @@ namespace MK94.Assert
         /// This sets the <see cref="DiskAsserter.InSetup"/> flag and disables any calls to <see cref="DiskAsserter.Matches{T}(string, T)"/> or related calls. <br />
         /// Useful for chaining many tests together where previous tests create objects the current test wants to make use of.
         /// </summary>
-        public static async Task<DiskAsserter> WithSetup(this DiskAsserter diskAsserter, Func<Task> task)
+        /// <param name="diskAsserter">The asserter to run setup against</param>
+        /// <param name="task">The code that runs any setup code for the main test</param>
+        /// <param name="forceExecuteSetup">
+        /// By default, the setup is only executed when we're in write mode.
+        /// We can avoid re-running setup on non-write tests because we have the output from previous runs.
+        /// If for some reason we cannot save the output from the previous run e.g. a class cannot be mocked
+        /// this method allows the setup to run, but without writing the output to disk.
+        /// </param>
+        public static async Task<DiskAsserter> WithSetup(
+            this DiskAsserter diskAsserter,
+            Func<Task> task,
+            bool forceExecuteSetup = false)
         {
-            if (!diskAsserter.WriteMode && !diskAsserter.InSetup)
+            if (!forceExecuteSetup && !ShouldRunSetup(diskAsserter))
                 return diskAsserter;
 
             PreRunConfigureContext(diskAsserter, out var previousSetupMode, out var previousWriteMode, out var previousSeedGenerator, out var previousPseudoRandomizer);
@@ -28,9 +39,12 @@ namespace MK94.Assert
         }
 
         /// <inheritdoc cref="WithSetup(DiskAsserter, Func{Task})"/>
-        public static DiskAsserter WithSetup(this DiskAsserter diskAsserter, Action task)
+        public static DiskAsserter WithSetup(
+            this DiskAsserter diskAsserter,
+            Action task,
+            bool forceExecuteSetup = false)
         {
-            if (!ShouldRunSetup(diskAsserter))
+            if (!forceExecuteSetup && !ShouldRunSetup(diskAsserter))
                 return diskAsserter;
 
             PreRunConfigureContext(diskAsserter, out var previousSetupMode, out var previousWriteMode, out var previousSeedGenerator, out var previousPseudoRandomizer);
